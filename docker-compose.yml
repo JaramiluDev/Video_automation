@@ -1,0 +1,9 @@
+services:
+  video-app:
+    build: .
+    # Mapeamos las carpetas de datos para que los renders se guarden en tu máquina host
+    volumes:
+      - ./data:/app/data
+      - ./examples:/app/examples
+    env_file:
+      - .env
