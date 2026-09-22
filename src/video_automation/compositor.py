@@ -1,5 +1,5 @@
 import os
-from moviepy.editor import ImageClip, concatenate_videoclips
+from moviepy import ImageClip, concatenate_videoclips
 
 def compose_video(image_paths: list, durations: list, output_path: str):
     print(f"Ensamblando video con {len(image_paths)} imágenes...")
