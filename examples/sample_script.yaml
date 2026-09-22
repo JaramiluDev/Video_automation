@@ -1,0 +1,10 @@
+title: "Resolviendo la Ecuación Cuadrática"
+output_filename: "ecuacion_cuadratica_mvp.mp4"
+scenes:
+  - id: "ESCENA-01"
+    title: "Introducción"
+    narration: "Bienvenidos. Hoy buscaremos a la X usando la fórmula general."
+    image_paths: 
+      - "data/assets/placeholder_1.png"
+    duration: 3.0
+    text_on_screen: "Buscando a la X"

@@ -1,0 +1,8 @@
+default_language: "es"
+output_resolution: [1920, 1080]
+output_fps: 30
+default_music_volume: 0.1
+default_subtitle_font: "Arial"
+output_directory: "data/renders"
+allowed_scene_folders:
+  - "assets/source_scripts"
