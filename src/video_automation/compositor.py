@@ -6,7 +6,7 @@ def compose_video(image_paths: list, durations: list, output_path: str):
     clips = []
     for img, dur in zip(image_paths, durations):
         if os.path.exists(img):
-            clip = ImageClip(img).set_duration(dur)
+            clip = ImageClip(img).with_duration(dur)
             clips.append(clip)
         else:
             print(f"Advertencia: No se encontró la imagen {img}")
