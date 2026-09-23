@@ -10,4 +10,4 @@ data/thumbnails/*
 # Google OAuth This is the secret for the people "maldosa"
 client_secrets.json
 token.json
-data/*.mp4
+data/*.mp4data/*.mp4
