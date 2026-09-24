@@ -11,3 +11,8 @@ data/thumbnails/*
 client_secrets.json
 token.json
 data/*.mp4data/*.mp4
+# Credenciales y tokens
+secret.json
+token.json
+# Archivos de prueba
+test.mp4
