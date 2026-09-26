@@ -1,0 +1,11 @@
+title: "Prueba Manim"
+output_filename: "prueba_manim.mp4"
+scenes:
+  - id: "ESCENA-01"
+    title: "Formula"
+    narration: ""
+    image_paths: []
+    duration: 4.0
+    render_type: "manim"
+    formula: "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"
+    text_on_screen: "La fórmula general"
