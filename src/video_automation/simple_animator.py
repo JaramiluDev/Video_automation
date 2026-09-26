@@ -15,7 +15,7 @@ from typing import List, Optional
 # ==============================================================================
 # CONFIGURACIÓN Y CONSTANTES REQUERIDAS
 # ==============================================================================
-SOURCE_DIR = Path("assets/source_scripts")
+SOURCE_DIR = Path("assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X") #TENGAN MUCHO CUIDADO CON LA RUTA DE LA CARPETA POR QUE  SI NO LE PONEMOS BIEN GENERA  ALV MUCHO CUIDADO
 OUTPUT_DIR = SOURCE_DIR / "animated_clips"
 
 DURATION_SECONDS = 5
