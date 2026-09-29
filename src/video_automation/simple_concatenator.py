@@ -20,7 +20,7 @@ def get_target_directory() -> Path:
     assets/source_scripts/animated_clips.
     """
     # Ruta relativa requerida
-    target_path = Path("assets/source_scripts/animated_clips")
+    target_path = Path("assets/source_scripts/GUION-02/animated_clips")
 
     if target_path.exists():
         return target_path.resolve()
@@ -28,9 +28,9 @@ def get_target_directory() -> Path:
     # Si se ejecuta desde un subdirectorio o con ruta absoluta conocida
     script_dir = Path(__file__).resolve().parent
     candidates = [
-        script_dir / "assets/source_scripts/animated_clips",
-        script_dir.parent.parent / "assets/source_scripts/animated_clips",
-        Path("/home/taekjoss/Projects/proyects/GitHub/Video_automation/assets/source_scripts/animated_clips"),
+        script_dir / "assets/source_scripts/GUION-02/animated_clips",
+        script_dir.parent.parent / "assets/source_scripts/GUION-02/animated_clips",
+        Path("/home/taekjoss/Projects/proyects/GitHub/Video_automation/assets/source_scripts/GUION-02/animated_clips"),
     ]
 
     for candidate in candidates:
@@ -41,9 +41,9 @@ def get_target_directory() -> Path:
     return target_path.resolve()
 
 
-def concatenate_clips(input_dir: Path) -> bool:
+def concatenate_clips(input_dir: Path, output_video_name: str = "final_render.mp4") -> bool:
     """
-    Concatena todos los clips .mp4 en input_dir y genera final_render.mp4.
+    Concatena todos los clips .mp4 en input_dir y genera output_video_name.
     """
     print("🎞️ ==================================================================")
     print("🎞️  INICIANDO CONCATENADOR DE CLIPS MULTIMEDIA (FFMPEG)")
@@ -55,14 +55,14 @@ def concatenate_clips(input_dir: Path) -> bool:
         print("💡 Sugerencia: Ejecuta primero simple_animator.py para generar los clips.")
         return False
 
-    output_video_name = "final_render.mp4"
     output_video_path = input_dir / output_video_name
 
-    # 1. Leer y ordenar alfabéticamente todos los archivos .mp4 (excluyendo el render final si ya existe)
+    # 1. Leer y ordenar alfabéticamente todos los archivos .mp4 (excluyendo los videos de render final)
+    excluded_files = {output_video_name, "final_render.mp4", "video2_base_render.mp4"}
     mp4_files: List[Path] = sorted(
         [
             f for f in input_dir.iterdir()
-            if f.is_file() and f.suffix.lower() == ".mp4" and f.name != output_video_name
+            if f.is_file() and f.suffix.lower() == ".mp4" and f.name not in excluded_files
         ],
         key=lambda p: p.name.lower()
     )
