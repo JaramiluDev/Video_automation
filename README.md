@@ -27,3 +27,45 @@ sudo pacman -S --needed python python-pip python-virtualenv ffmpeg git
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+### Generación Base Visual (Zoom y Concatenación)
+Para generar el video base con los efectos Ken Burns y unir todos los clips de una escena, ejecuta el orquestador apuntando a la carpeta del guion:
+
+```bash
+docker compose run --rm video-app python scripts/build_zoomed_video.py assets/source_scripts/GUION-02
+cat << 'EOF' >> README.md
+
+### Generación Base Visual (Zoom y Concatenación)
+Para generar el video base con los efectos Ken Burns y unir todos los clips de una escena, ejecuta el orquestador apuntando a la carpeta del guion:
+
+```bash
+docker compose run --rm video-app python scripts/build_zoomed_video.py assets/source_scripts/GUION-02
+mkdir -p .github/workflows
+cat << 'EOF' > .github/workflows/ci.yml
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest
+        run: |
+          pytest tests/
