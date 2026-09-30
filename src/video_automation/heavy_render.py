@@ -9,7 +9,7 @@ compositor.py (audio real + subtítulos quemados + export) para el resultado.
 
 import tempfile
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from moviepy import VideoFileClip
 
@@ -17,86 +17,83 @@ from .models import ScriptDefinition, Scene, OutputSettings
 from .compositor import build_image_clip, compose_clips
 
 
-def render_manim_scene(scene: Scene, resolution: tuple = (1920, 1080), fps: int = 30):
+def _formula_card_class(scene: Scene):
     """
-    Renderiza una escena con Manim y devuelve un VideoFileClip listo para
-    concatenarse con el resto de la línea de tiempo.
-
-    - Si scene.formula está definido, intenta usar MathTex (requiere LaTeX
-      instalado; ver Dockerfile). Si LaTeX no está disponible en el entorno
-      (ej. desarrollando fuera de Docker), hace fallback automático a Text
-      plano para no romper el render.
-    - scene.text_on_screen, si existe, se muestra como título arriba.
+    Escena genérica (título + fórmula LaTeX o narración) para guiones que solo
+    traen `formula`. Ahora hereda de TimedScene, así que también dura
+    EXACTAMENTE scene.duration (antes duraba duration + 0.5 s).
     """
-    import numpy as np
-    from manim import (
-        Scene as ManimScene, Text, MathTex, Write, FadeOut, VGroup, tempconfig, UP,
-    )
+    from manim import Text, Write, FadeOut, VGroup, UP
+    from .manim_timing import TimedScene, tex
 
-    render_dir = tempfile.mkdtemp(prefix="manim_render_")
-
-    class FormulaScene(ManimScene):
-        def construct(self):
+    class FormulaCard(TimedScene):
+        def timeline(self):
             mobjects = []
-
             if scene.text_on_screen:
-                title = Text(scene.text_on_screen, font_size=36)
-                title.to_edge(UP)
-                mobjects.append(title)
-
-            body = None
+                mobjects.append(Text(scene.text_on_screen, font_size=36).to_edge(UP))
             if scene.formula:
-                try:
-                    body = MathTex(scene.formula, font_size=64)
-                except Exception as e:
-                    print(f"⚠️ MathTex falló ({e}), usando texto plano como fallback.")
-                    body = Text(scene.formula, font_size=48)
+                mobjects.append(tex(scene.formula, font_size=64))
             elif scene.narration:
-                body = Text(scene.narration, font_size=40)
-
-            if body is not None:
-                mobjects.append(body)
-
+                mobjects.append(Text(scene.narration, font_size=40))
             if not mobjects:
+                self.hold(1.0)  # clip vacío pero con la duración correcta
                 return
-
             group = VGroup(*mobjects) if len(mobjects) > 1 else mobjects[0]
-
-            # Evita que texto/fórmulas largas se salgan del cuadro: si el
-            # contenido es más ancho o alto que el frame (con margen), se
-            # reescala para que siempre quepa.
+            # Evita que texto/fórmulas largas se salgan del cuadro.
             max_width = self.camera.frame_width * 0.9
             max_height = self.camera.frame_height * 0.8
             if group.width > max_width:
                 group.scale_to_fit_width(max_width)
             if group.height > max_height:
                 group.scale_to_fit_height(max_height)
+            self.beat(Write(group), t=1.0)
+            self.hold(max(scene.duration - 1.5, 0.5))
+            self.beat(FadeOut(group), t=0.5)
 
-            self.play(Write(group))
-            hold_time = max(scene.duration - 1.5, 0.5)
-            self.wait(hold_time)
-            self.play(FadeOut(group))
+    FormulaCard.__name__ = f"FormulaCard_{scene.id}".replace("-", "_")
+    return FormulaCard
 
-    # No se pasa "quality": ese preset de Manim pisa pixel_width/height/frame_rate
-    # con sus propios valores fijos (ej. 1080p60), ignorando la resolución y fps
-    # que pide OutputSettings. Configurando los tres a mano, Manim renderiza
-    # directo en el tamaño final, sin re-escalar después.
-    width, height = resolution
-    with tempconfig({
-        "media_dir": render_dir,
-        "pixel_width": width,
-        "pixel_height": height,
-        "frame_rate": fps,
-        "output_file": scene.id,
-        "disable_caching": True,
-        "progress_bar": "none",
-    }):
-        manim_scene = FormulaScene()
-        manim_scene.render()
-        video_path = manim_scene.renderer.file_writer.movie_file_path
 
-    print(f"🎬 Escena Manim '{scene.id}' renderizada en: {video_path}")
-    return VideoFileClip(str(video_path)).resized(new_size=resolution)
+def render_manim_scene(scene: Scene, resolution: tuple = (1920, 1080), fps: int = 30,
+                       clips_dir: Optional[str] = None, duration: Optional[float] = None):
+    """
+    Renderiza una escena con Manim y devuelve un VideoFileClip listo para
+    concatenarse con el resto de la línea de tiempo.
+
+    - scene.manim_scene → clase registrada en scenes_video2.py (Video 2).
+    - si no, scene.formula / scene.narration → tarjeta genérica (FormulaCard).
+
+    En ambos casos el clip sale con resolución, fps y número de cuadros
+    exactos (round(duration * fps)), codificado igual que simple_animator
+    (libx264 / yuv420p / CFR), para que compositor.py y simple_concatenator
+    no tengan que re-sincronizar nada.
+
+    duration: permite que el pipeline inyecte otro tiempo (ej. el que midió
+    el TTS). Por defecto se usa scene.duration, que es lo que da el parser.
+    """
+    from .manim_timing import render_timed_scene
+
+    target = float(duration if duration is not None else scene.duration)
+    out_dir = Path(clips_dir) if clips_dir else Path(tempfile.mkdtemp(prefix="manim_clips_"))
+    out_path = out_dir / f"{scene.id}.mp4"
+
+    what = scene.manim_scene or _formula_card_class(scene)
+    render_timed_scene(what, str(out_path), duration=target, params=scene.manim_params,
+                       resolution=tuple(resolution), fps=fps)
+
+    print(f"🎬 Escena Manim '{scene.id}' renderizada en: {out_path} ({target:.3f}s @ {fps}fps)")
+    return VideoFileClip(str(out_path))
+
+
+def validate_manim_scenes(script: ScriptDefinition) -> None:
+    """Falla ANTES de renderizar si el YAML pide una escena que no existe."""
+    from .manim_timing import get_scene_class
+
+    for scene in script.scenes:
+        if scene.render_type == "manim" and scene.manim_scene:
+            get_scene_class(scene.manim_scene)  # lanza KeyError con la lista disponible
+        if scene.duration <= 0:
+            raise ValueError(f"La escena {scene.id} tiene duration <= 0")
 
 
 def render_video(script: ScriptDefinition, output_dir: str) -> str:
@@ -108,11 +105,16 @@ def render_video(script: ScriptDefinition, output_dir: str) -> str:
     print(f"Iniciando renderizado pesado para: {script.title}")
 
     settings = script.output_settings or OutputSettings()
+    validate_manim_scenes(script)
     clips: List = []
+    # Los clips de Manim se conservan junto al render final por si se
+    # quieren revisar o unir con simple_concatenator (-c copy).
+    clips_dir = Path(output_dir) / "manim_clips"
 
     for scene in script.scenes:
         if scene.render_type == "manim":
-            clips.append(render_manim_scene(scene, resolution=settings.resolution, fps=settings.fps))
+            clips.append(render_manim_scene(scene, resolution=settings.resolution, fps=settings.fps,
+                                            clips_dir=str(clips_dir)))
         else:
             for img in scene.image_paths:
                 duration = scene.duration / len(scene.image_paths)
