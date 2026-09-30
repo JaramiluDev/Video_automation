@@ -1,5 +1,8 @@
 .venv/
 .env
+.pytest_cache/
+pytest_output.txt
+secrets/
 __pycache__/
 *.pyc
 data/audio/*
