@@ -5,13 +5,13 @@
 COMPOSE ?= docker compose
 SERVICE = video-app
 
-.PHONY: help up down test lint format build logs
+.PHONY: help up down test lint format build logs render-v2
 
 help: ## Muestra esta ayuda con todos los comandos disponibles
 	@echo "Uso: make <comando>"
 	@echo ""
 	@echo "Comandos disponibles:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
 up: ## Levanta los contenedores del proyecto en segundo plano
 	$(COMPOSE) up -d
@@ -33,3 +33,6 @@ build: ## Reconstruye las imágenes de Docker Compose sin caché
 
 logs: ## Muestra los logs en tiempo real del contenedor principal
 	$(COMPOSE) logs -f $(SERVICE)
+
+render-v2: ## Ejecuta el pipeline completo del Video 2 de principio a fin
+	$(COMPOSE) run --rm $(SERVICE) python scripts/run_video2_pipeline.py
