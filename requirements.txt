@@ -6,6 +6,7 @@ requests>=2.31.0
 moviepy>=1.0.3
 ffmpeg-python>=0.2.0
 manim>=0.18.0
+gTTS>=2.5.4
 python-docx>=1.0.1
 Pillow>=10.0.1
 google-api-python-client
