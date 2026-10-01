@@ -14,6 +14,7 @@ data/*.mp4data/*.mp4
 # Credenciales y tokens
 secret.json
 token.json
+secrets/
 # Archivos de prueba
 test.mp4
 assets/source_scripts/animated_clips/
