@@ -9,6 +9,7 @@ data/audio/*
 data/renders/*
 data/subtitles/*
 data/thumbnails/*
+data/outputs/*
 !data/**/.gitkeep
 # Google OAuth This is the secret for the people "maldosa"
 client_secrets.json

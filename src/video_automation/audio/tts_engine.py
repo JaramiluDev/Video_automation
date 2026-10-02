@@ -78,8 +78,8 @@ class AudioUnifiedEngine:
         if sheet_id:
             try:
                 return self._load_script_from_google_sheet(sheet_id, sheet_name=sheet_name, credentials_file=credentials_file, title=title)
-            except Exception:
-                pass
+            except Exception as exc:
+                print(f"⚠️ Advertencia: Google Sheets falló ({exc}). Usando fallback local.")
 
         local_path = self._resolve_script_path(script_path)
         with open(local_path, "r", encoding="utf-8") as fh:
@@ -183,8 +183,8 @@ class AudioUnifiedEngine:
                 ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 temp_mp3.unlink(missing_ok=True)
                 return output_path
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"⚠️ Advertencia: gTTS no está disponible o falló ({exc}). Usando audio sintético local.")
 
         self._write_synthetic_wav(text, output_path)
         return output_path
