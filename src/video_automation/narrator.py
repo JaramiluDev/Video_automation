@@ -28,9 +28,13 @@ class TTSNarrator:
         phrases = self._build_phrase_timestamps(clean_text)
 
         engine = self._try_native_tts(clean_text, output)
-        if engine is None or not output.exists() or output.stat().st_size == 0:
+        if not self._audio_file_is_valid(output):
+            print(f"⚠️ Advertencia: la síntesis TTS falló o no generó un archivo válido. Usando fallback local.")
             self._write_fallback_wav(clean_text, output, words)
             engine = "fallback"
+
+        if not self._audio_file_is_valid(output):
+            raise ValueError(f"El archivo de audio no se creó correctamente: {output}")
 
         duration = max((words[-1]["end"] if words else 0.0), 0.1)
         return {
@@ -41,6 +45,9 @@ class TTSNarrator:
             "duration": round(duration, 3),
         }
 
+    def _audio_file_is_valid(self, output: Path) -> bool:
+        return output.exists() and output.stat().st_size > 0
+
     def _try_native_tts(self, text: str, output_path: Path) -> str | None:
         try:
             import pyttsx3  # type: ignore
@@ -48,25 +55,25 @@ class TTSNarrator:
             engine = pyttsx3.init()
             engine.save_to_file(text, str(output_path))
             engine.runAndWait()
-            if output_path.exists() and output_path.stat().st_size > 0:
+            if self._audio_file_is_valid(output_path):
                 return "pyttsx3"
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"⚠️ Advertencia: pyttsx3 falló ({exc}). Probando fallback TTS.")
 
         try:
             from gtts import gTTS  # type: ignore
 
             tts = gTTS(text=text, lang="es", slow=False)
             tts.save(str(output_path))
-            if output_path.exists() and output_path.stat().st_size > 0:
+            if self._audio_file_is_valid(output_path):
                 return "gtts"
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"⚠️ Advertencia: gTTS falló ({exc}). Se usará voz sintética local.")
 
         return None
 
     def _write_fallback_wav(self, text: str, output_path: Path, words: list[dict[str, float | str]]) -> None:
-        sample_rate = 22050
+        sample_rate = 44100
         total_duration = max(words[-1]["end"] if words else 0.0, 0.8)
         total_samples = int(sample_rate * total_duration)
         audio = [0.0] * total_samples
