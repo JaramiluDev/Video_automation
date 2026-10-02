@@ -1,11 +1,15 @@
 .venv/
 .env
+.pytest_cache/
+pytest_output.txt
+secrets/
 __pycache__/
 *.pyc
 data/audio/*
 data/renders/*
 data/subtitles/*
 data/thumbnails/*
+data/outputs/*
 !data/**/.gitkeep
 thumbnails/*
 !thumbnails/.gitkeep
