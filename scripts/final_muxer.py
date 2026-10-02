@@ -158,22 +158,14 @@ def build_ffmpeg_command(
     audio_path: Path,
     output_path: Path,
     overwrite: bool = True,
+    reencode: bool = False,
 ) -> List[str]:
     """
     Construye la lista de argumentos para el comando FFmpeg con las especificaciones técnicas:
-    - Sin recodificación de video: -c:v copy
+    - Copia directa o re-encodificación de alta fidelidad: -c:v copy / libx264 -crf 18 -preset slow -pix_fmt yuv420p
     - Codificación de audio en AAC a 192k: -c:a aac -b:a 192k
     - Recorte al flujo más corto: -shortest
     - Mapeo explícito de flujos: -map 0:v:0 -map 1:a:0
-
-    Args:
-        video_path: Ruta al archivo de video base.
-        audio_path: Ruta al archivo de audio.
-        output_path: Ruta de destino para el video final.
-        overwrite: Si es True, pasa el argumento '-y' para sobrescribir sin confirmación.
-
-    Returns:
-        Lista de argumentos en formato CLI para subprocess.run.
     """
     cmd: List[str] = [
         "ffmpeg",
@@ -182,12 +174,24 @@ def build_ffmpeg_command(
         "-i", str(audio_path),
         "-map", "0:v:0",
         "-map", "1:a:0",
-        "-c:v", "copy",
+    ]
+
+    if reencode:
+        cmd.extend([
+            "-c:v", "libx264",
+            "-crf", "18",
+            "-preset", "slow",
+            "-pix_fmt", "yuv420p",
+        ])
+    else:
+        cmd.extend(["-c:v", "copy"])
+
+    cmd.extend([
         "-c:a", "aac",
         "-b:a", "192k",
         "-shortest",
         str(output_path),
-    ]
+    ])
     return cmd
 
 
@@ -201,6 +205,7 @@ def mux_video_audio(
     output_path: Union[str, Path],
     overwrite: bool = True,
     timeout: Optional[float] = None,
+    reencode: bool = False,
 ) -> Path:
     """
     Ejecuta el proceso de multiplexado (muxing) combinando video base y audio mediante FFmpeg.
@@ -211,16 +216,7 @@ def mux_video_audio(
         output_path: Ruta deseada para el archivo de salida final.
         overwrite: Si es True, sobrescribe el archivo de salida en caso de existir.
         timeout: Tiempo máximo en segundos para la ejecución del subproceso (opcional).
-
-    Returns:
-        Ruta resuelta (Path) del archivo resultante generado.
-
-    Raises:
-        FFmpegNotFoundError: Si FFmpeg no está disponible en el sistema.
-        MediaNotFoundError: Si alguno de los archivos de entrada no existe.
-        InvalidMediaError: Si los insumos son inválidos o colisionan con la salida.
-        FFmpegExecutionError: Si FFmpeg retorna un código de salida distinto de cero.
-        subprocess.TimeoutExpired: Si el proceso excede el tiempo límite establecido.
+        reencode: Si es True, re-encodifica con libx264 -crf 18 -preset slow -pix_fmt yuv420p.
     """
     # 1. Asegurar tipos Path
     video = Path(video_path)
@@ -241,6 +237,7 @@ def mux_video_audio(
         audio_path=audio,
         output_path=output,
         overwrite=overwrite,
+        reencode=reencode,
     )
 
     print("=" * 70)
@@ -389,6 +386,14 @@ def parse_args(args: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="Tiempo límite de ejecución en segundos antes de abortar el subproceso.",
     )
 
+    # Opción de re-encodificación de alta fidelidad
+    parser.add_argument(
+        "--reencode",
+        action="store_true",
+        default=False,
+        help="Re-encodifica el video usando libx264 -crf 18 -preset slow -pix_fmt yuv420p en vez de stream copy.",
+    )
+
     parsed = parser.parse_args(args)
     return parsed
 
@@ -430,6 +435,7 @@ def main() -> None:
             output_path=output_path,
             overwrite=args.overwrite,
             timeout=args.timeout,
+            reencode=args.reencode,
         )
         sys.exit(0)
     except MediaNotFoundError as err:

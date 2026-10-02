@@ -138,7 +138,22 @@ class YouTubeUploader:
 
         thumb_path = Path(thumbnail_path)
         if not thumb_path.is_file():
-            error_msg = f"❌ Error: No se encontró el archivo de miniatura en '{thumb_path}'."
+            candidates = [
+                Path("/app/thumbnails") / thumb_path.name,
+                Path("thumbnails") / thumb_path.name,
+                Path("/app/data/thumbnails") / thumb_path.name,
+                Path("data/thumbnails") / thumb_path.name,
+            ]
+            for c in candidates:
+                if c.is_file():
+                    thumb_path = c
+                    break
+
+        if not thumb_path.is_file():
+            error_msg = (
+                f"❌ Error: No se encontró el archivo de miniatura en '{thumb_path}' "
+                f"(verificado también en '/app/thumbnails/' y 'thumbnails/')."
+            )
             logger.error(error_msg)
             print(error_msg)
             raise FileNotFoundError(error_msg)

@@ -13,6 +13,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Añadir la raíz del proyecto al sys.path para que reconozca la carpeta 'src'
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 
 def run_step(description: str, command: list[str]) -> None:
     """Ejecuta un comando de sistema imprimiendo el progreso."""
@@ -54,6 +59,33 @@ def find_audio_file() -> Path | None:
         if audios:
             print(f"🎙️️ Audio encontrado en data/audio: {audios[0]}")
             return audios[0]
+
+    return None
+
+
+def find_thumbnail_file() -> Path | None:
+    """
+    Busca automáticamente la miniatura en 'thumbnails/' o '/app/thumbnails/'.
+    Prioriza 'miniatura_auto.jpg' y 'miniatura_final.jpg'.
+    Verifica la existencia tanto en ejecución local como dentro del contenedor Docker.
+    """
+    candidates = [
+        Path("thumbnails/miniatura_auto.jpg"),
+        Path("thumbnails/miniatura_final.jpg"),
+        Path("/app/thumbnails/miniatura_auto.jpg"),
+        Path("/app/thumbnails/miniatura_final.jpg"),
+        ROOT / "thumbnails/miniatura_auto.jpg",
+        ROOT / "thumbnails/miniatura_final.jpg",
+        Path("data/thumbnails/miniatura_auto.jpg"),
+        Path("data/thumbnails/miniatura_final.jpg"),
+        Path("/app/data/thumbnails/miniatura_auto.jpg"),
+        Path("/app/data/thumbnails/miniatura_final.jpg"),
+    ]
+
+    for candidate in candidates:
+        if candidate.is_file():
+            print(f"🖼️ Portada detectada en: {candidate}")
+            return candidate.resolve()
 
     return None
 
@@ -104,10 +136,26 @@ def main() -> None:
 
         uploader = YouTubeUploader()
         print(f"📹 Subiendo video: {output_final}")
-        uploader.upload_video(video_path=str(output_final), title="Buscando a la X - Video 2")
-        print("✅ Subida a YouTube finalizada.")
+
+        # Buscar miniatura verificando su existencia tanto en local como en Docker
+        thumb_file = find_thumbnail_file()
+        if thumb_file:
+            print(f"🖼️ Asignando portada verificada: {thumb_file}")
+        else:
+            print(
+                "⚠️ No se encontró la miniatura en 'thumbnails/' ni en '/app/thumbnails/' "
+                "(miniatura_auto.jpg o miniatura_final.jpg). Se subirá sin portada personalizada."
+            )
+
+        # Pasamos el video y la portada verificada
+        uploader.upload_video(
+            video_path=str(output_final),
+            title="Buscando a la X - Video 2 (Prueba de Portada)",
+            thumbnail_path=str(thumb_file) if thumb_file else None,
+        )
+        print("✅ Subida a YouTube y miniatura finalizadas con éxito.")
     except Exception as e:
-        print(f"⚠️ Nota sobre subida a YouTube: {e}")
+        print(f"⚠️ Error durante la subida a YouTube: {e}")
 
     print("\n🎉 PIPELINE DEL VIDEO 2 FINALIZADO CORRECTAMENTE")
 

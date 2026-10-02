@@ -24,6 +24,8 @@ TOTAL_FRAMES = DURATION_SECONDS * FPS  # 150 cuadros
 WIDTH = 1920
 HEIGHT = 1080
 VIDEO_CODEC = "libx264"
+CRF = "18"
+PRESET = "slow"
 PIXEL_FORMAT = "yuv420p"
 VALID_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 
@@ -122,6 +124,8 @@ def create_ken_burns_clip(
         "-i", str(image_path),      # Archivo de imagen de entrada
         "-vf", filter_complex,      # Cadena de filtros de escala y zoompan
         "-c:v", VIDEO_CODEC,        # Códec libx264
+        "-crf", CRF,                # Calidad visual visualmente sin pérdidas
+        "-preset", PRESET,          # Compresión lenta para máxima fidelidad
         "-pix_fmt", PIXEL_FORMAT,   # Formato de píxel yuv420p
         "-r", str(fps),             # 30 fps
         "-t", str(duration),        # Duración exacta de 5 segundos

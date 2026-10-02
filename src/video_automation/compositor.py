@@ -30,6 +30,10 @@ def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str) -> No
         "ffmpeg", "-y",
         "-i", video_path,
         "-vf", f"subtitles='{safe_subtitle_path}'",
+        "-c:v", "libx264",
+        "-crf", "18",
+        "-preset", "slow",
+        "-pix_fmt", "yuv420p",
         "-c:a", "copy",
         output_path,
     ]
@@ -79,14 +83,20 @@ def compose_clips(
     if subtitle_path and not has_subtitles:
         print(f"⚠️ Advertencia: no se encontró el .srt {subtitle_path}, se exporta sin subtítulos.")
 
+    video_export_kwargs = {
+        "fps": fps,
+        "bitrate": "12000k",
+        "ffmpeg_params": ["-crf", "18", "-preset", "slow", "-pix_fmt", "yuv420p"],
+    }
+
     if has_subtitles:
         # Primero exportamos un intermedio sin subtítulos, luego lo quemamos con FFmpeg.
         temp_path = output_path.replace(".mp4", "_temp.mp4")
-        final_video.write_videofile(temp_path, fps=fps)
+        final_video.write_videofile(temp_path, **video_export_kwargs)
         _burn_subtitles(temp_path, subtitle_path, output_path)
         os.remove(temp_path)
     else:
-        final_video.write_videofile(output_path, fps=fps)
+        final_video.write_videofile(output_path, **video_export_kwargs)
 
     print(f"✅ Video final exportado en: {output_path}")
     return output_path
