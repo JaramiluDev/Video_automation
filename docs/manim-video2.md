@@ -72,4 +72,7 @@ LaTeX). Solo se usan paquetes de la plantilla por defecto de Manim
 (`amsmath`, `amssymb`, `standalone`), cubiertos por `texlive` +
 `texlive-latex-extra` + `dvisvgm`.
 
-Previsualización rápida: añade `--preview` (854×480) y `--only <Clase>`.
+Previsualización rápida: añade `--fast` (854×480, 15 fps, 2 hilos; `--preview`
+es sinónimo) o `--low-res` (720p) y `--only <Clase>`. Ver
+[render-profiles.md](render-profiles.md). Los clips ya renderizados con la
+misma clave no se vuelven a renderizar (`--no-cache` para forzar).

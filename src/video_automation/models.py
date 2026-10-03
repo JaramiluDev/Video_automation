@@ -23,6 +23,13 @@ class Scene(BaseModel):
     manim_scene: Optional[str] = None
     # Parámetros opcionales para esa clase (ej. {"a": "2/4", "b": "4/8"}).
     manim_params: Optional[Dict[str, Any]] = None
+    # Solo para render_type="images": overlay Manim con transparencia que se
+    # incrusta SOBRE las imágenes de la escena (clase de
+    # animations.math_scenes.SCENE_REGISTRY, ej. "FormulaOverlay" o
+    # "Scene02Math"). Cada imagen es un tramo del overlay, así que el
+    # contenido cambia en el mismo cuadro que la imagen.
+    manim_overlay: Optional[str] = None
+    manim_overlay_params: Optional[Dict[str, Any]] = None
 
 class OutputSettings(BaseModel):
     resolution: tuple = (1920, 1080)
