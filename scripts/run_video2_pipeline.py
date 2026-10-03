@@ -2,11 +2,12 @@
 """
 Orquestador Maestro del Pipeline - Video 2.
 
-Ejecuta el flujo completo de automatización sin depender de YAML:
+Ejecuta el flujo completo de automatización:
 1. Limpieza de miniclips temporales en animated_clips
 2. Generación de la base visual con Zoom (Ken Burns) desde GUION-02
-3. Mezcla con el audio (si existe en data/audio/ o data/outputs/)
-4. Subida a YouTube Studio usando YouTubeUploader
+3. Generación automática de voz TTS desde el guion YAML
+4. Mezcla de Audio + Video mediante final_muxer.py
+5. Subida a YouTube Studio usando YouTubeUploader
 """
 
 import subprocess
@@ -47,39 +48,34 @@ def clean_temp_clips(clips_dir: Path) -> None:
 
 def find_audio_file() -> Path | None:
     """Busca automáticamente el archivo de audio (.mp3 o .wav)."""
-    # 1. Buscar en data/outputs/audio_tts.mp3
     default_audio = Path("data/outputs/audio_tts.mp3")
     if default_audio.exists():
         return default_audio
 
-    # 2. Buscar cualquier mp3 o wav en data/audio/
-    audio_dir = Path("data/audio")
-    if audio_dir.exists():
-        audios = list(audio_dir.glob("*.mp3")) + list(audio_dir.glob("*.wav"))
-        if audios:
-            print(f"🎙️️ Audio encontrado en data/audio: {audios[0]}")
-            return audios[0]
+    for p in [Path("data/audio"), Path("data/outputs")]:
+        if p.exists():
+            audios = list(p.glob("*.mp3")) + list(p.glob("*.wav"))
+            if audios:
+                print(f"🎙 Audio encontrado en {p}: {audios[0]}")
+                return audios[0]
 
     return None
 
 
 def find_thumbnail_file() -> Path | None:
     """
-    Busca automáticamente la miniatura en 'thumbnails/' o '/app/thumbnails/'.
-    Prioriza 'miniatura_auto.jpg' y 'miniatura_final.jpg'.
-    Verifica la existencia tanto en ejecución local como dentro del contenedor Docker.
+    Busca automáticamente la miniatura en 'thumbnails/', 'data/' o '/app/'.
     """
     candidates = [
-        Path("thumbnails/miniatura_auto.jpg"),
+        Path("data/miniatura_final.jpg"),
         Path("thumbnails/miniatura_final.jpg"),
-        Path("/app/thumbnails/miniatura_auto.jpg"),
+        Path("thumbnails/miniatura_auto.jpg"),
+        Path("/app/data/miniatura_final.jpg"),
         Path("/app/thumbnails/miniatura_final.jpg"),
-        ROOT / "thumbnails/miniatura_auto.jpg",
+        Path("/app/thumbnails/miniatura_auto.jpg"),
+        ROOT / "data/miniatura_final.jpg",
         ROOT / "thumbnails/miniatura_final.jpg",
-        Path("data/thumbnails/miniatura_auto.jpg"),
-        Path("data/thumbnails/miniatura_final.jpg"),
-        Path("/app/data/thumbnails/miniatura_auto.jpg"),
-        Path("/app/data/thumbnails/miniatura_final.jpg"),
+        ROOT / "thumbnails/miniatura_auto.jpg",
     ]
 
     for candidate in candidates:
@@ -96,19 +92,43 @@ def main() -> None:
     script_dir = Path("assets/source_scripts/GUION-02")
     animated_clips_dir = Path("animated_clips")
 
+    Path("data/outputs").mkdir(parents=True, exist_ok=True)
+    Path("data/audio").mkdir(parents=True, exist_ok=True)
+
     video_base = animated_clips_dir / "video2_base_render.mp4"
     output_final = Path("data/outputs/VIDEO2_FINAL.mp4")
 
     # Paso 0: Limpieza
     clean_temp_clips(animated_clips_dir)
 
-    # Paso 1: Base visual usando build_zoomed_video.py con las imágenes de GUION-02
+    # Paso 1: Base visual
     run_step(
         "Generación de clips y render base visual (GUION-02)",
         [sys.executable, "scripts/build_zoomed_video.py", str(script_dir)],
     )
 
-    # Paso 2: Unir Audio + Video mediante final_muxer.py
+    # Paso 1.5: TTS YAML
+    possible_yamls = [
+        script_dir / "GUION-02.yaml",
+        script_dir / "script.yaml",
+        Path("assets/source_scripts/GUION-02.yaml"),
+    ]
+    yaml_path = next((y for y in possible_yamls if y.exists()), None)
+
+    if yaml_path:
+        run_step(
+            "Generación de audio TTS desde el guion YAML",
+            [
+                sys.executable,
+                "-m",
+                "src.video_automation.narrator",
+                str(yaml_path),
+                "--output",
+                "data/outputs/audio_tts.mp3",
+            ],
+        )
+
+    # Paso 2: Unir Audio + Video
     audio_file = find_audio_file()
     if audio_file and audio_file.exists():
         run_step(
@@ -122,8 +142,7 @@ def main() -> None:
             ],
         )
     else:
-        print("\n⚠️  No se encontró archivo de audio (.mp3 o .wav) en 'data/audio/' ni 'data/outputs/audio_tts.mp3'.")
-        print("📌 Si ya tienes el audio grabado/generado, mételo en la carpeta 'data/audio/'.")
+        print("\n⚠️ No se encontró archivo de audio. Se usará el render base.")
         output_final = video_base
 
     # Paso 3: Subida a YouTube Studio
@@ -137,20 +156,14 @@ def main() -> None:
         uploader = YouTubeUploader()
         print(f"📹 Subiendo video: {output_final}")
 
-        # Buscar miniatura verificando su existencia tanto en local como en Docker
         thumb_file = find_thumbnail_file()
         if thumb_file:
             print(f"🖼️ Asignando portada verificada: {thumb_file}")
-        else:
-            print(
-                "⚠️ No se encontró la miniatura en 'thumbnails/' ni en '/app/thumbnails/' "
-                "(miniatura_auto.jpg o miniatura_final.jpg). Se subirá sin portada personalizada."
-            )
 
-        # Pasamos el video y la portada verificada
+        # Titulo ti Video 2
         uploader.upload_video(
             video_path=str(output_final),
-            title="Buscando a la X - Video 2 (Prueba de Portada)",
+            title="Buscando a la X - Episodio 2",
             thumbnail_path=str(thumb_file) if thumb_file else None,
         )
         print("✅ Subida a YouTube y miniatura finalizadas con éxito.")
