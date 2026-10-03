@@ -12,7 +12,9 @@ algo no cumple, así sirve como prueba de fuego dentro de Docker.
 Ejemplos:
   python scripts/render_video2_scenes.py examples/video2_manim.yaml
   python scripts/render_video2_scenes.py examples/video2_manim.yaml --only V2E02_ProductosCruzados
-  python scripts/render_video2_scenes.py examples/video2_manim.yaml --preview   # 854x480, rápido
+  python scripts/render_video2_scenes.py examples/video2_manim.yaml --fast      # 480p/15fps, no satura el equipo
+  python scripts/render_video2_scenes.py examples/video2_manim.yaml --low-res   # 720p/30fps
+  python scripts/render_video2_scenes.py examples/video2_manim.yaml --production
   python scripts/render_video2_scenes.py --fps 60 --all                         # todas con duración por defecto
   python scripts/render_video2_scenes.py --check-latex                          # solo pre-vuelo de LaTeX
 """
@@ -28,6 +30,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.video_automation.manim_timing import check_latex, probe_video, render_timed_scene, strict_latex  # noqa: E402
 from src.video_automation.scenes_video2 import SCENE_REGISTRY  # noqa: E402
+from src.video_automation.render_profiles import add_quality_arguments, profile_from_args  # noqa: E402
 
 DEFAULT_OUT = PROJECT_ROOT / "data" / "renders" / "video2_manim"
 
@@ -49,11 +52,15 @@ def main() -> int:
     ap.add_argument("script", nargs="?", help="YAML del guion (escenas render_type: manim)")
     ap.add_argument("--all", action="store_true", help="Renderiza todas las clases registradas con su duración por defecto")
     ap.add_argument("--only", nargs="*", help="Nombres de clase a renderizar (filtra)")
-    ap.add_argument("-o", "--output-dir", default=str(DEFAULT_OUT))
-    ap.add_argument("--fps", type=int, help="Sobrescribe fps (30 o 60)")
-    ap.add_argument("--preview", action="store_true", help="854x480 para revisar rápido")
+    ap.add_argument("-o", "--output-dir", default=None,
+                    help=f"Carpeta de salida (por defecto {DEFAULT_OUT.relative_to(PROJECT_ROOT)}"
+                         "[_fast|_lowres] según el perfil)")
+    ap.add_argument("--fps", type=int, help="Sobrescribe fps base (30 o 60)")
     ap.add_argument("--check-latex", action="store_true", help="Solo verifica que LaTeX compile")
+    ap.add_argument("--no-cache", action="store_true", help="Re-renderiza aunque el clip esté en caché")
+    add_quality_arguments(ap, preview_alias=True)
     args = ap.parse_args()
+    profile = profile_from_args(args)
 
     ok, msg = check_latex()
     print(("✅ " if ok else "❌ ") + msg)
@@ -73,17 +80,19 @@ def main() -> int:
         jobs = [j for j in jobs if j[1] in args.only or j[0] in args.only]
     if args.fps:
         fps = args.fps
-    if args.preview:
-        res = (854, 480)
+    res, fps = profile.resolve(res, fps)
+    profile.apply_process_limits()
+    print(f"⚙️  {profile.summary(res, fps)}")
 
-    out_dir = Path(args.output_dir)
+    out_dir = Path(args.output_dir) if args.output_dir else profile.tag_dir(DEFAULT_OUT)
     out_dir.mkdir(parents=True, exist_ok=True)
     rows, failed = [], 0
     for scene_id, cls_name, duration, params in jobs:
         t0 = time.time()
         out = out_dir / f"{scene_id}.mp4"
         try:
-            render_timed_scene(cls_name, str(out), duration=duration, params=params, resolution=res, fps=fps)
+            render_timed_scene(cls_name, str(out), duration=duration, params=params, resolution=res, fps=fps,
+                               profile=profile, use_cache=not args.no_cache)
             info = probe_video(str(out))
             expected = int(round(duration * fps))
             good = (info["width"], info["height"]) == res and info["frames"] == expected \

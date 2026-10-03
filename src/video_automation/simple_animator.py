@@ -83,7 +83,8 @@ def create_ken_burns_clip(
     duration: int = DURATION_SECONDS,
     fps: int = FPS,
     width: int = WIDTH,
-    height: int = HEIGHT
+    height: int = HEIGHT,
+    encode_args: Optional[List[str]] = None,
 ) -> bool:
     """
     Ejecuta FFmpeg mediante subprocess.run para transformar una imagen estática
@@ -91,6 +92,10 @@ def create_ken_burns_clip(
     
     - Escenas pares (is_even_scene = True): Zoom In continuo hacia el centro (1.0 -> 1.25).
     - Escenas impares (is_even_scene = False): Zoom Out continuo desde el centro (1.25 -> 1.0).
+
+    encode_args: argumentos extra de libx264 (preset/crf/hilos). Los da el
+    perfil de calidad (render_profiles.py, --fast/--low-res/--production);
+    si es None se usan los valores por defecto de FFmpeg, como antes.
     """
     total_frames = duration * fps
     # Incremento/decremento por frame para cubrir de 1.0 a 1.25 en total_frames
@@ -123,6 +128,7 @@ def create_ken_burns_clip(
         "-vf", filter_complex,      # Cadena de filtros de escala y zoompan
         "-c:v", VIDEO_CODEC,        # Códec libx264
         "-pix_fmt", PIXEL_FORMAT,   # Formato de píxel yuv420p
+        *(encode_args or []),       # Perfil de calidad: -preset/-crf/-threads
         "-r", str(fps),             # 30 fps
         "-t", str(duration),        # Duración exacta de 5 segundos
         str(output_path)

@@ -7,6 +7,15 @@ Automated Python pipeline to generate math videos for YouTube from YAML scripts 
 3. Assembles the final video using `moviepy` and `ffmpeg`.
 4. *(Upcoming)* TTS generation, subtitles creation, and automatic YouTube upload.
 
+## Render quality (fast / low-res / production)
+All render commands accept `--fast` (480p, 15 fps, 2 threads, low priority),
+`--low-res` (720p) or `--production` (script resolution, default). You can set
+a default per machine with `VA_QUALITY=fast`. Details and benchmarks:
+[docs/render-profiles.md](docs/render-profiles.md).
+
+    python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --fast
+    python -m src.video_automation.cli profiles
+
 ## Installations
 
 ### Windows

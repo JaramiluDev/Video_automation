@@ -31,7 +31,11 @@ from typing import Dict, List, Optional, Tuple, Type
 
 from manim import tempconfig
 
-from ..manim_timing import DEFAULT_FPS, DEFAULT_RESOLUTION, VALID_FPS, normalize_clip, probe_video
+from ..manim_timing import (
+    DEFAULT_FPS, DEFAULT_RESOLUTION, VALID_FPS, cached_clip_is_valid, clip_cache_key, manim_config,
+    normalize_clip, probe_video, store_cache_key,
+)
+from ..render_profiles import RenderProfile, default_profile
 from .base import OverlayScene
 
 log = logging.getLogger(__name__)
@@ -96,27 +100,43 @@ def _run_ffmpeg(cmd: List[str]) -> subprocess.CompletedProcess:
     return res
 
 
-def normalize_alpha_clip(src: str, dst: str, fps: int, resolution: Tuple[int, int], frames: int) -> str:
-    """Re-encoda conservando alfa, con cuadros exactos y fps constante."""
+def normalize_alpha_clip(src: str, dst: str, fps: int, resolution: Tuple[int, int], frames: int,
+                         profile: Optional[RenderProfile] = None) -> str:
+    """
+    Re-encoda conservando alfa, con cuadros exactos y fps constante.
+    El perfil decide los hilos y el orden de códecs .mov (producción: ProRes
+    4444; fast/low-res: qtrle, que codifica mucho más rápido).
+    """
+    profile = profile or default_profile()
     ext = Path(dst).suffix.lower()
     base = ["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-vf", _alpha_filter(fps, resolution),
-            "-frames:v", str(frames), "-r", str(fps), "-fps_mode", "cfr", "-an"]
+            "-frames:v", str(frames), "-r", str(fps), "-fps_mode", "cfr", "-an",
+            *profile.ffmpeg_thread_args()]
     if ext == ".webm":
-        res = _run_ffmpeg(base + WEBM_ALPHA_ARGS + [str(dst)])
+        webm = list(WEBM_ALPHA_ARGS)
+        if not profile.is_production:
+            # deadline good + cpu-used 5: VP9 bastante más rápido. (realtime
+            # es aún más rápido pero ensucia el alfa del fondo: queda en 1, no en 0.)
+            webm += ["-deadline", "good", "-cpu-used", "5"]
+        res = _run_ffmpeg(base + webm + [str(dst)])
         if res.returncode != 0:
             raise RuntimeError(f"ffmpeg no pudo exportar {dst} (VP9 con alfa):\n{res.stderr}")
         return str(dst)
 
     available = _encoders()
     errors = []
-    for name, args, _ in MOV_ALPHA_CODECS:
+    by_name = {c[0]: c for c in MOV_ALPHA_CODECS}
+    ordered = [by_name[n] for n in profile.alpha_codecs if n in by_name]
+    ordered += [c for c in MOV_ALPHA_CODECS if c not in ordered]
+    preferred = ordered[0][0]
+    for name, args, _ in ordered:
         if f" {name} " not in available:
             errors.append(f"{name}: encoder no disponible")
             continue
         res = _run_ffmpeg(base + args + [str(dst)])
         if res.returncode == 0:
-            if name != "prores_ks":
-                log.warning("prores_ks no disponible; %s exportado con %s.", dst, name)
+            if name != preferred:
+                log.warning("%s no disponible; %s exportado con %s.", preferred, dst, name)
             return str(dst)
         errors.append(f"{name}: {res.stderr.strip()[-300:]}")
     raise RuntimeError(f"ffmpeg no pudo exportar {dst} con alfa:\n" + "\n".join(errors))
@@ -163,34 +183,38 @@ def render_overlay(
     resolution: Tuple[int, int] = DEFAULT_RESOLUTION,
     fps: int = DEFAULT_FPS,
     verify: bool = True,
+    profile: Optional[RenderProfile] = None,
+    use_cache: bool = False,
 ) -> Dict:
     """
     Renderiza una escena de animations/ a `output_path`.
 
     La extensión decide el formato (.mp4 opaco, .mov/.webm con alfa).
-    Devuelve el resultado de ffprobe de la salida (dict).
+    resolution/fps son los finales (ya escalados por el perfil); el perfil
+    decide códec/hilos. Con use_cache=True no re-renderiza si la clave
+    (<clip>.key) coincide. Devuelve el resultado de ffprobe de la salida (dict).
     """
-    if fps not in VALID_FPS:
+    profile = profile or default_profile()
+    if fps not in VALID_FPS and profile.is_production:
         log.warning("fps=%s no es 30 ni 60; los clips de simple_animator.py van a 30.", fps)
     alpha = wants_alpha(output_path)
     scene_cls = get_overlay_scene(scene_name) if isinstance(scene_name, str) else scene_name
     name = scene_cls.__name__
     duration = float(duration or scene_cls.DEFAULT_DURATION)
     frames = int(round(duration * fps))
-    width, height = resolution
+    resolution = (int(resolution[0]), int(resolution[1]))
+
+    key = None
+    if use_cache:
+        key = clip_cache_key(scene_cls, duration, params, resolution, fps, profile,
+                             {"alpha": alpha, "ext": Path(output_path).suffix.lower()})
+        if cached_clip_is_valid(output_path, key):
+            log.info("%s: overlay en caché, no se re-renderiza (%s)", name, output_path)
+            return probe_overlay(output_path)
 
     work = tempfile.mkdtemp(prefix=f"manim_{name}_")
     try:
-        cfg = {
-            "media_dir": work,
-            "pixel_width": width,
-            "pixel_height": height,
-            "frame_rate": fps,
-            "output_file": name,
-            "disable_caching": True,
-            "progress_bar": "none",
-            "verbosity": "WARNING",
-        }
+        cfg = manim_config(work, resolution, fps, name)
         if alpha:
             # background_opacity < 1 → Manim escribe .mov qtrle/argb sin fondo.
             cfg.update({"background_opacity": 0.0, "movie_file_extension": ".mov"})
@@ -206,9 +230,9 @@ def render_overlay(
 
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         if alpha:
-            normalize_alpha_clip(raw, output_path, fps, resolution, frames)
+            normalize_alpha_clip(raw, output_path, fps, resolution, frames, profile=profile)
         else:
-            normalize_clip(raw, output_path, fps, resolution, frames)
+            normalize_clip(raw, output_path, fps, resolution, frames, profile=profile)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
@@ -230,4 +254,6 @@ def render_overlay(
             raise RuntimeError(f"{name}: salida fuera de especificación: {', '.join(problems)}")
         log.info("%s OK: %dx%d @%sfps, %d cuadros, alfa=%s → %s", name, info["width"],
                  info["height"], fps, info["frames"], info["has_alpha"], output_path)
+    if key:
+        store_cache_key(output_path, key)
     return info

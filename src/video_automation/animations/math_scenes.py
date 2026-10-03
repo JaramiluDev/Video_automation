@@ -251,11 +251,111 @@ class Scene02Math(OverlayScene):
 
 
 # ---------------------------------------------------------------------------
+# Overlay genérico desde YAML (sin escribir Python)
+# ---------------------------------------------------------------------------
+class FormulaOverlay(OverlayScene):
+    """Overlay genérico: una fórmula LaTeX (y leyenda opcional) por tramo/imagen.
+
+    Pensado para que cualquier guion pida fórmulas sobre sus imágenes solo
+    desde el YAML:
+
+        - id: "ESCENA-05"
+          image_paths: [a.png, b.png]
+          duration: 10
+          manim_overlay: "FormulaOverlay"
+          manim_overlay_params:
+            titulo: "Productos cruzados"
+            formulas: ["\\frac{2}{4} = \\frac{4}{8}", "2 \\times 8 = 4 \\times 4 = 16"]
+            textos: ["Misma parte de la unidad", "Si coinciden, son equivalentes"]
+
+    heavy_render.py manda `tramos` = duración de cada imagen, así que la
+    fórmula cambia en el mismo cuadro que la imagen. Si hay más tramos que
+    fórmulas, se repite la última (sin volver a escribirla).
+    """
+
+    SEGMENTS = ()
+    DEFAULT_DURATION = 5.0
+    DEFAULT_PARAMS = {
+        "formulas": [],          # LaTeX sin $ (uno por tramo)
+        "formula": None,         # atajo: una sola fórmula para todo el overlay
+        "textos": [],            # leyenda opcional por tramo
+        "titulo": None,          # pestaña dorada del panel
+        "posicion": "abajo",     # abajo | arriba | centro
+        "tramos": None,
+    }
+
+    def _formulas(self) -> List[str]:
+        formulas = self.params.get("formulas") or []
+        if isinstance(formulas, str):
+            formulas = [formulas]
+        if not formulas and self.params.get("formula"):
+            formulas = [self.params["formula"]]
+        if not formulas:
+            raise ValueError("FormulaOverlay necesita `formula` o `formulas` en manim_overlay_params")
+        return [str(f) for f in formulas]
+
+    def default_segments(self) -> List[float]:
+        n = len(self._formulas())
+        return [self.target_duration / n] * n
+
+    def _content_for(self, i: int):
+        formulas = self._formulas()
+        textos = self.params.get("textos") or []
+        if isinstance(textos, str):
+            textos = [textos]
+        j = min(i, len(formulas) - 1)
+        texto = textos[min(i, len(textos) - 1)] if textos else None
+        return formulas[j], texto
+
+    def _build(self, formula: str, texto) -> VGroup:
+        parts = [tex(formula, font_size=60, color=CHALK)]
+        if texto:
+            parts.append(T(str(texto), 26, MUTED))
+        group = VGroup(*parts).arrange(DOWN, buff=0.22)
+        max_w, max_h = self.box.width - 0.8, self.box.height - (0.75 if self.params.get("titulo") else 0.45)
+        if group.width > max_w:
+            group.scale_to_fit_width(max_w)
+        if group.height > max_h:
+            group.scale_to_fit_height(max_h)
+        group.move_to(self.box.get_center() + (DOWN * 0.12 if self.params.get("titulo") else 0))
+        return group
+
+    def timeline(self):
+        pos = self.params["posicion"]
+        if pos not in PANEL_LAYOUTS:
+            raise ValueError(f"posicion={pos!r}; usa una de {sorted(PANEL_LAYOUTS)}")
+        w, h, cy = PANEL_LAYOUTS[pos]
+        self.box = panel(w, h).move_to(UP * cy)
+        head = tag(str(self.params["titulo"]), self.box) if self.params.get("titulo") else None
+
+        n_seg = len(self.segment_durations())
+        keys = [self._content_for(i) for i in range(n_seg)]
+        content = None
+        for i, key in enumerate(keys):
+            self.segment()
+            if i == 0:
+                intro = [FadeIn(self.box, shift=UP * 0.15)] + ([FadeIn(head)] if head else [])
+                self.beat(*intro, t=0.4)
+            if i == 0 or key != keys[i - 1]:
+                content = self._build(*key)
+                self.beat(Write(content), t=1.0)
+            self.hold(2.0)
+            last = i == n_seg - 1
+            if last:
+                outs = [FadeOut(content), FadeOut(self.box)] + ([FadeOut(head)] if head else [])
+                self.beat(*outs, t=0.4)
+            elif keys[i + 1] != key:
+                self.beat(FadeOut(content), t=0.3)
+
+
+# ---------------------------------------------------------------------------
 # Registro: --scene <nombre> en scripts/render_manim_clips.py
+#           manim_overlay: <nombre> en el YAML (heavy_render.py)
 # ---------------------------------------------------------------------------
 SCENE_REGISTRY: Dict[str, type] = {
     cls.__name__: cls
     for cls in (
         Scene02Math,
+        FormulaOverlay,
     )
 }

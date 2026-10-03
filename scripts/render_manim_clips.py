@@ -8,15 +8,20 @@ La extensión de --output decide el formato:
   .mov   CON ALFA, QuickTime ProRes 4444      ← recomendado para overlay
   .webm  CON ALFA, VP9 (yuva420p)
 
-Siempre 1920x1080 a 30 fps constantes con cuadros exactos (round(dur*fps)),
-salvo que se pida otra cosa con --fps / --preview. Al terminar verifica la
-salida con ffprobe y sale con código 1 si algo no cumple.
+Por defecto 1920x1080 a 30 fps constantes con cuadros exactos
+(round(dur*fps)). Para pruebas, los perfiles de calidad bajan el costo:
+  --fast        854x480, ≤15 fps, ultrafast, 2 hilos, prioridad baja
+  --low-res     1280x720, ≤30 fps, veryfast, mitad de núcleos, prioridad baja
+  --production  1920x1080 (default; o $VA_QUALITY)
+(--preview es sinónimo de --fast). Al terminar verifica la salida con
+ffprobe y sale con código 1 si algo no cumple.
 
 Ejemplos:
   python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.mp4
   python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.mov
   python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.mp4 --alpha
-  python scripts/render_manim_clips.py --scene Scene02Math --output prueba.mov --preview
+  python scripts/render_manim_clips.py --scene Scene02Math --output prueba.mov --fast
+  python scripts/render_manim_clips.py --scene FormulaOverlay --output f.mov --fast --param "formulas=['\\frac{1}{2}','2 \\times 8 = 16']"
   python scripts/render_manim_clips.py --scene Scene02Math --output o.mov --param orden=[img06,img04,img05]
   python scripts/render_manim_clips.py --list
 """
@@ -33,8 +38,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.video_automation.animations import SCENE_REGISTRY, render_overlay  # noqa: E402
 from src.video_automation.manim_timing import check_latex, strict_latex  # noqa: E402
-
-PREVIEW_RES = (854, 480)
+from src.video_automation.render_profiles import add_quality_arguments, profile_from_args  # noqa: E402
 
 
 def parse_param(text: str):
@@ -57,14 +61,18 @@ def main() -> int:
     ap.add_argument("--alpha", action="store_true",
                     help="Fuerza canal alfa: si --output es .mp4 se escribe un .mov ProRes 4444 al lado")
     ap.add_argument("--duration", type=float, help="Duración total en segundos (por defecto, la de la escena)")
-    ap.add_argument("--fps", type=int, default=30, choices=(30, 60), help="Cuadros por segundo (30 por defecto)")
-    ap.add_argument("--preview", action="store_true", help="854x480 para revisar rápido")
+    ap.add_argument("--fps", type=int, default=30, choices=(30, 60),
+                    help="Cuadros por segundo base (30 por defecto; --fast lo baja a 15)")
     ap.add_argument("--param", action="append", type=parse_param, default=[], metavar="CLAVE=VALOR",
                     help="Parámetro de la escena (repetible). Ej.: --param a=2/4 --param posicion=arriba")
     ap.add_argument("--list", action="store_true", help="Lista las escenas disponibles y sale")
     ap.add_argument("--no-verify", action="store_true", help="No verificar la salida con ffprobe")
+    ap.add_argument("--no-cache", action="store_true",
+                    help="Re-renderiza aunque la salida ya exista con la misma clave")
     ap.add_argument("-v", "--verbose", action="store_true")
+    add_quality_arguments(ap, preview_alias=True)
     args = ap.parse_args()
+    profile = profile_from_args(args)
 
     logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING,
                         format="%(levelname)s %(name)s: %(message)s")
@@ -72,7 +80,8 @@ def main() -> int:
     if args.list:
         for name, cls in SCENE_REGISTRY.items():
             doc = (cls.__doc__ or "").strip().splitlines()[0] if cls.__doc__ else ""
-            print(f"{name:<16} {cls.DEFAULT_DURATION:>5.1f}s  tramos={list(cls.SEGMENTS)}  {doc}")
+            tramos = list(cls.SEGMENTS) or "uno por fórmula/imagen"
+            print(f"{name:<16} {cls.DEFAULT_DURATION:>5.1f}s  tramos={tramos}  {doc}")
         return 0
     if not args.scene or not args.output:
         ap.error("--scene y --output son obligatorios (o usa --list)")
@@ -92,23 +101,26 @@ def main() -> int:
     if not ok and strict_latex():
         return 1
 
-    res = PREVIEW_RES if args.preview else (1920, 1080)
+    res, fps = profile.resolve((1920, 1080), args.fps)
+    profile.apply_process_limits()
     params = dict(args.param) or None
     cls = SCENE_REGISTRY[args.scene]
     duration = args.duration or cls.DEFAULT_DURATION
     alpha = output.suffix.lower() in (".mov", ".webm")
 
-    print(f"🎬 {args.scene}: {duration:.3f}s @ {args.fps}fps, {res[0]}x{res[1]}, "
+    print(f"⚙️  {profile.summary(res, fps)}")
+    print(f"🎬 {args.scene}: {duration:.3f}s @ {fps}fps, {res[0]}x{res[1]}, "
           f"{'con alfa' if alpha else 'opaco'} → {output}")
     t0 = time.time()
     try:
         info = render_overlay(args.scene, str(output), duration=duration, params=params,
-                              resolution=res, fps=args.fps, verify=not args.no_verify)
+                              resolution=res, fps=fps, verify=not args.no_verify,
+                              profile=profile, use_cache=not args.no_cache)
     except Exception as exc:
         print(f"❌ {exc}")
         return 1
 
-    expected = int(round(duration * args.fps))
+    expected = int(round(duration * fps))
     print(f"✅ {output}  {info['width']}x{info['height']}  {info['avg_fps']:.2f}fps  "
           f"{info['frames']}/{expected} cuadros  {info['codec']}/{info['pix_fmt']}  "
           f"alfa={'sí' if info['has_alpha'] else 'no'}  ({time.time() - t0:.1f}s)")

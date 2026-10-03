@@ -5,7 +5,7 @@ guion (los Ken Burns de `simple_animator.py` / `build_zoomed_video.py`).
 
 | Archivo | Contenido |
 |---|---|
-| `math_scenes.py` | Solo las escenas Manim + `SCENE_REGISTRY`. |
+| `math_scenes.py` | Solo las escenas Manim + `SCENE_REGISTRY` (`Scene02Math`, `FormulaOverlay`). |
 | `base.py` | `OverlayScene`: tramos alineados a los cortes de la base (5 s por imagen) y fondo transparente opcional. |
 | `export.py` | `render_overlay()`: 1080p, fps constante, cuadros exactos; `.mp4` opaco o `.mov`/`.webm` con alfa. Verificación con ffprobe. |
 | `../../../scripts/render_manim_clips.py` | CLI. |
@@ -21,8 +21,9 @@ python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_
 python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.webm
 python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.mp4 --alpha   # → escribe .mov
 
-# Revisión rápida 854x480 y opciones
-python scripts/render_manim_clips.py --scene Scene02Math --output prueba.mp4 --preview
+# Borrador sin saturar el equipo (480p, 15 fps, 2 hilos) — ver docs/render-profiles.md
+python scripts/render_manim_clips.py --scene Scene02Math --output prueba.mov --fast
+python scripts/render_manim_clips.py --scene Scene02Math --output prueba.mov --low-res
 python scripts/render_manim_clips.py --list
 ```
 
@@ -53,7 +54,50 @@ contenido cambia en el mismo cuadro que el corte de imagen de la base.
 
 Parámetros (`--param`): `a`, `b` (fracciones), `orden`, `tramos`, `posicion` (`abajo`/`arriba`/`centro`).
 
-## Incrustar sobre la base
+## Desde el YAML (pipeline completo)
+
+`heavy_render.py` ya incrusta overlays sin pasos manuales. En una escena de
+imágenes basta con `manim_overlay`:
+
+```yaml
+- id: "ESCENA-02"
+  image_paths: [img6.png, img4.png, img5.png]
+  duration: 15.0
+  manim_overlay: "Scene02Math"
+  manim_overlay_params: {orden: [img06, img04, img05]}
+```
+
+Cada imagen es un tramo del overlay (`tramos` = duración de cada imagen), así
+que el contenido cambia en el mismo cuadro que la imagen. El overlay se
+renderiza a `.mov` con alfa en `<salida>/manim_clips[_fast]/<id>_overlay.mov`
+(con caché) y se compone encima. Ejemplo completo:
+`examples/video2_overlays.yaml`.
+
+```bash
+python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --fast
+```
+
+### FormulaOverlay: fórmulas sin escribir Python
+
+Overlay genérico para cualquier guion. Parámetros: `formulas` (LaTeX, una
+por tramo; si hay más tramos que fórmulas se repite la última), `formula`
+(atajo para una sola), `textos` (leyenda opcional por tramo), `titulo`
+(pestaña dorada), `posicion` (`abajo`/`arriba`/`centro`) y `tramos`.
+
+```yaml
+manim_overlay: "FormulaOverlay"
+manim_overlay_params:
+  titulo: "Comprobación manual"
+  tramos: [4, 4]                 # dos momentos sobre una sola imagen
+  formulas:
+    - '\frac{2}{4} = \frac{4}{8}'
+    - '\frac{2}{4} \neq \frac{2}{8}'
+  textos: ["Sí son equivalentes", "No son equivalentes"]
+```
+
+En YAML usa comillas simples para el LaTeX: así `\frac` no necesita escaparse.
+
+## Incrustar sobre la base (manual, con FFmpeg)
 
 La Escena 2 empieza en el segundo 15 de `video2_base_render.mp4` (Escena 1 = 3 imágenes × 5 s):
 
