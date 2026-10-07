@@ -190,12 +190,29 @@ class YouTubeUploader:
         thumbnail_path: Union[str, Path],
         youtube_service: Optional[Resource] = None,
     ) -> Optional[Dict[str, Any]]:
+        """Intenta subir la miniatura de forma defensiva sin romper la ejecución principal."""
         if youtube_service:
             self.service = youtube_service
             self.youtube = youtube_service
+
+        path_obj = Path(thumbnail_path)
+        if not path_obj.exists():
+            print(f"⚠️ Advertencia: No existe el archivo de miniatura en '{path_obj}'")
+            return None
+
         try:
-            return self.upload_thumbnail(video_id=video_id, thumbnail_path=thumbnail_path)
-        except Exception:
+            print(f"🖼️ Intentando subir miniatura desde: {path_obj}")
+            return self.upload_thumbnail(video_id=video_id, thumbnail_path=path_obj)
+
+        except (HttpError, RuntimeError) as e:
+            print(f"\n⚠️ [AVISO API YOUTUBE]")
+            print("No se pudo subir la miniatura automáticamente.")
+            print(f"📌 Detalle: {e}")
+            print(f"👉 Solución manual: Sube '{path_obj}' en YouTube Studio.\n")
+            return None
+
+        except Exception as e:
+            print(f"⚠️ Error inesperado al procesar la miniatura: {e}")
             return None
 
     def upload_video(
@@ -277,8 +294,9 @@ class YouTubeUploader:
             logger.info("Video subido exitosamente. ID: %s", video_id)
             print(f"✅ ¡Video subido exitosamente! ID: {video_id}")
 
+            # Uso defensivo de set_thumbnail para evitar crash en cuota HTTP 403
             if video_id and thumbnail_path:
-                self.upload_thumbnail(video_id=video_id, thumbnail_path=thumbnail_path)
+                self.set_thumbnail(video_id=video_id, thumbnail_path=thumbnail_path)
 
             return response
 
