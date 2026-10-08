@@ -12,3 +12,5 @@ Pillow>=10.0.1
 google-api-python-client
 google-auth-oauthlib
 google-auth-httplib2
+edge-tts>=1.1.0
+pyttsx3>=2.90
