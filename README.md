@@ -16,6 +16,14 @@ a default per machine with `VA_QUALITY=fast`. Details and benchmarks:
     python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --fast
     python -m src.video_automation.cli profiles
 
+## Dynamic math animations (Manim)
+Parametrized Manim scenes built from a JSON/YAML file (no hardcoded content).
+Videos are written to `data/renders/manim/`. Schema and options:
+[docs/math-animator.md](docs/math-animator.md).
+
+    python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality low
+    python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality high
+
 ## Installations
 
 ### Windows
