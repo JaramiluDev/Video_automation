@@ -28,3 +28,4 @@ animated_clips/
 animated_clips_fast/
 animated_clips_lowres/
 data/.cache/
+data/output/
