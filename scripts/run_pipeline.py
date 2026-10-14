@@ -14,9 +14,10 @@ from typing import Optional
 # Asegurar que 'src' esté en el PATH para importaciones relativas
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from video_automation.narrator import generate_narration
+# from video_automation.narrator import generate_audio
 from video_automation.script_parser import parse_script
 from video_automation.youtube_uploader import YouTubeUploader
+from video_automation.narrator import generate_tts_edge, parse_yaml_text
 
 logging.basicConfig(
     level=logging.INFO,
@@ -94,32 +95,34 @@ async def run_pipeline_async(args: argparse.Namespace) -> int:
         logger.error(f"❌ Error al parsear el guion '{script_path}': {e}")
         return 1
 
-    # 2. Generación de Narración (TTS)
+   # 2. Generación de Narración (TTS)
     audio_output = output_dir / f"{script_path.stem}_audio.mp3"
     logger.info(f"🎙️ [Paso 2/4] Generando narración TTS con la voz '{args.voice}'...")
     try:
-        full_text = " ".join(
-            scene.narration for scene in parsed_script.scenes if getattr(scene, "narration", None)
-        )
-        if not full_text.strip():
+        # Extraemos el texto usando la función del narrador o pasamos la ruta del guion
+        text_content = parse_yaml_text(script_path)
+        if not text_content.strip():
             logger.warning("⚠️ No se encontró texto de narración en las escenas del guion.")
-            full_text = title
+            text_content = title
 
-        await generate_narration(text=full_text, output_path=audio_output, voice=args.voice)
+        # Llamamos a la función correcta de edge-tts que definiste en narrator.py
+        success = await generate_tts_edge(text=text_content, output_path=audio_output, voice=args.voice)
+        if not success:
+            raise RuntimeError("Falló la generación de audio con edge-tts.")
+            
         logger.info(f"✅ Audio generado en: {audio_output}")
     except Exception as e:
         logger.error(f"❌ Error en la generación de TTS: {e}")
         return 1
 
-    # 3. Muxing / Ensamble Final
+# 3. Muxing / Ensamble Final
     final_video = output_dir / f"{script_path.stem}_final.mp4"
     logger.info(f"🎞️ [Paso 3/4] Ensamblando video final en: {final_video}")
-    # Nota: Aquí se invoca el compositor o el script de muxing según la estructura del proyecto
-    # Si la fuente base ya está en data/renders o assets, la tomamos de allí.
     try:
-        # Fallback/Verificación si existe render base
-        base_video_candidate = script_path.parent / f"{script_path.stem}_base.mp4"
+        # Apuntamos directamente a la ubicación exacta del video de Manim de HG
+        base_video_candidate = script_path.parent / "manim_overlay.mp4"
         if not base_video_candidate.is_file():
+            # Fallback por si lo busca en output
             base_video_candidate = output_dir / f"{script_path.stem}_base.mp4"
 
         if base_video_candidate.is_file():
@@ -136,11 +139,8 @@ async def run_pipeline_async(args: argparse.Namespace) -> int:
             subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
             logger.info("✅ Ensamble con FFmpeg completado con éxito.")
         else:
-            logger.warning(
-                f"⚠️ No se encontró video base en '{base_video_candidate}'. "
-                f"Se creó el paquete con la pista de audio lista en {audio_output}."
-            )
-            final_video = audio_output
+            raise FileNotFoundError(f"No se encontró el video base en {base_video_candidate}")
+            
     except Exception as e:
         logger.error(f"❌ Error durante el ensamble del video: {e}")
         return 1
