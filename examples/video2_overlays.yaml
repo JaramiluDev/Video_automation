@@ -1,0 +1,67 @@
+# Video 2 (GUION-02) · Overlays Manim integrados en el pipeline (HG)
+#
+# Escenas de IMÁGENES con un overlay Manim transparente encima. Cada imagen es
+# un tramo del overlay: el contenido cambia en el mismo cuadro que la imagen.
+#
+#   manim_overlay:        clase de animations/math_scenes.py (ver --list)
+#   manim_overlay_params: parámetros de esa clase (sin tocar Python)
+#
+# Probar sin saturar el equipo (480p, 15 fps, 2 hilos, prioridad baja):
+#   python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --fast
+# Entrega:
+#   python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --production
+title: "Video 2 · Overlays Manim"
+output_filename: "video2_overlays.mp4"
+output_settings:
+  resolution: [1920, 1080]
+  fps: 30
+scenes:
+  # Escena 2 · imágenes 4-5-6: overlay hecho a la medida (3 tramos de 5 s).
+  # Los archivos (1)(2)(3) traen las imágenes 6, 4 y 5, por eso `orden`.
+  - id: "ESCENA-02"
+    title: "Definir el aprendizaje antes del programa"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/GUION-02/ESCENA-02/ChatGPT Image 16 sept 2026, 05_37_40 p.m. (1).png"
+      - "assets/source_scripts/GUION-02/ESCENA-02/ChatGPT Image 16 sept 2026, 05_37_40 p.m. (2).png"
+      - "assets/source_scripts/GUION-02/ESCENA-02/ChatGPT Image 16 sept 2026, 05_37_41 p.m. (3).png"
+    duration: 15.0
+    manim_overlay: "Scene02Math"
+    manim_overlay_params: {a: "2/4", b: "4/8", posicion: "abajo", orden: [img06, img04, img05]}
+
+  # Escena 9 · imágenes 25-26: solo imágenes (archivo .html y configuración de prueba).
+  - id: "ESCENA-09-A"
+    title: "Guardar y probar el juego"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/GUION-02/ESCENA-09/ChatGPT Image 16 sept 2026, 06_49_06 p.m. (1).png"
+      - "assets/source_scripts/GUION-02/ESCENA-09/ChatGPT Image 16 sept 2026, 06_49_06 p.m. (2).png"
+    duration: 10.0
+
+  # Escena 9 · imagen 27: overlay GENÉRICO de fórmulas, solo desde YAML.
+  # Con una sola imagen, `tramos` parte el overlay en dos momentos.
+  - id: "ESCENA-09-B"
+    title: "No basta con que las fichas se vean bien"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/GUION-02/ESCENA-09/ChatGPT Image 16 sept 2026, 06_49_07 p.m. (3).png"
+    duration: 8.0
+    manim_overlay: "FormulaOverlay"
+    manim_overlay_params:
+      titulo: "Comprobación manual"
+      tramos: [4, 4]
+      formulas:
+        - '\frac{2}{4} = \frac{4}{8} \quad (2 \times 8 = 4 \times 4 = 16)'
+        - '\frac{2}{4} \neq \frac{2}{8} \quad (2 \times 8 = 16 \neq 8 = 4 \times 2)'
+      textos:
+        - "Productos cruzados iguales: sí son equivalentes"
+        - "Mismo número sombreado en partes distintas: no son equivalentes"
+
+  # Escena Manim a pantalla completa (registro de scenes_video2.py).
+  - id: "ESCENA-09-IMG27"
+    title: "Mismas partes sombreadas ≠ misma fracción"
+    narration: ""
+    image_paths: []
+    duration: 11.0
+    render_type: "manim"
+    manim_scene: "V2E09_ComprobacionManual"

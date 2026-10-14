@@ -36,6 +36,9 @@ from src.video_automation.simple_animator import (
     get_image_files,
 )
 from src.video_automation.simple_concatenator import concatenate_clips
+from src.video_automation.render_profiles import (
+    RenderProfile, add_quality_arguments, get_profile, profile_from_args,
+)
 
 # Configuración por defecto
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "animated_clips"
@@ -52,6 +55,7 @@ def build_zoomed_video(
     height: int = HEIGHT,
     limit: Optional[int] = None,
     clean: bool = False,
+    profile: Optional[RenderProfile] = None,
 ) -> bool:
     """
     Orquesta la animación y concatenación secuencial de imágenes.
@@ -66,6 +70,8 @@ def build_zoomed_video(
         height: Alto en píxeles de resolución (1080p -> 1080).
         limit: Límite opcional de escenas a procesar.
         clean: Si es True, elimina clips .mp4 previos en output_dir antes de iniciar.
+        profile: Perfil de calidad (render_profiles.py). Escala width/height/fps
+            y decide preset/CRF/hilos de libx264. None → $VA_QUALITY o production.
 
     Returns:
         bool: True si el proceso completó exitosamente, False en caso contrario.
@@ -73,6 +79,10 @@ def build_zoomed_video(
     print("=" * 70)
     print("🚀 INICIANDO ORQUESTADOR DE VIDEO ZOOMED (build_zoomed_video.py)")
     print("=" * 70)
+
+    profile = profile or get_profile(None)
+    (width, height), fps = profile.resolve((width, height), fps)
+    print(f"⚙️  {profile.summary((width, height), fps)}")
 
     # 2. Validación de la carpeta de imágenes de entrada
     input_dir = input_dir.resolve()
@@ -140,6 +150,7 @@ def build_zoomed_video(
             fps=fps,
             width=width,
             height=height,
+            encode_args=profile.x264_args(),
         )
 
         if success:
@@ -222,15 +233,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-o", "--output-dir",
         type=Path,
-        default=DEFAULT_OUTPUT_DIR,
-        help="Directorio donde se guardarán los miniclips animados ('animated_clips/').",
+        default=None,
+        help="Directorio de los miniclips (por defecto 'animated_clips/', o "
+             "'animated_clips_fast/' / '_lowres/' según el perfil, para no mezclar resoluciones).",
     )
     parser.add_argument(
         "-f", "--final-name",
         dest="output_video_name",
         type=str,
-        default=DEFAULT_RENDER_NAME,
-        help="Nombre del video final concatenado.",
+        default=None,
+        help=f"Nombre del video final (por defecto '{DEFAULT_RENDER_NAME}', con sufijo _fast/_lowres "
+             "fuera de producción).",
     )
     parser.add_argument(
         "-l", "--limit",
@@ -255,6 +268,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Limpia miniclips .mp4 previos en la carpeta de salida antes de procesar.",
     )
+    add_quality_arguments(parser)
     return parser.parse_args()
 
 
@@ -271,14 +285,17 @@ def main() -> None:
         print("  python scripts/build_zoomed_video.py assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X --limit 2\n")
         sys.exit(1)
 
+    profile = profile_from_args(args)
+    profile.apply_process_limits()
     success = build_zoomed_video(
         input_dir=input_path,
-        output_dir=args.output_dir,
-        output_video_name=args.output_video_name,
+        output_dir=args.output_dir or profile.tag_dir(DEFAULT_OUTPUT_DIR),
+        output_video_name=args.output_video_name or profile.tag_path(DEFAULT_RENDER_NAME).name,
         duration=args.duration,
         fps=args.fps,
         limit=args.limit,
         clean=args.clean,
+        profile=profile,
     )
 
     sys.exit(0 if success else 1)

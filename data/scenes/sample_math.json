@@ -1,0 +1,20 @@
+{
+  "name": "sample_math",
+  "title": "Deducción de la fórmula general",
+  "description": "Escena de ejemplo para math_animator.py: completar el cuadrado paso a paso.",
+  "duration": 2.5,
+  "animation_time": 1.2,
+  "latex_expressions": [
+    { "tex": "ax^2 + bx + c = 0", "animation": "write" },
+    { "tex": "x^2 + \\frac{b}{a}x = -\\frac{c}{a}", "animation": "transform" },
+    { "tex": "\\left(x + \\frac{b}{2a}\\right)^2 = \\frac{b^2 - 4ac}{4a^2}", "animation": "transform", "duration": 3.0 },
+    { "tex": "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}", "animation": "fadein", "duration": 3.5, "color": "#F4C95D" }
+  ],
+  "text_labels": [
+    { "text": "La fórmula general", "position": "UP", "step": 0 },
+    { "text": "Partimos de la ecuación cuadrática", "position": "DOWN", "step": 0 },
+    { "text": "Dividimos entre a y despejamos c", "position": "DOWN", "step": 1 },
+    { "text": "Completamos el cuadrado", "position": "DOWN", "step": 2 },
+    { "text": "Despejamos x", "position": "DOWN", "step": 3 }
+  ]
+}

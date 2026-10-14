@@ -4,6 +4,8 @@ from pathlib import Path
 
 from moviepy import AudioFileClip, ImageClip, concatenate_videoclips
 
+from .render_profiles import RenderProfile, default_profile
+
 
 def build_image_clip(image_path: str, duration: float, resolution: tuple[int, int] = (1920, 1080)):
     if not os.path.exists(image_path):
@@ -13,7 +15,8 @@ def build_image_clip(image_path: str, duration: float, resolution: tuple[int, in
     return clip.resized(resolution)
 
 
-def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str) -> None:
+def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str,
+                    profile: RenderProfile = None) -> None:
     """
     Quema (hardcodea) un archivo .srt directamente sobre el video usando el
     filtro 'subtitles' de FFmpeg.
@@ -26,10 +29,14 @@ def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str) -> No
         "ffmpeg", "-y",
         "-i", video_path,
         "-vf", f"subtitles='{safe_subtitle_path}'",
+<<<<<<< HEAD
         "-c:v", "libx264",
         "-crf", "18",
         "-preset", "slow",
         "-pix_fmt", "yuv420p",
+=======
+        "-c:v", "libx264", *(profile or default_profile()).x264_args(), "-pix_fmt", "yuv420p",
+>>>>>>> origin/HG
         "-c:a", "copy",
         output_path,
     ]
@@ -46,11 +53,24 @@ def compose_clips(
     subtitle_path: str = None,
     fps: int = 30,
     resolution: tuple = (1920, 1080),
+    profile: RenderProfile = None,
 ) -> str:
     """
+<<<<<<< HEAD
     Concatena una lista de clips de MoviePy y exporta el video final,
     con audio real y subtítulos quemados si se proveen.
+=======
+    Concatena una lista de clips de MoviePy YA CONSTRUIDOS (pueden venir de
+    imágenes o de animaciones renderizadas con Manim, mezclados en cualquier
+    orden) y exporta el video final, con audio real y subtítulos quemados si
+    se proveen. Devuelve la ruta del archivo final.
+
+    `profile` (render_profiles.py) decide preset/CRF/hilos de la exportación;
+    sin perfil se usa $VA_QUALITY o "production".
+>>>>>>> origin/HG
     """
+    profile = profile or default_profile()
+    write_kwargs = profile.moviepy_write_kwargs()
     clips = [c for c in clips if c is not None]
     if not clips:
         raise ValueError("No se generaron clips válidos.")
@@ -74,11 +94,21 @@ def compose_clips(
 
     if has_subtitles:
         temp_path = output_path.replace(".mp4", "_temp.mp4")
+<<<<<<< HEAD
         final_video.write_videofile(temp_path, **video_export_kwargs)
         _burn_subtitles(temp_path, subtitle_path, output_path)
         os.remove(temp_path)
     else:
         final_video.write_videofile(output_path, **video_export_kwargs)
+=======
+        # El intermedio se re-encoda al quemar: va con el preset más rápido.
+        temp_kwargs = {**write_kwargs, "preset": "ultrafast"}
+        final_video.write_videofile(temp_path, fps=fps, **temp_kwargs)
+        _burn_subtitles(temp_path, subtitle_path, output_path, profile=profile)
+        os.remove(temp_path)
+    else:
+        final_video.write_videofile(output_path, fps=fps, **write_kwargs)
+>>>>>>> origin/HG
 
     print(f"✅ Video final exportado en: {output_path}")
     return output_path
@@ -92,6 +122,7 @@ def compose_video(
     subtitle_path: str = None,
     fps: int = 30,
     resolution: tuple = (1920, 1080),
+    profile: RenderProfile = None,
 ) -> str:
     """
     Compatibilidad hacia atrás: arma clips a partir de una lista de imágenes
@@ -101,5 +132,10 @@ def compose_video(
     return compose_clips(
         clips, output_path,
         audio_path=audio_path, subtitle_path=subtitle_path,
+<<<<<<< HEAD
         fps=fps, resolution=resolution,
     )
+=======
+        fps=fps, resolution=resolution, profile=profile,
+    )
+>>>>>>> origin/HG

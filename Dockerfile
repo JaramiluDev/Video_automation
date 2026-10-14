@@ -20,12 +20,22 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# Dentro del contenedor LaTeX es obligatorio: si MathTex falla, se truena en
+# lugar de caer silenciosamente a texto plano (ver manim_timing.tex()).
+ENV VA_STRICT_LATEX=1 \
+    PYTHONUNBUFFERED=1
+
 # Instalar requerimientos de Python primero (aprovecha el caché de Docker)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el resto del proyecto
 COPY . .
+
+# Prueba de fuego en tiempo de build: compila un MathTex real del Video 2
+# (fracciones, \times, \neq). Si falta cualquier paquete de LaTeX o dvisvgm,
+# el build falla aquí y no a media renderización.
+RUN python scripts/render_video2_scenes.py --check-latex
 
 # Por defecto, mostrar la ayuda del CLI
 CMD ["python", "-m", "src.video_automation.cli", "--help"]
