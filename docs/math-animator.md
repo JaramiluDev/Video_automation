@@ -7,14 +7,25 @@ leyendo un archivo JSON/YAML (o un `dict` con la misma estructura).
 
 ```powershell
 # Borrador (480p @ 15 fps) → data/renders/manim/sample_math_low.mp4
-python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality low
+python -m src.video_automation.math_animator --config data/scenes/sample_math.json --draft
 
 # Producción (1080p @ 60 fps) → data/renders/manim/sample_math.mp4
 python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality high
 ```
 
-`-ql` / `-qh` son equivalentes a `--quality low` / `--quality high`. También se aceptan
-alias: `borrador`, `draft`, `fast` (low) y `produccion`, `final`, `1080p` (high).
+| Bandera | Calidad | Salida |
+|---|---|---|
+| `--draft`, `--fast`, `-ql`, `--quality low` | 854×480 @ 15 fps (borrador) | `<nombre>_low.mp4` |
+| `--low-res`, `-qm`, `--quality medium` | 1280×720 @ 30 fps (revisión) | `<nombre>_720p.mp4` |
+| `--production`, `-qh`, `--quality high` | 1920×1080 @ 60 fps | `<nombre>.mp4` |
+
+Sin bandera se usa `$VA_QUALITY` (`fast` → low, `low-res` → medium, `production` → high)
+y, si no existe, low. Alias de `--quality`: `borrador`, `draft`, `fast`, `480p` (low);
+`720p`, `low-res`, `revision` (medium); `produccion`, `final`, `1080p` (high).
+
+> Ojo: en `math_animator` **low = 480p** (como `manim -ql`), mientras que en
+> `render_profiles` el alias `low` apunta a `low-res` (720p). Para no confundirte
+> usa `--draft` / `--low-res` / `--production`, que significan lo mismo en todas partes.
 `--output-dir` cambia la carpeta de salida (por defecto `data/renders/manim/`).
 
 Desde Python:

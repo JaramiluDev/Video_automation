@@ -14,6 +14,11 @@ Tipos de escena (models.Scene):
   - render_type "manim"                  → animación Manim a pantalla completa
                                            (manim_scene registrado o FormulaCard).
 
+Composición (HG, optimización): cada escena imágenes + overlay se compone
+con FFmpeg en <salida>/manim_clips/<id>_scene.mp4 (overlay intermedio en qtrle,
+sin pérdida) y los clips ya renderizados se leen de forma perezosa (un lector
+ffmpeg a la vez). Mediciones: docs/docker-recursos.md.
+
 Calidad: render_video(..., profile=...) usa render_profiles.py
 (--fast / --low-res / --production). Los clips Manim se guardan en
 <salida>/manim_clips[_fast|_lowres]/ con una clave de caché: si no cambió la
@@ -22,6 +27,7 @@ renderizar.
 """
 
 import logging
+import os
 import tempfile
 from pathlib import Path
 from typing import List, Optional, Sequence, Tuple
@@ -76,8 +82,8 @@ def render_manim_scene(scene: Scene, resolution: tuple = (1920, 1080), fps: int 
                        clips_dir: Optional[str] = None, duration: Optional[float] = None,
                        profile: Optional[RenderProfile] = None, use_cache: bool = False):
     """
-    Renderiza una escena con Manim y devuelve un VideoFileClip listo para
-    concatenarse con el resto de la línea de tiempo.
+    Renderiza una escena con Manim y devuelve un clip de MoviePy (lector
+    perezoso del .mp4) listo para concatenarse con el resto de la línea de tiempo.
 
     - scene.manim_scene → clase registrada en scenes_video2.py (Video 2).
     - si no, scene.formula / scene.narration → tarjeta genérica (FormulaCard).
@@ -108,7 +114,32 @@ def render_manim_scene(scene: Scene, resolution: tuple = (1920, 1080), fps: int 
                        use_cache=use_cache, cache_extra=extra)
 
     print(f"🎬 Escena Manim '{scene.id}' renderizada en: {out_path} ({target:.3f}s @ {fps}fps)")
-    return VideoFileClip(str(out_path))
+    return _file_clip(out_path, target, fps)
+
+
+def _file_clip(path, duration: float, fps: int):
+    """Clip de un .mp4 ya renderizado: perezoso (un lector ffmpeg a la vez) salvo VA_LAZY_CLIPS=0."""
+    if os.environ.get("VA_LAZY_CLIPS", "1").strip() not in ("0", "false", "no"):
+        from .compositor import lazy_video_clip
+
+        return lazy_video_clip(str(path), duration, fps)
+    return _exact_clip(VideoFileClip(str(path)), duration, fps)
+
+
+def _exact_clip(clip, duration: float, fps: int):
+    """
+    Fija la duración del clip a sus cuadros reales: round(duration * fps) / fps.
+
+    En borrador (--draft/--fast, 15 fps) una duración como 9.5 s no cae en la
+    rejilla de cuadros (142.5) y el clip sale con 142. El contenedor reporta
+    9.47 s y MoviePy intentaba leer el cuadro 142, que no existe ("bytes
+    wanted but 0 bytes read"). Con la duración exacta no lee de más.
+    """
+    frames = max(1, int(round(float(duration) * fps)))
+    exact = frames / float(fps)
+    if clip.duration is None or abs(clip.duration - exact) > 1e-9:
+        clip = clip.with_duration(min(exact, clip.duration or exact))
+    return clip
 
 
 def validate_manim_scenes(script: ScriptDefinition) -> None:
@@ -149,6 +180,22 @@ def overlay_params(scene: Scene, image_durations: Sequence[float]) -> dict:
     return params
 
 
+#: Códecs con alfa para overlays INTERNOS del pipeline (se componen y se descartan).
+INTERNAL_ALPHA_CODECS = ("qtrle", "png", "prores_ks")
+
+
+def internal_overlay_profile(profile: RenderProfile) -> RenderProfile:
+    """
+    Mismo perfil, pero el .mov con alfa intermedio va en QuickTime RLE (qtrle):
+    sin pérdida, y en un overlay de 15 s a 1080p tarda ~10 s y pesa ~15 MB
+    contra ~72 s y ~140 MB de ProRes 4444. ProRes sigue siendo el formato de
+    entrega de scripts/render_manim_clips.py para quien edita en Premiere/DaVinci.
+    """
+    from dataclasses import replace
+
+    return replace(profile, alpha_codecs=INTERNAL_ALPHA_CODECS)
+
+
 def render_scene_overlay(scene: Scene, base_clips: List, resolution: Tuple[int, int], fps: int,
                          clips_dir: Path, profile: Optional[RenderProfile] = None,
                          use_cache: bool = False):
@@ -156,26 +203,88 @@ def render_scene_overlay(scene: Scene, base_clips: List, resolution: Tuple[int, 
     Renderiza el overlay Manim de una escena de imágenes (.mov con alfa) y lo
     compone encima de sus imágenes. Devuelve UN clip con la duración exacta
     de la escena.
+
+    Por defecto la composición la hace FFmpeg (compositor.overlay_scene_ffmpeg)
+    y el resultado se guarda como <id>_scene.mp4 junto al overlay, con su
+    propia clave de caché. Con VA_COMPOSITOR=moviepy (o si FFmpeg falla) se
+    usa la composición anterior con MoviePy.
     """
-    from moviepy import ColorClip, CompositeVideoClip, concatenate_videoclips
     from .animations import render_overlay
 
     resolution = (int(resolution[0]), int(resolution[1]))
+    profile = profile or default_profile()
+    n_img = len(scene.image_paths)
+    image_durations = [scene.duration / n_img] * n_img if n_img else []
+
+    params = overlay_params(scene, image_durations)
+    out = Path(clips_dir) / f"{scene.id}_overlay.mov"
+    render_overlay(scene.manim_overlay, str(out), duration=scene.duration, params=params,
+                   resolution=resolution, fps=fps, profile=internal_overlay_profile(profile),
+                   use_cache=use_cache)
+    print(f"🧮 Overlay '{scene.manim_overlay}' sobre '{scene.id}': {out}")
+
+    if n_img and os.environ.get("VA_COMPOSITOR", "ffmpeg").strip().lower() != "moviepy":
+        try:
+            return _scene_clip_ffmpeg(scene, image_durations, out, resolution, fps, profile, use_cache)
+        except (RuntimeError, OSError) as exc:
+            log.warning("%s: composición con FFmpeg falló (%s); se usa MoviePy.", scene.id, exc)
+    return _scene_clip_moviepy(scene, base_clips, out, resolution, fps)
+
+
+def _scene_clip_ffmpeg(scene: Scene, image_durations: List[float], overlay: Path,
+                       resolution: Tuple[int, int], fps: int, profile: RenderProfile,
+                       use_cache: bool):
+    import hashlib
+    import json
+
+    from .compositor import overlay_scene_ffmpeg
+    from .manim_timing import cached_clip_is_valid, store_cache_key
+
+    target = overlay.with_name(f"{scene.id}_scene.mp4")
+    key = None
+    if use_cache:
+        def stamp(p: str):
+            try:
+                st = os.stat(p)
+                return [p, st.st_size, int(st.st_mtime)]
+            except OSError:
+                return [p, None, None]
+        try:
+            overlay_key = overlay.with_name(overlay.name + ".key").read_text(encoding="utf-8").strip()
+        except OSError:
+            overlay_key = None
+        payload = {"overlay": overlay_key, "images": [stamp(p) for p in scene.image_paths],
+                   "durations": image_durations, "res": list(resolution), "fps": fps,
+                   "profile": [profile.name, profile.x264_preset, profile.crf], "v": 1}
+        key = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+        if overlay_key and cached_clip_is_valid(str(target), key):
+            log.info("%s: escena compuesta en caché (%s)", scene.id, target)
+            return _file_clip(target, scene.duration, fps)
+    overlay_scene_ffmpeg(list(scene.image_paths), image_durations, str(overlay), str(target),
+                         fps=fps, resolution=resolution, profile=profile)
+    if key:
+        store_cache_key(str(target), key)
+    return _file_clip(target, scene.duration, fps)
+
+
+def _scene_clip_moviepy(scene: Scene, base_clips: List, overlay: Path,
+                        resolution: Tuple[int, int], fps: int):
+    """Composición anterior (MoviePy): más lenta y con más RAM; queda como respaldo."""
+    from moviepy import ColorClip, CompositeVideoClip, concatenate_videoclips
+
     base_clips = [c for c in base_clips if c is not None]
+    if not base_clips and scene.image_paths:      # venían sin construir (ruta FFmpeg)
+        each = scene.duration / len(scene.image_paths)
+        base_clips = [c for c in (build_image_clip(p, each, resolution) for p in scene.image_paths)
+                      if c is not None]
     if base_clips:
         base = base_clips[0] if len(base_clips) == 1 else concatenate_videoclips(base_clips, method="compose")
     else:
         log.warning("%s: sin imágenes válidas; el overlay va sobre fondo negro.", scene.id)
         base = ColorClip(size=resolution, color=(0, 0, 0), duration=scene.duration)
-
-    params = overlay_params(scene, [c.duration for c in base_clips])
-    out = Path(clips_dir) / f"{scene.id}_overlay.mov"
-    render_overlay(scene.manim_overlay, str(out), duration=scene.duration, params=params,
-                   resolution=resolution, fps=fps, profile=profile, use_cache=use_cache)
-    overlay = VideoFileClip(str(out), has_mask=True)
-    print(f"🧮 Overlay '{scene.manim_overlay}' sobre '{scene.id}': {out}")
-    return CompositeVideoClip([base, overlay.with_position((0, 0))], size=resolution) \
-        .with_duration(scene.duration)
+    clip = _exact_clip(VideoFileClip(str(overlay), has_mask=True), scene.duration, fps)
+    return CompositeVideoClip([base, clip.with_position((0, 0))], size=resolution) \
+        .with_duration(max(1, int(round(scene.duration * fps))) / float(fps))
 
 
 def resolve_output_format(script: ScriptDefinition, profile: RenderProfile,
@@ -224,9 +333,11 @@ def render_video(script: ScriptDefinition, output_dir: str,
                                             use_cache=use_cache))
             continue
         scene_clips = []
+        lazy = scene.manim_overlay and os.environ.get("VA_COMPOSITOR", "ffmpeg").lower() != "moviepy"
         for img in scene.image_paths:
             duration = scene.duration / len(scene.image_paths)
-            scene_clips.append(build_image_clip(img, duration, res))
+            # Con FFmpeg las imágenes del overlay no pasan por MoviePy (ni su RAM).
+            scene_clips.append(None if lazy else build_image_clip(img, duration, res))
         if scene.manim_overlay:
             clips.append(render_scene_overlay(scene, scene_clips, res, out_fps, clips_dir,
                                               profile=profile, use_cache=use_cache))

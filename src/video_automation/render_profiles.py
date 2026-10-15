@@ -1,5 +1,5 @@
 """
-Perfiles de calidad de render (HG): --fast / --low-res / --production.
+Perfiles de calidad de render (HG): --draft/--fast / --low-res / --production.
 
 Objetivo: probar el pipeline sin saturar el equipo y dejar la calidad final
 solo para el render de entrega. Un perfil decide:
@@ -12,14 +12,14 @@ solo para el render de entrega. Un perfil decide:
 
   Perfil       Resolución (desde 1080p)  fps   x264            Hilos        Prioridad
   -----------  ------------------------  ----  --------------  -----------  ---------
-  fast         854x480  (lado corto 480)  ≤15  ultrafast crf30  2            baja
+  fast/draft   854x480  (lado corto 480)  ≤15  ultrafast crf30  2            baja
   low-res      1280x720 (lado corto 720)  ≤30  veryfast  crf26  mitad de CPU baja
   production   la del guion (1920x1080)  guion medium   crf18  todas (auto) normal
 
 Uso en un script:
 
     from video_automation.render_profiles import add_quality_arguments, profile_from_args
-    add_quality_arguments(parser)            # agrega --fast/--low-res/--production/--quality/--threads
+    add_quality_arguments(parser)            # agrega --draft/--fast/--low-res/--production/--quality/--threads
     args = parser.parse_args()
     profile = profile_from_args(args)
     profile.apply_process_limits()           # baja prioridad si el perfil lo pide
@@ -51,8 +51,59 @@ ENV_THREADS = "VA_THREADS"
 DEFAULT_PROFILE = "production"
 
 
+def ensure_utf8_stdio() -> None:
+    """
+    En Windows, cuando la salida va a un pipe o archivo (``> log.txt``,
+    ``| Select-String``, subprocess de pytest), Python escribe en cp1252 y
+    truena con caracteres como ≤, ←, ✅ o ñ en la ayuda o en los mensajes
+    (UnicodeEncodeError: 'charmap' codec can't encode...). Las CLI del
+    proyecto llaman esto al arrancar: UTF-8 y, si algo no se puede mostrar,
+    se reemplaza en lugar de abortar el render.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        enc = (getattr(stream, "encoding", None) or "").lower().replace("-", "")
+        if enc == "utf8":
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
+
+def _cgroup_cpu_quota() -> Optional[float]:
+    """Núcleos que permite el contenedor (`cpus:` de docker-compose), o None."""
+    try:
+        v2 = Path("/sys/fs/cgroup/cpu.max")
+        if v2.is_file():
+            quota, period = v2.read_text().split()[:2]
+            return None if quota == "max" else int(quota) / int(period)
+        q = Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
+        per = Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
+        if q.is_file() and per.is_file():
+            quota = int(q.read_text())
+            return None if quota <= 0 else quota / int(per.read_text())
+    except (OSError, ValueError):
+        return None
+    return None
+
+
 def _cpu_count() -> int:
-    return max(1, os.cpu_count() or 1)
+    """
+    Núcleos REALMENTE disponibles. Dentro de Docker os.cpu_count() devuelve
+    los del host aunque el contenedor tenga `cpus: 2`; FFmpeg lanzaría un hilo
+    por núcleo del host y se estorbarían. Se respeta la afinidad (cpuset) y la
+    cuota de CPU del cgroup.
+    """
+    n = os.cpu_count() or 1
+    if hasattr(os, "sched_getaffinity"):
+        try:
+            n = min(n, len(os.sched_getaffinity(0)))
+        except OSError:
+            pass
+    quota = _cgroup_cpu_quota()
+    if quota:
+        n = min(n, max(1, int(quota + 0.5)))
+    return max(1, n)
 
 
 def _even(x: float) -> int:
@@ -105,6 +156,9 @@ class RenderProfile:
             return int(env)
         if self.threads == -1:
             return max(1, _cpu_count() // 2)
+        if self.threads == 0 and _cpu_count() < (os.cpu_count() or 1):
+            # Contenedor con límite de CPU: "automático" = los núcleos permitidos.
+            return _cpu_count()
         return self.threads
 
     def ffmpeg_thread_args(self) -> List[str]:
@@ -200,6 +254,7 @@ PROFILES: Dict[str, RenderProfile] = {
 
 ALIASES: Dict[str, str] = {
     "draft": "fast", "preview": "fast", "rapido": "fast", "rápido": "fast",
+    "borrador": "fast", "480p": "fast",
     "low": "low-res", "lowres": "low-res", "low_res": "low-res", "720p": "low-res",
     "prod": "production", "final": "production", "1080p": "production",
 }
@@ -227,13 +282,16 @@ def default_profile() -> RenderProfile:
 def add_quality_arguments(parser: argparse.ArgumentParser, preview_alias: bool = False) -> None:
     """
     Agrega al parser:
-      --fast | --low-res | --production | --quality NOMBRE   (mutuamente excluyentes)
-      --threads N                                             (sobrescribe los hilos del perfil)
+      --draft | --fast | --low-res | --production | --quality NOMBRE   (mutuamente excluyentes)
+      --threads N                                                      (sobrescribe los hilos del perfil)
+    --draft es sinónimo de --fast (borrador 480p para iterar vistas previas).
     Con preview_alias=True también acepta --preview como sinónimo de --fast
     (compatibilidad con los scripts que ya lo tenían).
     """
     group = parser.add_argument_group("calidad de render")
     mx = group.add_mutually_exclusive_group()
+    mx.add_argument("--draft", dest="quality", action="store_const", const="fast",
+                    help="Borrador para vistas previas (= --fast): 854x480, ≤15 fps.")
     mx.add_argument("--fast", dest="quality", action="store_const", const="fast",
                     help=PROFILES["fast"].description)
     mx.add_argument("--low-res", dest="quality", action="store_const", const="low-res",

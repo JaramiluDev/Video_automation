@@ -12,7 +12,7 @@ algo no cumple, así sirve como prueba de fuego dentro de Docker.
 Ejemplos:
   python scripts/render_video2_scenes.py examples/video2_manim.yaml
   python scripts/render_video2_scenes.py examples/video2_manim.yaml --only V2E02_ProductosCruzados
-  python scripts/render_video2_scenes.py examples/video2_manim.yaml --fast      # 480p/15fps, no satura el equipo
+  python scripts/render_video2_scenes.py examples/video2_manim.yaml --draft     # 480p/15fps (= --fast), vista previa en segundos
   python scripts/render_video2_scenes.py examples/video2_manim.yaml --low-res   # 720p/30fps
   python scripts/render_video2_scenes.py examples/video2_manim.yaml --production
   python scripts/render_video2_scenes.py --fps 60 --all                         # todas con duración por defecto
@@ -30,7 +30,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.video_automation.manim_timing import check_latex, probe_video, render_timed_scene, strict_latex  # noqa: E402
 from src.video_automation.scenes_video2 import SCENE_REGISTRY  # noqa: E402
-from src.video_automation.render_profiles import add_quality_arguments, profile_from_args  # noqa: E402
+from src.video_automation.render_profiles import add_quality_arguments, ensure_utf8_stdio, profile_from_args  # noqa: E402
 
 DEFAULT_OUT = PROJECT_ROOT / "data" / "renders" / "video2_manim"
 
@@ -48,6 +48,7 @@ def _jobs_from_yaml(path: str):
 
 
 def main() -> int:
+    ensure_utf8_stdio()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("script", nargs="?", help="YAML del guion (escenas render_type: manim)")
     ap.add_argument("--all", action="store_true", help="Renderiza todas las clases registradas con su duración por defecto")

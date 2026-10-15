@@ -1,76 +1,107 @@
 """
 Escenas Manim de overlay (HG) — se incrustan SOBRE la base visual del guion.
 
-Aquí viven EXCLUSIVAMENTE las clases de escena. La infraestructura de tramos
-y transparencia está en animations/base.py, la exportación en
-animations/export.py y las matemáticas puras en fracciones.py.
+Aquí viven EXCLUSIVAMENTE las clases de escena. Las piezas de dibujo están en
+animations/components.py (catálogo reutilizable), la infraestructura de tramos
+y transparencia en animations/base.py, la exportación en animations/export.py
+y las matemáticas puras en fracciones.py / ecuaciones.py.
 
-  Clase         Guion                                   Qué superpone
-  ------------  --------------------------------------  -------------------------------------------
-  Scene02Math   GUION-02 · Escena 2 · Imágenes 4-5-6    Tercio inferior con:
-                «Definir el aprendizaje antes del        - Img 4: borrador del prompt y campos del grupo
-                programa»                                - Img 5: 2/4 y 4/8 en unidades iguales = 1/2
-                                                         - Img 6: productos cruzados 2×8 = 4×4 = 16 ✓
+  Clase                  Uso                                   Qué superpone
+  ---------------------  ------------------------------------  ---------------------------------------
+  Scene02Math            GUION-02 · Escena 2 · Imágenes 4-5-6  Prompt / 2/4 = 4/8 / productos cruzados
+  FormulaOverlay         Cualquier guion (solo YAML)           Una fórmula LaTeX (+ leyenda) por tramo
+  FractionOverlay        Cualquier guion (solo YAML)           Barras de fracciones y/o productos cruzados
+  LinearEquationOverlay  Cualquier guion (solo YAML)           Despeje paso a paso de ax + b = c (+ comprobación)
+  GraphOverlay           Cualquier guion (solo YAML)           Plano cartesiano con la gráfica y sus raíces
 
 Diseño de overlay:
-  - Todo el contenido vive en un PANEL de pizarrón semitransparente en el
-    tercio inferior (posicion="abajo"), que en las ilustraciones es la mesa:
-    no tapa caras ni el pizarrón dibujado. También hay "arriba" y "centro".
-  - Cada imagen de la base dura 5 s (simple_animator.py), así que la escena
-    tiene 3 tramos de 5 s = 15 s y el contenido cambia justo en cada corte.
-  - El orden de los tramos es configurable (`orden`) por si la base se arma
-    en otro orden.
+  - Todo el contenido vive en un PANEL de pizarrón semitransparente. Las
+    franjas abajo/arriba/centro sirven para fórmulas y despejes; las columnas
+    izquierda/derecha para gráficas (ver components.PANEL_LAYOUTS).
+  - Cada imagen de la base es un tramo: heavy_render manda `tramos` = la
+    duración de cada imagen y el contenido cambia en el mismo cuadro del corte.
+  - Los overlays genéricos aceptan `icono` (ruta .svg o .png) que se coloca en
+    la esquina superior derecha del panel.
 
-Render (ver scripts/render_manim_clips.py):
-    python scripts/render_manim_clips.py --scene Scene02Math --output assets/source_scripts/GUION-02/manim_overlay.mov
+Todas se registran en SCENE_REGISTRY: `manim_overlay: <Clase>` en el YAML o
+`--scene <Clase>` en scripts/render_manim_clips.py. También sirven como escena
+completa (`render_type: manim`, fondo opaco de pizarrón).
 """
 
 from __future__ import annotations
 
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 from manim import (
     DOWN, LEFT, RIGHT, UP,
-    Arrow, Create, DashedLine, FadeIn, FadeOut, GrowArrow, Indicate, LaggedStart,
-    RoundedRectangle, TransformFromCopy, VGroup, Write,
+    Create, FadeIn, FadeOut, GrowArrow, Indicate, LaggedStart, RoundedRectangle,
+    TransformFromCopy, VGroup, Write,
 )
 
-from ..fracciones import are_equivalent, cross_products, parse_fraction, simplify
-from ..scenes_video2 import BAD, BG, CHALK, GOLD, MUTED, OK, SHADE, T, check_mark, frac, fraction_rect
+from ..ecuaciones import frac_latex, parse_linear, solve_steps
+from ..fracciones import are_equivalent, parse_fraction
 from ..manim_timing import tex
 from .base import OverlayScene
+from .components import (
+    BAD, CHALK, GOLD, MUTED, OK, PANEL_LAYOUTS, SHADE, T, asset_mobject,
+    cross_products_row, fit_in, fraction_bars_row, function_plot, panel, panel_box,
+    solution_box, steps_flow, substitution_block, tag,
+)
 
-# Geometría del cuadro de Manim a 16:9: 14.22 x 8 unidades.
-FRAME_W, FRAME_H = 14.222, 8.0
-PANEL_FILL_OPACITY = 0.9
-
-# Panel por posición: (ancho, alto, centro_y)
-PANEL_LAYOUTS: Dict[str, tuple] = {
-    "abajo": (13.0, 2.45, -FRAME_H / 2 + 0.2 + 2.45 / 2),
-    "arriba": (13.0, 2.45, FRAME_H / 2 - 0.2 - 2.45 / 2),
-    "centro": (13.0, 2.45, 0.0),
-}
+# Compatibilidad: estos nombres vivían aquí antes del catálogo.
+__all__ = ["Scene02Math", "FormulaOverlay", "FractionOverlay", "LinearEquationOverlay",
+           "GraphOverlay", "SCENE_REGISTRY", "panel", "tag", "PANEL_LAYOUTS"]
 
 
-def panel(width: float, height: float) -> RoundedRectangle:
-    """Panel de pizarrón con relleno propio (se lee sobre cualquier ilustración)."""
-    return RoundedRectangle(corner_radius=0.18, width=width, height=height,
-                            fill_color=BG, fill_opacity=PANEL_FILL_OPACITY,
-                            stroke_color=CHALK, stroke_width=3)
+def distribute(n_items: int, n_segments: int) -> List[List[int]]:
+    """
+    Reparte n_items contenidos en n_segments tramos, en orden:
+      - sobran tramos  → los últimos quedan vacíos (se mantiene lo último);
+      - faltan tramos  → el último tramo muestra todos los restantes.
+    distribute(2, 1) = [[0, 1]]; distribute(2, 3) = [[0], [1], []].
+    """
+    if n_segments < 1:
+        raise ValueError("se necesita al menos un tramo")
+    out: List[List[int]] = [[i] if i < n_items else [] for i in range(n_segments)]
+    if n_items > n_segments:
+        out[-1] = list(range(n_segments - 1, n_items))
+    return out
 
 
-def tag(text: str, anchor: RoundedRectangle) -> VGroup:
-    """Pestaña dorada pegada a la esquina superior izquierda del panel."""
-    label = T(text, 22, BG, "BOLD")
-    box = RoundedRectangle(corner_radius=0.1, width=label.width + 0.4, height=label.height + 0.22,
-                           fill_color=GOLD, fill_opacity=1, stroke_width=0)
-    label.move_to(box)
-    g = VGroup(box, label)
-    g.move_to(anchor.get_corner(UP + LEFT) + RIGHT * (g.width / 2 + 0.35))
-    return g
+class PanelOverlay(OverlayScene):
+    """Base de los overlays de panel: crea el panel, la pestaña y el ícono opcional."""
+
+    def make_panel(self, default_title: Optional[str] = None) -> Tuple[RoundedRectangle, List]:
+        """Devuelve (panel, decoraciones) — decoraciones = pestaña e ícono, si hay."""
+        self.box = panel_box(str(self.params.get("posicion", "abajo")))
+        deco: List = []
+        title = self.params.get("titulo", default_title)
+        if title:
+            self.head = tag(str(title), self.box)
+            deco.append(self.head)
+        else:
+            self.head = None
+        icon_path = self.params.get("icono")
+        if icon_path:
+            icon = asset_mobject(icon_path, height=float(self.params.get("icono_alto", 0.9)))
+            icon.move_to(self.box.get_corner(UP + RIGHT) + LEFT * (icon.width / 2 + 0.25)
+                         + DOWN * (icon.height / 2 + 0.2))
+            deco.append(icon)
+        return self.box, deco
+
+    @property
+    def is_column(self) -> bool:
+        """True en los paneles altos (izquierda/derecha): el contenido va en vertical."""
+        return self.params.get("posicion", "abajo") in ("izquierda", "derecha")
+
+    def content_shift(self):
+        return DOWN * 0.15 if self.head is not None else np.zeros(3)
 
 
+# ---------------------------------------------------------------------------
+# GUION-02 · Escena 2
+# ---------------------------------------------------------------------------
 class Scene02Math(OverlayScene):
     """Overlay del GUION-02, Escena 2 (imágenes 4, 5 y 6): 3 tramos de 5 s."""
 
@@ -87,10 +118,9 @@ class Scene02Math(OverlayScene):
     # -- Ensamble ----------------------------------------------------------
     def timeline(self):
         pos = self.params["posicion"]
-        if pos not in PANEL_LAYOUTS:
-            raise ValueError(f"posicion={pos!r}; usa una de {sorted(PANEL_LAYOUTS)}")
-        w, h, cy = PANEL_LAYOUTS[pos]
-        self.box = panel(w, h).move_to(UP * cy)
+        if pos not in ("abajo", "arriba", "centro"):
+            raise ValueError(f"posicion={pos!r}; Scene02Math usa abajo, arriba o centro")
+        self.box = panel_box(pos)
 
         segments: Dict[str, Callable] = {
             "img04": self.seg_img04_grupo,
@@ -112,12 +142,8 @@ class Scene02Math(OverlayScene):
             exits = [FadeOut(content)] + ([FadeOut(self.box)] if last else [])
             self.beat(*exits, t=0.4)
 
-    def _inner(self) -> np.ndarray:
-        return self.box.get_center()
-
     # -- Imagen 4 · ¿Para quién se diseña el material? -----------------------
     def seg_img04_grupo(self) -> VGroup:
-        c = self._inner()
         head = tag("Imagen 4 · ¿Para quién se diseña el material?", self.box)
 
         label = T("Borrador de prompt", 22, MUTED)
@@ -137,8 +163,7 @@ class Scene02Math(OverlayScene):
         warn_txt.move_to(warn[0])
 
         row = VGroup(left, warn).arrange(RIGHT, buff=0.6)
-        row.scale_to_fit_width(min(row.width, self.box.width - 0.7))
-        row.move_to(c + DOWN * 0.05)
+        fit_in(row, self.box, pad_y=0.0, shift=DOWN * 0.05)
 
         self.beat(FadeIn(head, shift=RIGHT * 0.2), FadeIn(label), t=0.4)
         self.beat(Write(l1), t=0.9)
@@ -157,101 +182,57 @@ class Scene02Math(OverlayScene):
 
     # -- Imagen 5 · Distintas representaciones, la misma fracción -------------
     def seg_img05_objetivo(self) -> VGroup:
-        c = self._inner()
         a, b = parse_fraction(self.params["a"]), parse_fraction(self.params["b"])
-        eq = are_equivalent(a, b)
         head = tag("Imagen 5 · Distintas representaciones", self.box)
-
-        # Unidades del MISMO tamaño, una sobre otra: el área sombreada se alinea.
-        ra = fraction_rect(*a, width=3.6, height=0.62)
-        rb = fraction_rect(*b, width=3.6, height=0.62)
-        bars = VGroup(ra, rb).arrange(DOWN, buff=0.28)
-        la = frac(*a, size=34).next_to(ra, LEFT, buff=0.3)
-        lb = frac(*b, size=34).next_to(rb, LEFT, buff=0.3)
-        left = VGroup(la, lb, bars)
-
-        edge_x = ra.shaded.get_right()[0]
-        guide = DashedLine([edge_x, bars.get_top()[1] + 0.15, 0], [edge_x, bars.get_bottom()[1] - 0.15, 0],
-                           color=GOLD, stroke_width=5, dash_length=0.1)
-        left.add(guide)
-
-        half = simplify(a)
-        rel = "=" if eq else r"\neq"
-        equation = tex(rf"\frac{{{a[0]}}}{{{a[1]}}} {rel} \frac{{{b[0]}}}{{{b[1]}}}"
-                       + (rf" = \frac{{{half[0]}}}{{{half[1]}}}" if eq else ""),
-                       font_size=60, color=GOLD)
-        caption = T("Distintas representaciones. La misma fracción." if eq
-                    else "Se parecen, pero no son la misma fracción.", 26, CHALK, "BOLD")
-        right = VGroup(equation, caption).arrange(DOWN, buff=0.25)
-
-        row = VGroup(left, right).arrange(RIGHT, buff=0.8)
-        row.scale_to_fit_width(min(row.width, self.box.width - 0.7))
-        if row.height > self.box.height - 0.45:
-            row.scale_to_fit_height(self.box.height - 0.45)
-        row.move_to(c + DOWN * 0.05)
-
-        ra.shaded.set_fill(opacity=0)
-        rb.shaded.set_fill(opacity=0)
-        self.beat(FadeIn(head, shift=RIGHT * 0.2), t=0.3)
-        self.beat(Create(ra.cells), Create(rb.cells), FadeIn(la), FadeIn(lb), t=0.8)
-        self.beat(LaggedStart(*[x.animate.set_fill(SHADE, 0.9) for x in ra.shaded], lag_ratio=0.3),
-                  LaggedStart(*[x.animate.set_fill(SHADE, 0.9) for x in rb.shaded], lag_ratio=0.3), t=0.9)
-        self.beat(Create(guide), t=0.5)
-        self.beat(Write(equation), t=0.9)
-        self.beat(FadeIn(caption, shift=UP * 0.1), t=0.4)
-        self.hold(0.9)
+        row = fraction_bars_row(a, b, are_equivalent(a, b))
+        fit_in(row, self.box, shift=DOWN * 0.05)
+        _animate_bars(self, row, head)
         return VGroup(head, row)
 
     # -- Imagen 6 · Las matemáticas también deben especificarse ---------------
     def seg_img06_condiciones(self) -> VGroup:
-        c = self._inner()
         a, b = parse_fraction(self.params["a"]), parse_fraction(self.params["b"])
-        left_p, right_p = cross_products(a, b)
-        eq = left_p == right_p
         head = tag("Imagen 6 · Las matemáticas también deben especificarse", self.box)
+        row = cross_products_row(a, b)
+        fit_in(row, self.box, shift=DOWN * 0.05)
+        _animate_cross_products(self, row, head)
+        return VGroup(head, row.fracs, row.prods, row.right)
 
-        fa, fb = frac(*a, size=60), frac(*b, size=60)
-        sign = tex("=" if eq else r"\neq", font_size=60, color=OK if eq else BAD)
-        fracs = VGroup(fa, sign, fb).arrange(RIGHT, buff=1.0)
 
-        ar1 = Arrow(fa.num.get_center(), fb.den.get_center(), buff=0.22, color=GOLD,
-                    stroke_width=5, max_tip_length_to_length_ratio=0.15)
-        ar2 = Arrow(fb.num.get_center(), fa.den.get_center(), buff=0.22, color=SHADE,
-                    stroke_width=5, max_tip_length_to_length_ratio=0.15)
-        sign.set_opacity(0)
+def _animate_bars(scene: OverlayScene, row: VGroup, head=None) -> None:
+    """Barras de fracción: celdas → sombreado → línea guía → igualdad → leyenda."""
+    row.ra.shaded.set_fill(opacity=0)
+    row.rb.shaded.set_fill(opacity=0)
+    if head is not None:
+        scene.beat(FadeIn(head, shift=RIGHT * 0.2), t=0.3)
+    scene.beat(Create(row.ra.cells), Create(row.rb.cells), FadeIn(row.la), FadeIn(row.lb), t=0.8)
+    scene.beat(LaggedStart(*[x.animate.set_fill(SHADE, 0.9) for x in row.ra.shaded], lag_ratio=0.3),
+               LaggedStart(*[x.animate.set_fill(SHADE, 0.9) for x in row.rb.shaded], lag_ratio=0.3),
+               t=0.9)
+    scene.beat(Create(row.guide), t=0.5)
+    scene.beat(Write(row.equation), t=0.9)
+    scene.beat(FadeIn(row.caption, shift=UP * 0.1), t=0.4)
+    scene.hold(0.9)
 
-        p1 = tex(rf"{a[0]} \times {b[1]} = {left_p}", font_size=46, color=GOLD)
-        p2 = tex(rf"{b[0]} \times {a[1]} = {right_p}", font_size=46, color=SHADE)
-        prods = VGroup(p1, p2).arrange(DOWN, buff=0.3, aligned_edge=LEFT)
 
-        rel = "=" if eq else r"\neq"
-        verdict = tex(rf"{left_p} {rel} {right_p}", font_size=56, color=OK if eq else BAD)
-        mark = check_mark(eq, 44)
-        vrow = VGroup(verdict, mark).arrange(RIGHT, buff=0.25)
-        note = T("Enteros, sin decimales", 24, MUTED)
-        right = VGroup(vrow, note).arrange(DOWN, buff=0.2)
-
-        row = VGroup(VGroup(fracs, ar1, ar2), prods, right).arrange(RIGHT, buff=0.9)
-        row.scale_to_fit_width(min(row.width, self.box.width - 0.7))
-        if row.height > self.box.height - 0.45:
-            row.scale_to_fit_height(self.box.height - 0.45)
-        row.move_to(c + DOWN * 0.05)
-
-        self.beat(FadeIn(head, shift=RIGHT * 0.2), Write(fa), Write(fb), t=0.6)
-        self.beat(GrowArrow(ar1), t=0.4)
-        self.beat(TransformFromCopy(VGroup(fa.num, fb.den), p1), t=0.7)
-        self.beat(GrowArrow(ar2), t=0.4)
-        self.beat(TransformFromCopy(VGroup(fb.num, fa.den), p2), t=0.7)
-        # Las flechas ya hicieron su trabajo: se retiran y aparece el signo entre las fracciones.
-        self.beat(Write(verdict), FadeIn(mark, scale=1.4), FadeOut(ar1), FadeOut(ar2),
-                  sign.animate.set_opacity(1), t=0.6)
-        self.beat(FadeIn(note), Indicate(vrow, color=OK if eq else BAD, scale_factor=1.08), t=0.5)
-        self.hold(0.7)
-        return VGroup(head, fracs, prods, right)
+def _animate_cross_products(scene: OverlayScene, row: VGroup, head=None) -> None:
+    """Productos cruzados: fracciones → flecha + producto (×2) → veredicto ✓/✗."""
+    intro = [Write(row.fa), Write(row.fb)] + ([FadeIn(head, shift=RIGHT * 0.2)] if head is not None else [])
+    scene.beat(*intro, t=0.6)
+    scene.beat(GrowArrow(row.ar1), t=0.4)
+    scene.beat(TransformFromCopy(VGroup(row.fa.num, row.fb.den), row.p1), t=0.7)
+    scene.beat(GrowArrow(row.ar2), t=0.4)
+    scene.beat(TransformFromCopy(VGroup(row.fb.num, row.fa.den), row.p2), t=0.7)
+    # Las flechas ya hicieron su trabajo: se retiran y aparece el signo entre las fracciones.
+    scene.beat(Write(row.verdict), FadeIn(row.mark, scale=1.4), FadeOut(row.ar1), FadeOut(row.ar2),
+               row.sign.animate.set_opacity(1), t=0.6)
+    scene.beat(FadeIn(row.note), Indicate(row.vrow, color=OK if row.equivalent else BAD,
+                                          scale_factor=1.08), t=0.5)
+    scene.hold(0.7)
 
 
 # ---------------------------------------------------------------------------
-# Overlay genérico desde YAML (sin escribir Python)
+# Overlay genérico de fórmulas (sin escribir Python)
 # ---------------------------------------------------------------------------
 class FormulaOverlay(OverlayScene):
     """Overlay genérico: una fórmula LaTeX (y leyenda opcional) por tramo/imagen.
@@ -280,7 +261,7 @@ class FormulaOverlay(OverlayScene):
         "formula": None,         # atajo: una sola fórmula para todo el overlay
         "textos": [],            # leyenda opcional por tramo
         "titulo": None,          # pestaña dorada del panel
-        "posicion": "abajo",     # abajo | arriba | centro
+        "posicion": "abajo",     # abajo | arriba | centro | izquierda | derecha
         "tramos": None,
     }
 
@@ -312,20 +293,12 @@ class FormulaOverlay(OverlayScene):
         if texto:
             parts.append(T(str(texto), 26, MUTED))
         group = VGroup(*parts).arrange(DOWN, buff=0.22)
-        max_w, max_h = self.box.width - 0.8, self.box.height - (0.75 if self.params.get("titulo") else 0.45)
-        if group.width > max_w:
-            group.scale_to_fit_width(max_w)
-        if group.height > max_h:
-            group.scale_to_fit_height(max_h)
-        group.move_to(self.box.get_center() + (DOWN * 0.12 if self.params.get("titulo") else 0))
-        return group
+        titled = bool(self.params.get("titulo"))
+        return fit_in(group, self.box, pad_x=0.8, pad_y=0.75 if titled else 0.45,
+                      shift=DOWN * 0.12 if titled else np.zeros(3))
 
     def timeline(self):
-        pos = self.params["posicion"]
-        if pos not in PANEL_LAYOUTS:
-            raise ValueError(f"posicion={pos!r}; usa una de {sorted(PANEL_LAYOUTS)}")
-        w, h, cy = PANEL_LAYOUTS[pos]
-        self.box = panel(w, h).move_to(UP * cy)
+        self.box = panel_box(self.params["posicion"])
         head = tag(str(self.params["titulo"]), self.box) if self.params.get("titulo") else None
 
         n_seg = len(self.segment_durations())
@@ -349,6 +322,266 @@ class FormulaOverlay(OverlayScene):
 
 
 # ---------------------------------------------------------------------------
+# Fracciones (barras y/o productos cruzados) desde el YAML
+# ---------------------------------------------------------------------------
+class FractionOverlay(PanelOverlay):
+    """Compara dos fracciones: barras de la misma unidad y/o productos cruzados.
+
+        manim_overlay: "FractionOverlay"
+        manim_overlay_params:
+          a: "2/4"
+          b: "4/8"
+          modo: "ambos"        # barras | productos | ambos (un tramo para cada uno)
+          titulo: "¿Son equivalentes?"
+
+    Con modo "ambos" hay dos tramos (barras, luego productos): si la escena
+    tiene dos imágenes, cada una recibe el suyo.
+    """
+
+    SEGMENTS = ()
+    DEFAULT_DURATION = 6.0
+    DEFAULT_PARAMS = {
+        "a": "2/4", "b": "4/8",
+        "modo": "ambos",          # barras | productos | ambos
+        "titulo": None,
+        "leyenda": None,          # texto bajo la igualdad en modo barras
+        "nota": "Enteros, sin decimales",
+        "posicion": "abajo",      # abajo | arriba | centro
+        "icono": None,
+        "tramos": None,
+    }
+    MODES = {"barras": ["barras"], "productos": ["productos"], "ambos": ["barras", "productos"]}
+
+    def _parts(self) -> List[str]:
+        modo = str(self.params["modo"]).lower()
+        if modo not in self.MODES:
+            raise ValueError(f"modo={modo!r}; usa {sorted(self.MODES)}")
+        return self.MODES[modo]
+
+    def default_segments(self) -> List[float]:
+        n = len(self._parts())
+        return [self.target_duration / n] * n
+
+    def timeline(self):
+        if self.is_column:
+            raise ValueError("FractionOverlay usa posicion abajo, arriba o centro")
+        a, b = parse_fraction(self.params["a"]), parse_fraction(self.params["b"])
+        box, deco = self.make_panel()
+        parts = self._parts()
+        plan = distribute(len(parts), len(self.segment_durations()))
+        pad_y = 0.75 if self.head else 0.45
+        content = None
+        for i, items in enumerate(plan):
+            self.segment()
+            if i == 0:
+                self.beat(FadeIn(box, shift=UP * 0.15), *[FadeIn(d) for d in deco], t=0.4)
+            if not items:                 # más imágenes que partes: se queda la última
+                self.hold(1.0)
+                continue
+            for k in items:
+                if content is not None:
+                    self.beat(FadeOut(content), t=0.3)
+                if parts[k] == "barras":
+                    row = fraction_bars_row(a, b, are_equivalent(a, b), caption=self.params.get("leyenda"))
+                    fit_in(row, box, pad_y=pad_y, shift=self.content_shift())
+                    _animate_bars(self, row)
+                    content = row
+                else:
+                    row = cross_products_row(a, b, note=str(self.params.get("nota") or ""))
+                    fit_in(row, box, pad_y=pad_y, shift=self.content_shift())
+                    _animate_cross_products(self, row)
+                    content = VGroup(row.fracs, row.prods, row.right)
+        self.beat(FadeOut(content), FadeOut(box), *[FadeOut(d) for d in deco], t=0.4)
+
+
+# ---------------------------------------------------------------------------
+# Ecuaciones de primer grado desde el YAML
+# ---------------------------------------------------------------------------
+class LinearEquationOverlay(PanelOverlay):
+    """Despeje paso a paso de una ecuación de primer grado (y su comprobación).
+
+        manim_overlay: "LinearEquationOverlay"
+        manim_overlay_params:
+          ecuacion: "x + 4 = 0"          # o `ecuaciones: [...]`, una por tramo/imagen
+          titulo: "Primer caso"
+          comprobar: true                 # agrega la sustitución con ✓ al final
+          posicion: "abajo"               # abajo | arriba | centro | izquierda | derecha
+
+    Los pasos salen de ecuaciones.solve_steps(): la operación que se aplica
+    a ambos lados va en rojo (x + 4 - 4 = 0 - 4) y la solución en dorado
+    dentro del recuadro «Una solución: x = -4». En las franjas los pasos van
+    en horizontal; en las columnas izquierda/derecha, en vertical.
+    """
+
+    SEGMENTS = ()
+    DEFAULT_DURATION = 8.0
+    DEFAULT_PARAMS = {
+        "ecuacion": None,
+        "ecuaciones": [],
+        "variable": "x",
+        "titulo": None,
+        "comprobar": False,
+        "mostrar_operaciones": True,   # línea intermedia x + 4 - 4 = 0 - 4
+        "explicar": True,              # texto de cada paso bajo los pasos
+        "posicion": "abajo",
+        "icono": None,
+        "tramos": None,
+    }
+
+    def _equations(self) -> List[str]:
+        eqs = self.params.get("ecuaciones") or []
+        if isinstance(eqs, str):
+            eqs = [eqs]
+        if not eqs and self.params.get("ecuacion"):
+            eqs = [self.params["ecuacion"]]
+        if not eqs:
+            raise ValueError("LinearEquationOverlay necesita `ecuacion` o `ecuaciones`")
+        return [str(e) for e in eqs]
+
+    def default_segments(self) -> List[float]:
+        n = len(self._equations())
+        return [self.target_duration / n] * n
+
+    def _build(self, text: str, box) -> VGroup:
+        eq = parse_linear(text, var=str(self.params["variable"]))
+        steps = solve_steps(eq, show_operations=bool(self.params["mostrar_operaciones"]))
+        vertical = self.is_column
+        flow = steps_flow(steps[:-1] if len(steps) > 1 else steps, direction=DOWN if vertical else RIGHT,
+                          font_size=50)
+        sol = solution_box(eq.var, frac_latex(eq.solution))
+        main = VGroup(flow, sol).arrange(DOWN if vertical else RIGHT, buff=0.5)
+        parts = [main]
+        expl = None
+        if self.params["explicar"]:
+            texts = [s.explanation for s in steps if s.kind == "operate"]
+            if texts:
+                expl = T(" · ".join(texts), 24, MUTED)
+                parts.append(expl)
+        check = None
+        if self.params["comprobar"]:
+            check = substitution_block(eq, font_size=40)
+            check_lbl = T("Comprobación", 22, MUTED)
+            check = VGroup(check_lbl, check).arrange(DOWN if vertical else RIGHT, buff=0.25)
+            parts.append(check)
+        group = VGroup(*parts).arrange(DOWN, buff=0.22)
+        fit_in(group, box, pad_x=0.6, pad_y=0.8 if self.head else 0.4, shift=self.content_shift())
+        group.flow, group.sol, group.expl, group.check, group.steps = flow, sol, expl, check, steps
+        return group
+
+    def timeline(self):
+        box, deco = self.make_panel()
+        eqs = self._equations()
+        plan = distribute(len(eqs), len(self.segment_durations()))
+        content = None
+        for i, items in enumerate(plan):
+            self.segment()
+            if i == 0:
+                self.beat(FadeIn(box, shift=UP * 0.15), *[FadeIn(d) for d in deco], t=0.4)
+            if not items:
+                self.hold(1.0)
+                continue
+            for k in items:
+                content = self._show_equation(eqs[k], box, content)
+        self.beat(FadeOut(content), FadeOut(box), *[FadeOut(d) for d in deco], t=0.4)
+
+    def _show_equation(self, text: str, box, previous) -> VGroup:
+        if previous is not None:
+            self.beat(FadeOut(previous), t=0.3)
+        content = self._build(text, box)
+        lines, arrows = content.flow.lines, content.flow.arrows
+        self.beat(Write(lines[0]), t=0.8)
+        for k, (arr, ln) in enumerate(zip(arrows, lines[1:])):
+            extra = [FadeIn(content.expl)] if (k == 0 and content.expl is not None) else []
+            self.beat(GrowArrow(arr), Write(ln), *extra, t=0.9)
+        if content.expl is not None and not len(arrows):
+            self.beat(FadeIn(content.expl), t=0.3)
+        self.beat(Create(content.sol.frame), Write(content.sol[1]), t=0.8)
+        self.hold(1.2)
+        if content.check is not None:
+            chk = content.check
+            self.beat(FadeIn(chk[0]), Write(chk[1].lines), t=0.9)
+            self.beat(FadeIn(chk[1].mark, scale=1.4), t=0.4)
+            self.hold(0.8)
+        return content
+
+
+# ---------------------------------------------------------------------------
+# Gráficas desde el YAML
+# ---------------------------------------------------------------------------
+class GraphOverlay(PanelOverlay):
+    """Plano cartesiano con la gráfica de un polinomio y sus raíces.
+
+        manim_overlay: "GraphOverlay"
+        manim_overlay_params:
+          funcion: [1, 9, 20]          # coeficientes, mayor grado primero: x² + 9x + 20
+          x_range: [-8, -1, 1]         # [min, max, paso]
+          y_range: [-2, 6, 2]
+          raices: true                 # marca las raíces reales (azul / naranja)
+          puntos: [[-4.5, -0.25]]      # puntos extra (opcional)
+          etiqueta: "y = x^2 + 9x + 20" # por defecto se arma con la función
+          posicion: "derecha"          # derecha | izquierda (columna) | centro
+          titulo: "Las soluciones son los cortes con el eje x"
+
+    Tramos: si hay dos o más, el primero dibuja ejes y curva y cada tramo
+    siguiente revela una raíz; con un solo tramo, todo ocurre en ese tramo.
+    """
+
+    SEGMENTS = ()
+    DEFAULT_DURATION = 8.0
+    DEFAULT_PARAMS = {
+        "funcion": [1, 0, 0],
+        "x_range": [-4, 4, 1],
+        "y_range": [-2, 8, 2],
+        "raices": True,
+        "puntos": [],
+        "etiqueta": None,
+        "titulo": None,
+        "posicion": "derecha",
+        "icono": None,
+        "tramos": None,
+    }
+
+    def timeline(self):
+        box, deco = self.make_panel()
+        w, h = box.width - 0.7, box.height - (1.5 if self.head else 1.1)
+        if not self.is_column:          # franja: gráfica más baja y ancha
+            w, h = min(6.5, box.width * 0.55), box.height - 0.6
+        plot = function_plot(self.params["funcion"], self.params["x_range"], self.params["y_range"],
+                             width=w, height=h, mark_roots=bool(self.params["raices"]),
+                             points=[tuple(p) for p in (self.params.get("puntos") or [])],
+                             label=self.params.get("etiqueta"))
+        fit_in(plot, box, pad_x=0.5, pad_y=0.85 if self.head else 0.35, shift=self.content_shift())
+
+        n_seg = len(self.segment_durations())
+        reveals = list(zip(plot.roots, plot.root_labels))
+        self.segment()
+        self.beat(FadeIn(box, shift=UP * 0.15), *[FadeIn(d) for d in deco], t=0.4)
+        self.beat(Create(plot.axes), t=0.9)
+        intro = [Create(plot.graph)] + ([Write(plot.label)] if plot.label is not None else [])
+        self.beat(*intro, t=1.3)
+        if n_seg == 1:
+            if reveals:
+                self.beat(*[FadeIn(d, scale=1.6) for d, _ in reveals],
+                          *[Write(l) for _, l in reveals], t=0.8)
+            if len(plot.marks):
+                self.beat(*[FadeIn(p, scale=1.6) for p in plot.marks], t=0.4)
+            self.hold(1.5)
+        else:
+            self.hold(1.0)
+            groups = [[r] for r in reveals]
+            for i in range(1, n_seg):
+                self.segment()
+                if i - 1 < len(groups):
+                    d, l = groups[i - 1][0]
+                    self.beat(FadeIn(d, scale=1.6), Write(l), t=0.7)
+                    self.beat(Indicate(d, scale_factor=1.6), t=0.5)
+                elif len(plot.marks) and i - 1 == len(groups):
+                    self.beat(*[FadeIn(p, scale=1.6) for p in plot.marks], t=0.4)
+                self.hold(1.0)
+        self.beat(FadeOut(plot), FadeOut(box), *[FadeOut(d) for d in deco], t=0.4)
+
+
+# ---------------------------------------------------------------------------
 # Registro: --scene <nombre> en scripts/render_manim_clips.py
 #           manim_overlay: <nombre> en el YAML (heavy_render.py)
 # ---------------------------------------------------------------------------
@@ -357,5 +590,8 @@ SCENE_REGISTRY: Dict[str, type] = {
     for cls in (
         Scene02Math,
         FormulaOverlay,
+        FractionOverlay,
+        LinearEquationOverlay,
+        GraphOverlay,
     )
 }

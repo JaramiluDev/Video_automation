@@ -5,7 +5,8 @@ guion (los Ken Burns de `simple_animator.py` / `build_zoomed_video.py`).
 
 | Archivo | Contenido |
 |---|---|
-| `math_scenes.py` | Solo las escenas Manim + `SCENE_REGISTRY` (`Scene02Math`, `FormulaOverlay`). |
+| `components.py` | **Catálogo de componentes reutilizables**: estilo, paneles, fracciones, ecuaciones de primer grado, gráficas y recursos SVG/PNG. Sin tiempo ni escenas. |
+| `math_scenes.py` | Solo las escenas Manim + `SCENE_REGISTRY` (`Scene02Math`, `FormulaOverlay`, `FractionOverlay`, `LinearEquationOverlay`, `GraphOverlay`). |
 | `base.py` | `OverlayScene`: tramos alineados a los cortes de la base (5 s por imagen) y fondo transparente opcional. |
 | `export.py` | `render_overlay()`: 1080p, fps constante, cuadros exactos; `.mp4` opaco o `.mov`/`.webm` con alfa. Verificación con ffprobe. |
 | `../../../scripts/render_manim_clips.py` | CLI. |
@@ -107,8 +108,45 @@ ffmpeg -i video2_base_render.mp4 -itsoffset 15 -i manim_overlay.mov \
   -c:v libx264 -r 30 -c:a copy video2_con_overlay.mp4
 ```
 
+## Catálogo de componentes (`components.py`)
+
+Piezas que devuelven un Mobject listo para animar; la lógica matemática está en
+`fracciones.py` y `ecuaciones.py` (sin Manim, probada con pytest). Las escenas
+del Video 2 (`scenes_video2.py`) y todos los overlays usan este catálogo, así
+cada episodio comparte el mismo estilo y las mismas matemáticas verificadas.
+
+| Grupo | Componentes | Qué hace |
+|---|---|---|
+| Estilo | `BG CHALK MUTED SHADE GOLD OK BAD BLUE ORANGE`, `T()`, `titulo()`, `rotulo()`, `check_mark()`, `resolve_font()` | Paleta del pizarrón; texto con la primera fuente instalada (DejaVu en Docker, Segoe UI/Arial en Windows). `BLUE`/`ORANGE` = colores del 4 y el 5 en «¡Se busca a la x!». |
+| Paneles | `PANEL_LAYOUTS`, `panel_box(pos)`, `tag()`, `fit_in()` | Franjas `abajo`/`arriba`/`centro` y columnas `izquierda`/`derecha` para gráficas. |
+| Fracciones | `frac()`, `fraction_rect()`, `fraction_circle()`, `fraction_equation()`, `fraction_bars_row()`, `cross_products_row()` | Fracción con numerador/denominador señalables, unidades de igual área, igualdad simplificada, productos cruzados con ✓/✗. |
+| Ecuaciones | `steps_flow()`, `solution_box()`, `substitution_block()` (+ `ecuaciones.parse_linear/solve_steps/check_steps`) | Despeje de `ax + b = c` con la operación de ambos lados en rojo, recuadro «Una solución», comprobación por sustitución. |
+| Gráficas | `function_plot()`, `number_line_points()` (+ `ecuaciones.real_roots/poly_latex/vertex`) | Plano cartesiano de un polinomio con raíces marcadas; recta numérica con puntos. |
+| SVG / PNG | `asset_mobject(ruta, height)` | `.svg` → `SVGMobject` (recoloreable), `.png/.jpg` → `ImageMobject` (respeta transparencia). Rutas relativas a la raíz del repo. |
+
+## Overlays genéricos (solo YAML)
+
+| Overlay | Parámetros principales | Tramos |
+|---|---|---|
+| `FormulaOverlay` | `formula`/`formulas`, `textos`, `titulo`, `posicion` | Una fórmula por imagen. |
+| `FractionOverlay` | `a`, `b`, `modo` (`barras`/`productos`/`ambos`), `leyenda`, `nota`, `titulo`, `icono` | `ambos` = barras en la 1.ª imagen, productos en la 2.ª. |
+| `LinearEquationOverlay` | `ecuacion`/`ecuaciones`, `comprobar`, `mostrar_operaciones`, `explicar`, `variable`, `titulo`, `posicion`, `icono` | Una ecuación por imagen; en `izquierda`/`derecha` los pasos van en vertical. |
+| `GraphOverlay` | `funcion` (coeficientes, mayor grado primero), `x_range`, `y_range`, `raices`, `puntos`, `etiqueta`, `posicion`, `titulo`, `icono` | 1.ª imagen: ejes y curva; cada imagen siguiente revela una raíz. |
+
+Si hay **más imágenes que contenidos**, las imágenes extra conservan el último;
+si hay **menos**, la última imagen muestra todos los restantes. `icono` acepta
+un `.svg` o `.png` que se coloca en la esquina superior derecha del panel.
+
+Ejemplo completo (Episodio 3 · «¡Se busca a la x!»): `examples/episodio3_overlays.yaml`.
+
+```bash
+python -m src.video_automation.cli render --script examples/episodio3_overlays.yaml --no-audio --draft
+python scripts/render_manim_clips.py --scene LinearEquationOverlay --output e.mov --draft --param "ecuacion=x + 4 = 0" --param comprobar=true
+python scripts/render_manim_clips.py --scene GraphOverlay --output g.mov --draft --param "funcion=[1,9,20]" --param "x_range=[-7,-2,1]" --param "y_range=[-1,6,1]"
+```
+
 ## Agregar otra escena
 
-1. Subclase de `OverlayScene` en `math_scenes.py` con `SEGMENTS` (un valor por imagen de la base).
+1. Subclase de `OverlayScene` (o `PanelOverlay`, que ya arma panel, pestaña e ícono) en `math_scenes.py` con `SEGMENTS` (un valor por imagen de la base). Dibuja con las piezas de `components.py`; si falta una, agrégala ahí y no en la escena.
 2. En `timeline()`: `self.segment()` al inicio de cada tramo; animar solo con `self.beat(...)` / `self.hold(...)`.
 3. Registrarla en `SCENE_REGISTRY`.

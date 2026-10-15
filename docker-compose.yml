@@ -10,3 +10,20 @@ services:
       - .:/app
     env_file:
       - .env
+    environment:
+      # Caché de LaTeX/Text y de clips Manim dentro del volumen: sobrevive a
+      # `docker compose run --rm` (antes solo venía en .env.example).
+      VA_CACHE_DIR: /app/data/.cache
+    # init: reaper de procesos (FFmpeg, LaTeX) y Ctrl+C limpio.
+    init: true
+    # Límites de recursos (HG) — medidos en docs/docker-recursos.md.
+    # Se cambian en .env sin tocar este archivo:  VA_CPUS=4  VA_MEM_LIMIT=6g
+    #   - Manim (Cairo) y MoviePy usan ~1 núcleo por render; FFmpeg aprovecha 2.
+    #   - Pico medido del Episodio 3 completo a 1080p: ~1.8 GB (borrador 480p: ~0.5 GB).
+    #   - 3 GB deja margen para un render de producción; para 2 renders en
+    #     paralelo usa VA_MEM_LIMIT=4g. Si se pasa, el kernel mata el proceso
+    #     (código 137 / OOM) en vez de llenar el swap y congelar el equipo.
+    cpus: ${VA_CPUS:-2}
+    mem_limit: ${VA_MEM_LIMIT:-3g}
+    memswap_limit: ${VA_MEM_LIMIT:-3g}
+    pids_limit: 512

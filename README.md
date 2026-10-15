@@ -8,12 +8,12 @@ Automated Python pipeline to generate math videos for YouTube from YAML scripts 
 4. *(Upcoming)* TTS generation, subtitles creation, and automatic YouTube upload.
 
 ## Render quality (fast / low-res / production)
-All render commands accept `--fast` (480p, 15 fps, 2 threads, low priority),
+All render commands accept `--draft` / `--fast` (480p, 15 fps, 2 threads, low priority),
 `--low-res` (720p) or `--production` (script resolution, default). You can set
 a default per machine with `VA_QUALITY=fast`. Details and benchmarks:
 [docs/render-profiles.md](docs/render-profiles.md).
 
-    python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --fast
+    python -m src.video_automation.cli render --script examples/video2_overlays.yaml --no-audio --draft
     python -m src.video_automation.cli profiles
 
 ## Dynamic math animations (Manim)
@@ -21,8 +21,22 @@ Parametrized Manim scenes built from a JSON/YAML file (no hardcoded content).
 Videos are written to `data/renders/manim/`. Schema and options:
 [docs/math-animator.md](docs/math-animator.md).
 
-    python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality low
+    python -m src.video_automation.math_animator --config data/scenes/sample_math.json --draft
     python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality high
+
+## Reusable math components (Episode 3)
+`src/video_automation/animations/components.py` is the shared catalog (fractions,
+first-degree equations, graphs, SVG/PNG assets). Generic YAML-only overlays:
+`FormulaOverlay`, `FractionOverlay`, `LinearEquationOverlay`, `GraphOverlay`.
+See [src/video_automation/animations/README.md](src/video_automation/animations/README.md)
+and `examples/episodio3_overlays.yaml`.
+
+    python -m src.video_automation.cli render --script examples/episodio3_overlays.yaml --no-audio --draft
+
+## Docker resources
+`docker-compose.yml` limits the container (`VA_CPUS`, `VA_MEM_LIMIT` in `.env`; defaults 2 CPUs / 3 GB).
+Measurements and how to benchmark with `scripts/bench_render.py`:
+[docs/docker-recursos.md](docs/docker-recursos.md).
 
 ## Installations
 

@@ -35,14 +35,18 @@ Reglas:
   - Fondo oscuro del canal (#1E3A2F, el mismo pizarrón de scenes_video2 y de
     los overlays) salvo que la configuración diga otra cosa.
 
-Calidad (banderas equivalentes a las de Manim):
-  - low  / -ql : borrador, 854x480 a 15 fps → <nombre>_low.mp4
-  - high / -qh : producción, 1920x1080 a 60 fps → <nombre>.mp4
+Calidad (banderas equivalentes a las de Manim y a las de render_profiles.py):
+  - low    / -ql / --draft / --fast : borrador, 854x480 a 15 fps → <nombre>_low.mp4
+  - medium / -qm / --low-res        : revisión, 1280x720 a 30 fps → <nombre>_720p.mp4
+  - high   / -qh / --production     : producción, 1920x1080 a 60 fps → <nombre>.mp4
+Sin bandera se usa $VA_QUALITY (fast → low, low-res → medium, production → high)
+y, si no existe, low (borrador).
 
 Los .mp4 se centralizan en data/renders/manim/.
 
 Uso:
     python -m src.video_automation.math_animator --config data/scenes/sample_math.json --quality low
+    python -m src.video_automation.math_animator --config data/scenes/sample_math.json --draft
     python -m src.video_automation.math_animator --config data/scenes/sample_math.json -qh
 """
 
@@ -57,7 +61,6 @@ import shutil
 import sys
 import tempfile
 from dataclasses import dataclass
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Mapping, Optional, Sequence, Tuple, Union
 
@@ -70,8 +73,9 @@ from manim import (
 from manim import config as mconfig
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
+from .animations.components import FONT_CANDIDATES, resolve_font  # noqa: F401 (re-exportados)
 from .manim_timing import manim_config, tex
-from .render_profiles import get_profile
+from .render_profiles import ensure_utf8_stdio, get_profile
 
 log = logging.getLogger(__name__)
 
@@ -83,16 +87,11 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data" / "renders" / "manim"
 
 CHANNEL_BG = "#1E3A2F"      # pizarrón del canal (scenes_video2.BG / OverlayScene.BACKGROUND)
 CHALK = "#F5F1E6"           # gis
-#: Fuentes en orden de preferencia; se usa la primera instalada (DejaVu en Linux/Docker,
-#: Segoe UI o Arial en Windows). $VA_FONT tiene prioridad si existe en el sistema.
-FONT_CANDIDATES: Tuple[str, ...] = ("DejaVu Sans", "Segoe UI", "Arial", "Helvetica",
-                                    "Liberation Sans", "Noto Sans", "Sans")
-
 HEX_COLOR = r"^#[0-9A-Fa-f]{6}$"
 
 Position = Literal["UP", "DOWN", "LEFT", "RIGHT", "UL", "UR", "DL", "DR", "CENTER"]
 AnimationKind = Literal["write", "transform", "fadein"]
-QualityName = Literal["low", "high"]
+QualityName = Literal["low", "medium", "high"]
 
 _ANIMATION_ALIASES: Dict[str, str] = {
     "write": "write", "escribir": "write",
@@ -104,29 +103,6 @@ _POSITION_ALIASES: Dict[str, str] = {
     "IZQUIERDA": "LEFT", "DERECHA": "RIGHT", "CENTRO": "CENTER", "ORIGIN": "CENTER",
     "UP_LEFT": "UL", "UP_RIGHT": "UR", "DOWN_LEFT": "DL", "DOWN_RIGHT": "DR",
 }
-
-
-@lru_cache(maxsize=1)
-def resolve_font() -> str:
-    """
-    Primera fuente disponible de $VA_FONT + FONT_CANDIDATES. Evita el aviso
-    "Font DejaVu Sans not in [...]" de Manim en equipos que no la tienen
-    (Windows). "" = fuente por defecto de Pango.
-    """
-    preferred = os.environ.get("VA_FONT", "").strip()
-    candidates = ((preferred,) if preferred else ()) + FONT_CANDIDATES
-    try:
-        import manimpango
-
-        available = set(manimpango.list_fonts())
-    except Exception:  # noqa: BLE001 - sin lista de fuentes, se intenta la primera
-        return candidates[0]
-    if preferred and preferred not in available:
-        log.warning("VA_FONT=%r no está instalada; se usa otra fuente.", preferred)
-    for name in candidates:
-        if name in available:
-            return name
-    return ""
 
 
 class SceneConfigError(ValueError):
@@ -315,6 +291,10 @@ QUALITY_PRESETS: Dict[str, QualitySettings] = {
         name="low", flag="-ql", resolution=(854, 480), fps=15, profile_name="fast",
         suffix="_low", description="Borrador: 480p a 15 fps para previsualizar rápido.",
     ),
+    "medium": QualitySettings(
+        name="medium", flag="-qm", resolution=(1280, 720), fps=30, profile_name="low-res",
+        suffix="_720p", description="Revisión: 720p a 30 fps.",
+    ),
     "high": QualitySettings(
         name="high", flag="-qh", resolution=(1920, 1080), fps=60, profile_name="production",
         suffix="", description="Producción: 1080p a 60 fps para el ensamble final.",
@@ -323,7 +303,9 @@ QUALITY_PRESETS: Dict[str, QualitySettings] = {
 
 QUALITY_ALIASES: Dict[str, str] = {
     "l": "low", "ql": "low", "-ql": "low", "draft": "low", "borrador": "low",
-    "fast": "low", "preview": "low", "480p": "low",
+    "fast": "low", "preview": "low", "480p": "low", "rapido": "low", "rápido": "low",
+    "m": "medium", "qm": "medium", "-qm": "medium", "low-res": "medium", "lowres": "medium",
+    "low_res": "medium", "720p": "medium", "revision": "medium", "revisión": "medium",
     "h": "high", "qh": "high", "-qh": "high", "production": "high", "produccion": "high",
     "producción": "high", "prod": "high", "final": "high", "1080p": "high",
 }
@@ -334,8 +316,24 @@ def resolve_quality(quality: str) -> QualitySettings:
     key = quality.strip().lower()
     key = QUALITY_ALIASES.get(key, key)
     if key not in QUALITY_PRESETS:
-        raise ValueError(f"Calidad desconocida {quality!r}. Usa 'low' (-ql) o 'high' (-qh).")
+        raise ValueError(f"Calidad desconocida {quality!r}. Usa 'low' (-ql / --draft), "
+                         f"'medium' (-qm / --low-res) o 'high' (-qh / --production).")
     return QUALITY_PRESETS[key]
+
+
+#: Perfil de render_profiles.py ($VA_QUALITY) → calidad de math_animator.
+_PROFILE_TO_QUALITY = {"fast": "low", "low-res": "medium", "production": "high"}
+
+
+def default_quality() -> str:
+    """Calidad cuando la CLI no recibe bandera: $VA_QUALITY o 'low' (borrador)."""
+    env = os.environ.get("VA_QUALITY", "").strip()
+    if not env:
+        return "low"
+    try:
+        return _PROFILE_TO_QUALITY[get_profile(env).name]
+    except ValueError:
+        return resolve_quality(env).name  # también acepta low/medium/high en la variable
 
 
 def safe_name(name: str) -> str:
@@ -498,7 +496,8 @@ def render_scene_from_config(config_path: Path, quality: str = "low",
     Lee la configuración, renderiza DynamicMathScene con Manim y deja el .mp4
     en data/renders/manim/ (u output_dir). Devuelve la ruta del video.
 
-    quality: "low" (-ql, 480p@15) o "high" (-qh, 1080p@60); acepta alias.
+    quality: "low" (-ql/--draft, 480p@15), "medium" (-qm, 720p@30) o
+    "high" (-qh, 1080p@60); acepta alias.
     """
     config_path = Path(config_path)
     scene_config = load_scene_config(config_path)
@@ -539,10 +538,13 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Ruta al archivo de escena (.json, .yaml o .yml)")
     quality = parser.add_mutually_exclusive_group()
     quality.add_argument("--quality", default=None, metavar="CALIDAD",
-                         help="low (borrador 480p@15) o high (producción 1080p@60). Por defecto: low")
-    quality.add_argument("-ql", dest="quality", action="store_const", const="low",
+                         help="low (borrador 480p@15), medium (720p@30) o high (producción 1080p@60). "
+                              "Por defecto: $VA_QUALITY o low")
+    quality.add_argument("-ql", "--draft", "--fast", dest="quality", action="store_const", const="low",
                          help=QUALITY_PRESETS["low"].description)
-    quality.add_argument("-qh", dest="quality", action="store_const", const="high",
+    quality.add_argument("-qm", "--low-res", dest="quality", action="store_const", const="medium",
+                         help=QUALITY_PRESETS["medium"].description)
+    quality.add_argument("-qh", "--production", dest="quality", action="store_const", const="high",
                          help=QUALITY_PRESETS["high"].description)
     parser.add_argument("--output-dir", type=Path, default=None,
                         help=f"Carpeta de salida (por defecto: {DEFAULT_OUTPUT_DIR})")
@@ -550,11 +552,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    ensure_utf8_stdio()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     args = build_parser().parse_args(argv)
-    quality_name: str = args.quality or "low"
     try:
-        settings = resolve_quality(quality_name)
+        settings = resolve_quality(args.quality or default_quality())
     except ValueError as exc:
         print(f"❌ {exc}", file=sys.stderr)
         return 2
