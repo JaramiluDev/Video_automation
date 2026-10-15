@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Orquestador Principal del Pipeline de Automatización de Video.
-Soporta procesamiento completo E2E: Parseo -> TTS -> Ensamble Audiovisual -> Subida a YouTube.
+Orquestador Principal del Pipeline de Automatización de Video (Dinamico).
+Soporta procesamiento completo E2E resolviendo rutas por convención a partir del ID del guion.
 """
 
 import argparse
@@ -9,12 +9,11 @@ import asyncio
 import logging
 from pathlib import Path
 import sys
-from typing import Optional
+import subprocess
 
 # Asegurar que 'src' esté en el PATH para importaciones relativas
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-# from video_automation.narrator import generate_audio
 from video_automation.script_parser import parse_script
 from video_automation.youtube_uploader import YouTubeUploader
 from video_automation.narrator import generate_tts_edge, parse_yaml_text
@@ -29,22 +28,22 @@ logger = logging.getLogger("run_pipeline")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Ejecuta el pipeline completo de producción de video a partir de un guion YAML.",
+        description="Ejecuta el pipeline E2E dinámicamente a partir de un nombre o ruta de guion YAML.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "-s",
         "--script",
-        type=Path,
+        type=str,
         required=True,
-        help="Ruta al archivo de guion YAML (ej. assets/source_scripts/GUION-02/GUION-02.yaml)",
+        help="Nombre del guion (ej. GUION-02) o ruta relativa al archivo YAML.",
     )
     parser.add_argument(
         "-o",
         "--output-dir",
         type=Path,
         default=Path("data/output"),
-        help="Directorio donde se guardarán los entregables generados",
+        help="Directorio base donde se guardarán los entregables generados",
     )
     parser.add_argument(
         "--voice",
@@ -74,38 +73,47 @@ def parse_args() -> argparse.Namespace:
 
 
 async def run_pipeline_async(args: argparse.Namespace) -> int:
-    script_path: Path = args.script.resolve()
+    input_arg = args.script.strip()
+    
+    # --- RESOLUCIÓN INTELIGENTE POR CONVENCIÓN ---
+    if input_arg.endswith(".yaml"):
+        script_path = Path(input_arg)
+    else:
+        script_path = Path("assets/source_scripts") / input_arg / f"{input_arg}.yaml"
+
+    script_path = script_path.resolve()
+
     if not script_path.is_file():
-        logger.error(f"❌ El archivo de guion '{script_path}' no existe.")
+        logger.error(f"❌ No se encontró el archivo de guion en: {script_path}")
         return 1
 
+    episode_slug = script_path.stem
     output_dir: Path = args.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info(f"🎬 Iniciando pipeline para: {script_path.name}")
+    logger.info(f"🎬 Iniciando pipeline dinámico para: {episode_slug}")
+    logger.info(f"📂 Guion localizado en: {script_path}")
 
-    # 1. Parseo del Guion YAML
+    # 1. Parseo del Guion YAML (Pasando la ruta absoluta como string)
     logger.info("📄 [Paso 1/4] Parseando y validando guion YAML...")
     try:
-        parsed_script = parse_script(script_path)
-        title = getattr(parsed_script, "title", script_path.stem)
-        description = getattr(parsed_script, "description", f"Video automatizado desde {script_path.name}")
+        parsed_script = parse_script(str(script_path))
+        title = getattr(parsed_script, "title", episode_slug)
+        description = getattr(parsed_script, "description", f"Video automatizado del episodio {episode_slug}")
         logger.info(f"✅ Guion validado: '{title}'")
     except Exception as e:
         logger.error(f"❌ Error al parsear el guion '{script_path}': {e}")
         return 1
 
-   # 2. Generación de Narración (TTS)
-    audio_output = output_dir / f"{script_path.stem}_audio.mp3"
+    # 2. Generación de Narración (TTS)
+    audio_output = output_dir / f"{episode_slug}_audio.mp3"
     logger.info(f"🎙️ [Paso 2/4] Generando narración TTS con la voz '{args.voice}'...")
     try:
-        # Extraemos el texto usando la función del narrador o pasamos la ruta del guion
         text_content = parse_yaml_text(script_path)
         if not text_content.strip():
             logger.warning("⚠️ No se encontró texto de narración en las escenas del guion.")
             text_content = title
 
-        # Llamamos a la función correcta de edge-tts que definiste en narrator.py
         success = await generate_tts_edge(text=text_content, output_path=audio_output, voice=args.voice)
         if not success:
             raise RuntimeError("Falló la generación de audio con edge-tts.")
@@ -115,18 +123,21 @@ async def run_pipeline_async(args: argparse.Namespace) -> int:
         logger.error(f"❌ Error en la generación de TTS: {e}")
         return 1
 
-# 3. Muxing / Ensamble Final
-    final_video = output_dir / f"{script_path.stem}_final.mp4"
+    # 3. Muxing / Ensamble Final
+    final_video = output_dir / f"{episode_slug}_final.mp4"
     logger.info(f"🎞️ [Paso 3/4] Ensamblando video final en: {final_video}")
+    
     try:
-        # Apuntamos directamente a la ubicación exacta del video de Manim de HG
-        base_video_candidate = script_path.parent / "manim_overlay.mp4"
-        if not base_video_candidate.is_file():
-            # Fallback por si lo busca en output
-            base_video_candidate = output_dir / f"{script_path.stem}_base.mp4"
+        candidates = [
+            script_path.parent / "manim_overlay.mp4",
+            script_path.parent / f"{episode_slug}_base.mp4",
+            output_dir / f"{episode_slug}_base.mp4"
+        ]
+        
+        base_video_candidate = next((c for c in candidates if c.is_file()), None)
 
-        if base_video_candidate.is_file():
-            import subprocess
+        if base_video_candidate:
+            logger.info(f"🔍 Video base localizado en: {base_video_candidate}")
             cmd = [
                 "ffmpeg", "-y",
                 "-i", str(base_video_candidate),
@@ -139,7 +150,10 @@ async def run_pipeline_async(args: argparse.Namespace) -> int:
             subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
             logger.info("✅ Ensamble con FFmpeg completado con éxito.")
         else:
-            raise FileNotFoundError(f"No se encontró el video base en {base_video_candidate}")
+            logger.warning(
+                f"⚠️ No se encontró video base. Se empaquetará únicamente la pista de audio en {audio_output}."
+            )
+            final_video = audio_output
             
     except Exception as e:
         logger.error(f"❌ Error durante el ensamble del video: {e}")
