@@ -37,7 +37,7 @@ from src.video_automation.simple_animator import (
 )
 from src.video_automation.simple_concatenator import concatenate_clips
 from src.video_automation.render_profiles import (
-    RenderProfile, add_quality_arguments, get_profile, profile_from_args,
+    RenderProfile, add_quality_arguments, ensure_utf8_stdio, get_profile, profile_from_args,
 )
 
 # Configuración por defecto
@@ -273,6 +273,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    ensure_utf8_stdio()
     """Punto de entrada principal para ejecución por consola."""
     args = parse_args()
     input_path = args.input_dir or args.input_dir_flag

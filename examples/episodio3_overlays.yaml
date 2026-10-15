@@ -1,0 +1,104 @@
+# Episodio 3 · «¡Se busca a la x!» — overlays del catálogo de componentes (HG)
+#
+# Ejemplo de uso de los overlays genéricos de animations/math_scenes.py, todos
+# construidos con animations/components.py (fracciones, ecuaciones de primer
+# grado, gráficas). Ninguno necesita escribir Python: todo sale de este YAML.
+#
+#   FormulaOverlay         una fórmula LaTeX (+ leyenda) por imagen
+#   LinearEquationOverlay  despeje paso a paso de ax + b = c (+ comprobación)
+#   GraphOverlay           gráfica de un polinomio con sus raíces
+#   FractionOverlay        barras de fracciones / productos cruzados
+#
+# Las ilustraciones traen matemáticas dibujadas a mano por el generador de
+# imágenes; el panel del overlay pone la versión correcta encima (el guion
+# pide "incorporar después las ecuaciones como capas editables").
+# Colores del guion: azul para el 4 y su factor, naranja para el 5.
+#
+# Vista previa en segundos (480p, 15 fps):
+#   python -m src.video_automation.cli render --script examples/episodio3_overlays.yaml --no-audio --draft
+# Entrega:
+#   python -m src.video_automation.cli render --script examples/episodio3_overlays.yaml --no-audio --production
+title: "Episodio 3 · ¡Se busca a la x! (overlays)"
+output_filename: "episodio3_overlays.mp4"
+output_settings:
+  resolution: [1920, 1080]
+  fps: 30
+scenes:
+  # Escena 2 · El casting de los números (imágenes 04-06): producto 20, suma 9.
+  # Los archivos -02 y -03 muestran a los primeros candidatos (1 y 20) y el -01
+  # a la pareja ganadora (4 y 5), por eso el orden 02, 03, 01.
+  - id: "E3-ESCENA-02"
+    title: "El casting de los números"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-02/ESCENA-02-02.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-02/ESCENA-02-03.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-02/ESCENA-02-01.png"
+    duration: 15.0
+    manim_overlay: "FormulaOverlay"
+    manim_overlay_params:
+      titulo: "PASO 1 · Buscar dos números"
+      formulas:
+        - '1 \times 20 = 20 \qquad 1 + 20 = 21'
+        - '2 \times 10 = 20 \qquad 2 + 10 = 12'
+        - '4 \times 5 = 20 \qquad 4 + 5 = 9'
+      textos:
+        - "Multiplicados dan 20, pero sumados dan 21"
+        - "Sumados dan 12: tampoco"
+        - "¡Pareja ganadora! Producto 20 y suma 9"
+
+  # Escena 5 · Los sospechosos revelan su identidad (imágenes 13-15).
+  # Dos ecuaciones de primer grado, una por imagen; la tercera imagen
+  # conserva la última en pantalla.
+  - id: "E3-ESCENA-05"
+    title: "Los sospechosos revelan su identidad"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-05/ESCENA-05-01.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-05/ESCENA-05-02.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-05/ESCENA-05-03.png"
+    duration: 15.0
+    manim_overlay: "LinearEquationOverlay"
+    manim_overlay_params:
+      titulo: "PASO 4 · Despejar la x"
+      ecuaciones: ["x + 4 = 0", "x + 5 = 0"]
+      comprobar: true
+
+  # Escena 6 · La prueba definitiva (imágenes 16-18): sustitución en la original.
+  - id: "E3-ESCENA-06"
+    title: "La prueba definitiva"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-06/ESCENA-06-01..png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-06/ESCENA-06-02.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-06/ESCENA-06-03.png"
+    duration: 15.0
+    manim_overlay: "FormulaOverlay"
+    manim_overlay_params:
+      titulo: "PASO 5 · Comprobar las soluciones"
+      formulas:
+        - '(-4)^2 + 9(-4) + 20 = 16 - 36 + 20 = 0'
+        - '(-4)^2 = (-4)(-4) = 16'
+        - '(-5)^2 + 9(-5) + 20 = 25 - 45 + 20 = 0'
+      textos:
+        - "Con x = -4 la igualdad se cumple"
+        - "Número negativo por número negativo = positivo"
+        - "Con x = -5 también se cumple"
+
+  # Escena 7 · Caso cerrado (imágenes 19-21): la gráfica corta al eje x en -5 y -4.
+  # Primer tramo: ejes y curva; los siguientes revelan cada raíz.
+  - id: "E3-ESCENA-07"
+    title: "Caso cerrado"
+    narration: ""
+    image_paths:
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-07/ESCENA-07-01.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-07/ESCENA-07-02.png"
+      - "assets/source_scripts/BUSCANDO-A-LA-X/BUSCANDO-A-LA-X/ESCENA-07/ESCENA-07-03.png"
+    duration: 15.0
+    manim_overlay: "GraphOverlay"
+    manim_overlay_params:
+      funcion: [1, 9, 20]
+      x_range: [-7, -2, 1]
+      y_range: [-1, 6, 1]
+      posicion: "derecha"
+      titulo: "Dos soluciones, cero misterios"

@@ -32,6 +32,7 @@ from typing import Dict, List, Optional, Tuple, Type
 from manim import tempconfig
 
 from ..manim_timing import (
+    latex_available,
     DEFAULT_FPS, DEFAULT_RESOLUTION, VALID_FPS, cached_clip_is_valid, clip_cache_key, manim_config,
     normalize_clip, probe_video, store_cache_key,
 )
@@ -254,6 +255,8 @@ def render_overlay(
             raise RuntimeError(f"{name}: salida fuera de especificación: {', '.join(problems)}")
         log.info("%s OK: %dx%d @%sfps, %d cuadros, alfa=%s → %s", name, info["width"],
                  info["height"], fps, info["frames"], info["has_alpha"], output_path)
-    if key:
+    # Si este render tuvo que usar texto plano porque LaTeX falló, no se guarda
+    # en caché: la próxima corrida (con LaTeX ya arreglado) lo vuelve a generar.
+    if key and latex_available():
         store_cache_key(output_path, key)
     return info

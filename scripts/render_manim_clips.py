@@ -10,10 +10,10 @@ La extensión de --output decide el formato:
 
 Por defecto 1920x1080 a 30 fps constantes con cuadros exactos
 (round(dur*fps)). Para pruebas, los perfiles de calidad bajan el costo:
-  --fast        854x480, ≤15 fps, ultrafast, 2 hilos, prioridad baja
+  --draft/--fast  854x480, ≤15 fps, ultrafast, 2 hilos, prioridad baja
   --low-res     1280x720, ≤30 fps, veryfast, mitad de núcleos, prioridad baja
   --production  1920x1080 (default; o $VA_QUALITY)
-(--preview es sinónimo de --fast). Al terminar verifica la salida con
+(--draft y --preview son sinónimos de --fast). Al terminar verifica la salida con
 ffprobe y sale con código 1 si algo no cumple.
 
 Ejemplos:
@@ -38,7 +38,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.video_automation.animations import SCENE_REGISTRY, render_overlay  # noqa: E402
 from src.video_automation.manim_timing import check_latex, strict_latex  # noqa: E402
-from src.video_automation.render_profiles import add_quality_arguments, profile_from_args  # noqa: E402
+from src.video_automation.render_profiles import add_quality_arguments, ensure_utf8_stdio, profile_from_args  # noqa: E402
 
 
 def parse_param(text: str):
@@ -55,6 +55,7 @@ def parse_param(text: str):
 
 
 def main() -> int:
+    ensure_utf8_stdio()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scene", help="Clase de animations/math_scenes.py (ver --list)")
     ap.add_argument("--output", help="Ruta del clip: .mp4 (opaco), .mov o .webm (con alfa)")

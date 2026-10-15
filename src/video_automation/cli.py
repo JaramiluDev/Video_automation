@@ -6,7 +6,7 @@ Permite validar guiones YAML y ejecutar el pipeline de renderizado de video.
 import argparse
 
 from .pipeline import run_pipeline
-from .render_profiles import add_quality_arguments, profile_from_args
+from .render_profiles import add_quality_arguments, ensure_utf8_stdio, profile_from_args
 from .script_parser import parse_script
 
 
@@ -39,6 +39,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main():
     """Punto de entrada principal para la CLI."""
+    ensure_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args()
 

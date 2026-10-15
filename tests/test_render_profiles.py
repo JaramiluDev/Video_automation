@@ -64,7 +64,16 @@ def test_aliases_env_and_unknown(monkeypatch):
 
 
 # ---------------------------------------------------------------- FFmpeg args
+def _no_container_limits(monkeypatch, cores=8):
+    import video_automation.render_profiles as rp
+
+    monkeypatch.setattr(rp.os, "cpu_count", lambda: cores)
+    monkeypatch.setattr(rp.os, "sched_getaffinity", lambda pid: set(range(cores)), raising=False)
+    monkeypatch.setattr(rp, "_cgroup_cpu_quota", lambda: None)
+
+
 def test_x264_args_and_threads(monkeypatch):
+    _no_container_limits(monkeypatch)
     fast = get_profile("fast")
     assert fast.x264_args() == ["-preset", "ultrafast", "-crf", "30", "-threads", "2"]
     prod = get_profile("production")
@@ -76,8 +85,22 @@ def test_x264_args_and_threads(monkeypatch):
 
 
 def test_low_res_uses_half_the_cores(monkeypatch):
-    monkeypatch.setattr("video_automation.render_profiles.os.cpu_count", lambda: 8)
+    _no_container_limits(monkeypatch, cores=8)
     assert get_profile("low-res").thread_count == 4
+
+
+def test_threads_respect_docker_cpu_limit(monkeypatch):
+    """Con `cpus: 2` en compose, os.cpu_count() sigue viendo los 16 núcleos del host."""
+    import video_automation.render_profiles as rp
+
+    _no_container_limits(monkeypatch, cores=16)
+    monkeypatch.setattr(rp, "_cgroup_cpu_quota", lambda: 2.0)
+    assert get_profile("production").thread_count == 2           # antes: 0 = los 16 del host
+    assert get_profile("production").x264_args()[-2:] == ["-threads", "2"]
+    assert get_profile("low-res").thread_count == 1
+    assert get_profile("fast").thread_count == 2
+    monkeypatch.setattr(rp, "_cgroup_cpu_quota", lambda: 1.5)
+    assert rp._cpu_count() == 2
 
 
 def test_tag_paths_only_outside_production():

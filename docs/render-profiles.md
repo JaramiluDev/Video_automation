@@ -5,12 +5,16 @@ aceptan el mismo grupo de flags. La calidad final solo se usa para la entrega.
 
 | Flag | Resolución (desde 1080p) | fps | libx264 | Hilos FFmpeg | Prioridad | Alfa `.mov` |
 |---|---|---|---|---|---|---|
-| `--fast` | 854×480 (lado corto 480) | ≤ 15 | `ultrafast`, crf 30 | 2 | baja | qtrle |
+| `--draft` / `--fast` | 854×480 (lado corto 480) | ≤ 15 | `ultrafast`, crf 30 | 2 | baja | qtrle |
 | `--low-res` | 1280×720 (lado corto 720) | ≤ 30 | `veryfast`, crf 26 | mitad de los núcleos | baja | qtrle |
 | `--production` | la del guion | la del guion | `medium`, crf 18 | todos | normal | ProRes 4444 |
 
-- Alias: `--quality fast|low-res|production` (también `draft`, `preview`, `720p`, `final`).
-  En los scripts de Manim, `--preview` sigue funcionando y equivale a `--fast`.
+- `--draft` es el borrador para iterar vistas previas: es exactamente el perfil `fast`
+  y lo aceptan **todas** las entradas (`cli render`, `math_animator`,
+  `render_video2_scenes.py`, `render_manim_clips.py`, `build_zoomed_video.py`).
+- Alias: `--quality fast|low-res|production` (también `draft`, `borrador`, `480p`,
+  `preview`, `720p`, `final`). En los scripts de Manim, `--preview` sigue
+  funcionando y equivale a `--fast`.
 - `--threads N` limita los hilos de FFmpeg (0 = automático) y gana sobre el perfil.
 - Sin flag se usa la variable `VA_QUALITY` y, si no existe, `production`.
   En tu máquina de desarrollo puedes dejarla fija:
@@ -36,6 +40,18 @@ renders de producción y para no mezclar clips de distinta resolución en la
 misma carpeta: `simple_concatenator` une con `-c copy`, así que todos los clips
 de una carpeta deben venir del mismo perfil.
 
+### Borrador y cuadros exactos
+
+A 15 fps no todas las duraciones caen en la rejilla de cuadros: 9.5 s son
+142.5 cuadros y el clip sale con 142. `heavy_render` fija la duración de cada
+clip Manim a `cuadros / fps` y `compositor.compose_clips` separa los cortes
+1 µs, así MoviePy ya no pide un cuadro que no existe (el aviso
+`bytes wanted but 0 bytes read ... Using the last valid frame`) y el video
+final tiene `round(suma_de_duraciones × fps)` cuadros, igual que en producción.
+
+Tiempos de referencia en `--draft` (2 núcleos): una escena Manim del Video 2
+de 9–15 s tarda 2–5 s; las 10 escenas de `examples/video2_manim.yaml`, ~40 s.
+
 ## Caché de clips Manim
 
 Los clips Manim (`render`, `render_video2_scenes.py`, `render_manim_clips.py`)
@@ -51,12 +67,15 @@ vez que aparece una misma fórmula ya no se recompila.
 ### En Docker
 
 `docker compose run --rm` crea un contenedor nuevo cada vez, así que la caché
-en `~/.cache` se perdería. Pon en tu `.env` (ya viene en `.env.example`):
+en `~/.cache` se perdería. Por eso `docker-compose.yml` fija
+`VA_CACHE_DIR=/app/data/.cache` en `environment:` (dentro del volumen).
 
-```
-VA_CACHE_DIR=/app/data/.cache
-VA_QUALITY=fast        # opcional: borrador por defecto en tu máquina
-```
+> **No pongas `VA_CACHE_DIR` en tu `.env`.** MoviePy carga el `.env` del repo
+> también fuera de Docker; en Windows la ruta `/app/...` hacía que dvisvgm no
+> pudiera escribir y todas las fórmulas salían como texto plano. Si ya la
+> tienes, bórrala (el código además la ignora en Windows).
+
+En `.env` sí puedes dejar `VA_QUALITY=fast` para que tu máquina use borrador por defecto.
 
 `data/.cache/` está en `.gitignore`. Ejemplo:
 

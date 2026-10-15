@@ -63,8 +63,9 @@ SCENE_MODULES = ["scenes_video2", "animations.math_scenes"]
 
 # Archivos cuyo contenido invalida la caché de clips Manim si cambian.
 _PKG_DIR = Path(__file__).resolve().parent
-CACHE_SOURCES = ["manim_timing.py", "scenes_video2.py", "fracciones.py",
-                 "animations/base.py", "animations/math_scenes.py", "animations/export.py"]
+CACHE_SOURCES = ["manim_timing.py", "scenes_video2.py", "fracciones.py", "ecuaciones.py",
+                 "animations/base.py", "animations/components.py", "animations/math_scenes.py",
+                 "animations/export.py"]
 
 VALID_FPS = (30, 60)
 DEFAULT_RESOLUTION = (1920, 1080)
@@ -81,20 +82,87 @@ def strict_latex() -> bool:
     return os.environ.get("VA_STRICT_LATEX", "0").lower() in ("1", "true", "yes")
 
 
+#: True cuando LaTeX/dvisvgm no funcionan en este equipo (se detecta con el primer
+#: MathTex que falla por la instalación, no por la fórmula). Desde ahí ya no se
+#: intenta compilar cada fórmula: se usa Text directo y se avisa UNA vez.
+_latex_broken = False
+_INSTALL_ERRORS = ("does not support converting", "latex failed", "no such file", "not recognized",
+                   "cannot find the file", "winerror 2")
+
+#: LaTeX → texto legible para el respaldo sin LaTeX (orden importa).
+_PLAIN = [("\\left(", "("), ("\\right)", ")"), ("\\left[", "["), ("\\right]", "]"),
+          ("\\qquad", "    "), ("\\quad", "  "), ("\\times", "×"), ("\\cdot", "·"),
+          ("\\div", "÷"), ("\\neq", "≠"), ("\\pm", "±"), ("\\leq", "≤"), ("\\geq", "≥"),
+          ("\\sqrt", "√"), ("^{2}", "²"), ("^2", "²"), ("^{3}", "³"), ("^3", "³"), ("\\,", " ")]
+
+
+def latex_to_plain(latex: str) -> str:
+    """Versión en texto plano de una fórmula sencilla (\\frac{a}{b} → a/b)."""
+    import re
+
+    out = latex
+    for a, b in _PLAIN:
+        out = out.replace(a, b)
+    for _ in range(10):        # de adentro hacia afuera: \\frac{-b ± √{...}}{2a}
+        new = re.sub(r"√\{([^{}]*)\}", r"√(\1)", out)
+        new = re.sub(r"\\frac\{([^{}]*)\}\{([^{}]*)\}",
+                     lambda m: "/".join(x if len(x) <= 1 or x.isalnum() else f"({x})"
+                                        for x in m.groups()), new)
+        if new == out:
+            break
+        out = new
+    return out.replace("{", "").replace("}", "").replace("\\", "").strip()
+
+
+def _dvisvgm_detail() -> str:
+    """
+    Manim esconde la salida de dvisvgm. Si falló, se vuelve a correr sobre el
+    .dvi más reciente de tex_dir para mostrar el error real en el aviso.
+    """
+    try:
+        from manim import config as _cfg
+
+        tex_dir = Path(_cfg.get_dir("tex_dir"))
+        dvis = sorted(tex_dir.glob("*.dvi"), key=lambda p: p.stat().st_mtime)
+        if not dvis:
+            return f"no hay .dvi en {tex_dir}"
+        out = dvis[-1].with_suffix(".diag.svg")
+        res = subprocess.run(["dvisvgm", "--no-fonts", "--verbosity=3", f"--output={out.as_posix()}",
+                              dvis[-1].as_posix()], capture_output=True, text=True, timeout=60)
+        out.unlink(missing_ok=True)
+        lines = [ln for ln in (res.stderr + res.stdout).splitlines() if ln.strip()]
+        return f"dvisvgm {dvis[-1].name} → código {res.returncode}: " + " | ".join(lines[-6:])
+    except Exception as exc:  # noqa: BLE001 - solo es diagnóstico
+        return f"(sin detalle: {exc})"
+
+
+def latex_available() -> bool:
+    """False si ya se detectó que LaTeX/dvisvgm no funcionan en este proceso."""
+    return not _latex_broken
+
+
 def tex(latex: str, **kwargs):
     """MathTex con fallback a Text si LaTeX no existe (salvo VA_STRICT_LATEX=1)."""
-    try:
-        return MathTex(latex, **kwargs)
-    except Exception as exc:  # LaTeX ausente o paquete faltante
-        if strict_latex():
-            raise
-        log.warning("MathTex falló (%s); usando Text como fallback para %r", exc, latex)
-        font_size = kwargs.get("font_size", 48)
-        color = kwargs.get("color")
-        plain = (latex.replace("\\times", "×").replace("\\neq", "≠").replace("\\frac", "")
-                 .replace("{", "").replace("}", "/").replace("\\,", " ").replace("\\", ""))
-        return Text(plain.rstrip("/"), font_size=font_size * 0.8,
-                    **({"color": color} if color else {}))
+    global _latex_broken
+    if not _latex_broken or strict_latex():
+        try:
+            return MathTex(latex, **kwargs)
+        except Exception as exc:  # LaTeX ausente o paquete faltante
+            if strict_latex():
+                raise
+            msg = str(exc).lower()
+            if any(k in msg for k in _INSTALL_ERRORS) or isinstance(exc, (FileNotFoundError, OSError)):
+                _latex_broken = True
+                log.warning(
+                    "LaTeX no funciona en este equipo (%s). Todas las fórmulas de este render "
+                    "saldrán como texto plano y no se guardarán en caché. Detalle: %s",
+                    str(exc).splitlines()[0][:120], _dvisvgm_detail())
+            else:
+                log.warning("MathTex falló para %r (%s); se usa texto plano.", latex, exc)
+    font_size = kwargs.get("font_size", 48)
+    color = kwargs.get("color")
+    return Text(latex_to_plain(latex), font_size=font_size * 0.8,
+                **({"color": color} if color else {}))
 
 
 def check_latex() -> Tuple[bool, str]:
@@ -112,10 +180,124 @@ def check_latex() -> Tuple[bool, str]:
 # Configuración de Manim y caché
 # ---------------------------------------------------------------------------
 
+def _cache_env_value(value: Optional[str], windows: bool) -> Optional[str]:
+    """
+    $VA_CACHE_DIR utilizable en este sistema, o None.
+
+    En Windows se ignora una ruta de contenedor como "/app/data/.cache" (sin
+    unidad C:). Llega ahí porque MoviePy carga el .env del repo al importarse
+    (moviepy/config.py → load_dotenv) y el .env trae la ruta de Docker. Python
+    la convierte en C:\\app\\data\\.cache, pero dvisvgm de MiKTeX no puede escribir
+    en "/app/..." y TODAS las fórmulas caían a texto plano.
+    """
+    if not value or not value.strip():
+        return None
+    value = value.strip()
+    if windows and value.startswith(("/", "\\")) and not value.startswith("\\\\"):
+        return None
+    return value
+
+
+_warned_cache_env = False
+
+
 def cache_dir() -> Path:
     """Carpeta persistente para LaTeX/textos de Manim y claves de clips ($VA_CACHE_DIR)."""
-    root = os.environ.get("VA_CACHE_DIR") or str(Path.home() / ".cache" / "video_automation")
-    return Path(root)
+    global _warned_cache_env
+    raw = os.environ.get("VA_CACHE_DIR")
+    root = _cache_env_value(raw, os.name == "nt")
+    if raw and root is None and not _warned_cache_env:
+        _warned_cache_env = True
+        log.warning("VA_CACHE_DIR=%r es una ruta de Docker; en Windows se ignora y se usa %s",
+                    raw, Path.home() / ".cache" / "video_automation")
+    return Path(root or str(Path.home() / ".cache" / "video_automation"))
+
+
+#: Máximo de renders simultáneos con caché propia; el siguiente usa una temporal.
+MAX_CACHE_SLOTS = 16
+_held_locks: Dict[str, object] = {}     # base → archivo con el candado (vive lo que el proceso)
+_slot_for: Dict[str, Path] = {}
+
+
+def _try_lock(fh) -> bool:
+    """Candado exclusivo NO bloqueante entre procesos (Linux/Docker y Windows)."""
+    try:
+        if os.name == "nt":
+            import msvcrt
+
+            fh.seek(0)
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except OSError:
+        return False
+
+
+def _purge_broken_svgs(root: Path) -> int:
+    """
+    Borra SVG vacíos o truncados de la caché (un render matado a la mitad, o
+    la carrera entre procesos que había antes de los slots). Uno solo basta
+    para que TODOS los renders siguientes fallen con
+    "no element found: line 1, column 0" al leer ese texto/fórmula.
+    """
+    removed = 0
+    for svg in root.rglob("*.svg"):
+        try:
+            size = svg.stat().st_size
+            ok = size > 0
+            if ok:
+                with svg.open("rb") as fh:
+                    fh.seek(max(0, size - 64))
+                    ok = b"</svg>" in fh.read()
+            if not ok:
+                svg.unlink()
+                removed += 1
+        except OSError:
+            continue
+    if removed:
+        log.warning("Caché Manim: %d SVG dañado(s) eliminado(s) en %s", removed, root)
+    return removed
+
+
+def manim_cache_root() -> Path:
+    """
+    Carpeta de caché de LaTeX/Text de ESTE proceso.
+
+    Manim no protege su caché contra procesos simultáneos: si dos renders
+    (dos terminales, `--jobs`, dos contenedores con el mismo volumen) generan
+    el mismo SVG a la vez, uno lee el archivo a medio escribir y truena — y
+    el SVG vacío se queda en caché envenenando los renders siguientes. Cada
+    proceso toma un "slot" con candado: el primero usa <cache>/manim (la de
+    siempre), el segundo <cache>/manim/slot1, etc. El candado lo libera el
+    sistema operativo al terminar el proceso, aunque lo maten.
+    """
+    base = cache_dir() / "manim"
+    key = str(base)
+    if key in _slot_for:
+        return _slot_for[key]
+    for slot in range(MAX_CACHE_SLOTS):
+        d = base if slot == 0 else base / f"slot{slot}"
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+            fh = open(d / ".lock", "a+")
+        except OSError:
+            continue
+        if _try_lock(fh):
+            _held_locks[key] = fh
+            _purge_broken_svgs(d / "Tex")
+            _purge_broken_svgs(d / "texts")
+            _slot_for[key] = d
+            if slot:
+                log.info("Caché Manim ocupada por otro render; este usa %s", d)
+            return d
+        fh.close()
+    d = Path(tempfile.mkdtemp(prefix="manim_cache_"))
+    log.warning("Hay %d renders usando la caché Manim; este usa una temporal: %s", MAX_CACHE_SLOTS, d)
+    _slot_for[key] = d
+    return d
 
 
 def manim_config(media_dir: str, resolution: Tuple[int, int], fps: int, output_file: str) -> Dict:
@@ -123,10 +305,11 @@ def manim_config(media_dir: str, resolution: Tuple[int, int], fps: int, output_f
     Config común para tempconfig(). media_dir es temporal (se borra al
     terminar), pero los SVG de LaTeX y de Text van a una caché persistente:
     así cada render no vuelve a compilar las mismas fórmulas, que es la parte
-    más lenta de las escenas con MathTex.
+    más lenta de las escenas con MathTex. La caché es por slot
+    (manim_cache_root): segura con varios renders en paralelo.
     """
     width, height = resolution
-    cache = cache_dir() / "manim"
+    cache = manim_cache_root()
     return {
         "media_dir": media_dir,
         "tex_dir": str(cache / "Tex"),
@@ -479,6 +662,8 @@ def render_timed_scene(
             raise RuntimeError(f"{scene_name}: salida fuera de especificación: {', '.join(problems)}")
         log.info("%s OK: %dx%d @%sfps, %d cuadros (%.3fs)", scene_name,
                  info["width"], info["height"], fps, info["frames"], frames / fps)
-    if key:
+    # Si este render tuvo que usar texto plano porque LaTeX falló, no se guarda
+    # en caché: la próxima corrida (con LaTeX ya arreglado) lo vuelve a generar.
+    if key and latex_available():
         store_cache_key(output_path, key)
     return str(output_path)

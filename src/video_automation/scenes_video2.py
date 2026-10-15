@@ -36,17 +36,15 @@ Previsualizar una escena suelta (fuera del pipeline):
 
 from __future__ import annotations
 
-import os
 import random
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List
 
-import numpy as np
 from manim import (
-    DOWN, LEFT, ORIGIN, RIGHT, UP, UL, UR, DL, DR, PI, TAU,
+    DOWN, LEFT, ORIGIN, RIGHT, UP, UL, UR, DL, DR, PI,
     Arrow, Circle, Create, Cross, DashedLine, DashedVMobject, DoubleArrow,
     FadeIn, FadeOut, GrowArrow, GrowFromCenter, Indicate, LaggedStart, Line,
-    Rectangle, ReplacementTransform, RoundedRectangle, Sector,
-    SurroundingRectangle, Text, TransformFromCopy, VGroup, Write, config,
+    Rectangle, ReplacementTransform, RoundedRectangle,
+    SurroundingRectangle, TransformFromCopy, VGroup, Write, config,
 )
 
 from .fracciones import (
@@ -57,117 +55,17 @@ from .fracciones import (
 from .manim_timing import TimedScene, tex
 
 # ---------------------------------------------------------------------------
-# Estilo (pizarrón verde + gis + acento morado, como las ilustraciones)
+# Estilo y componentes: viven en animations/components.py (catálogo común a
+# todos los episodios). Se re-exportan aquí para no romper imports existentes.
 # ---------------------------------------------------------------------------
-BG = "#1E3A2F"          # pizarrón
-CHALK = "#F5F1E6"       # gis
-MUTED = "#A9B8AE"       # texto secundario
-SHADE = "#B08AE0"       # sombreado ÚNICO para todas las familias (regla del guion)
-GOLD = "#F4C95D"        # resaltado / uniones
-OK = "#9BE58A"
-BAD = "#FF8A80"
-FONT = os.environ.get("VA_FONT", "DejaVu Sans")
+from .animations.components import (  # noqa: E402,F401
+    BAD, BG, CHALK, GOLD, MUTED, OK, SHADE, T, check_mark, frac, fraction_circle,
+    fraction_equation, fraction_rect, hatch_cells, resolve_font, rotulo, titulo,
+)
+from .animations.components import _grid_shape  # noqa: E402,F401  (nombre anterior)
 
-
-def T(text: str, size: float = 36, color: str = CHALK, weight: str = "NORMAL") -> Text:
-    return Text(text, font=FONT, font_size=size, color=color, weight=weight)
-
-
-def titulo(text: str) -> Text:
-    return T(text, 40, CHALK, "BOLD").to_edge(UP, buff=0.45)
-
-
-def rotulo(text: str) -> VGroup:
-    """Mensaje principal de la imagen del guion, en la franja inferior."""
-    label = T(text, 34, GOLD, "BOLD")
-    bar = Line(LEFT, RIGHT, color=SHADE, stroke_width=4).scale_to_fit_width(label.width + 0.6)
-    bar.next_to(label, DOWN, buff=0.15)
-    return VGroup(label, bar).to_edge(DOWN, buff=0.45)
-
-
-def frac(num: int, den: int, size: float = 64, color: str = CHALK) -> VGroup:
-    """Fracción construida a mano para poder señalar numerador y denominador."""
-    n = tex(str(num), font_size=size, color=color)
-    d = tex(str(den), font_size=size, color=color)
-    width = max(n.width, d.width) + 0.25 * size / 64
-    bar = Line(LEFT, RIGHT, color=color, stroke_width=4 * size / 64).scale_to_fit_width(width)
-    n.next_to(bar, UP, buff=0.12 * size / 64)
-    d.next_to(bar, DOWN, buff=0.12 * size / 64)
-    g = VGroup(n, bar, d)
-    g.num, g.bar, g.den = n, bar, d
-    return g
-
-
-def _grid_shape(den: int) -> Tuple[int, int]:
-    """Filas x columnas de partes iguales: 1 fila hasta 8, 2 filas si es mayor."""
-    if den <= 8:
-        return 1, den
-    rows = 2 if den % 2 == 0 else 1
-    return rows, den // rows
-
-
-def fraction_rect(num: int, den: int, width: float = 4.0, height: float = 1.6,
-                  shade: str = SHADE, hatch: bool = False, stroke: str = CHALK) -> VGroup:
-    """Unidad rectangular dividida en `den` partes de IGUAL área, `num` sombreadas."""
-    rows, cols = _grid_shape(den)
-    cw, ch = width / cols, height / rows
-    cells = VGroup()
-    for r in range(rows):
-        for c in range(cols):
-            idx = r * cols + c
-            cell = Rectangle(width=cw, height=ch, stroke_color=stroke, stroke_width=3)
-            cell.move_to(np.array([-width / 2 + cw * (c + 0.5), height / 2 - ch * (r + 0.5), 0]))
-            if idx < num:
-                cell.set_fill(shade, opacity=0.0 if hatch else 0.9)
-            cells.add(cell)
-    g = VGroup(cells)
-    if hatch:
-        g.add(_hatch(cells[:num], stroke))
-    g.cells = cells
-    g.shaded = VGroup(*cells[:num])
-    return g
-
-
-def _hatch(cells: Sequence[Rectangle], color: str, spacing: float = 0.16) -> VGroup:
-    """Trama diagonal recortada a cada celda (versión blanco y negro)."""
-    lines = VGroup()
-    for cell in cells:
-        x0, x1 = cell.get_left()[0], cell.get_right()[0]
-        y0, y1 = cell.get_bottom()[1], cell.get_top()[1]
-        c = x0 - y1
-        while c < x1 - y0:
-            # Recta y = x - c recortada al rectángulo.
-            pts = []
-            for x in (x0, x1):
-                y = x - c
-                if y0 - 1e-9 <= y <= y1 + 1e-9:
-                    pts.append((x, y))
-            for y in (y0, y1):
-                x = y + c
-                if x0 - 1e-9 <= x <= x1 + 1e-9:
-                    pts.append((x, y))
-            pts = sorted(set((round(px, 6), round(py, 6)) for px, py in pts))
-            if len(pts) >= 2:
-                (ax, ay), (bx, by) = pts[0], pts[-1]
-                if abs(ax - bx) + abs(ay - by) > 1e-3:
-                    lines.add(Line([ax, ay, 0], [bx, by, 0], color=color, stroke_width=2))
-            c += spacing
-    return lines
-
-
-def fraction_circle(num: int, den: int, radius: float = 1.0, shade: str = SHADE,
-                    stroke: str = CHALK) -> VGroup:
-    """Círculo dividido en `den` sectores iguales, `num` sombreados."""
-    sectors = VGroup()
-    for k in range(den):
-        s = Sector(radius=radius, angle=TAU / den, start_angle=PI / 2 - k * TAU / den - TAU / den,
-                   fill_color=shade, fill_opacity=0.9 if k < num else 0.0,
-                   stroke_color=stroke, stroke_width=3)
-        sectors.add(s)
-    g = VGroup(sectors)
-    g.cells = sectors
-    g.shaded = VGroup(*sectors[:num])
-    return g
+_hatch = hatch_cells  # nombre anterior
+FONT = resolve_font()
 
 
 def half_mobject(rep: HalfRepr, w: float, h: float) -> VGroup:
@@ -206,10 +104,6 @@ def half_box(tile: VGroup, side: str, color: str = GOLD) -> Rectangle:
     w, h = b.width / 2, b.height
     center = b.get_center() + (LEFT if side == "left" else RIGHT) * w / 2
     return Rectangle(width=w - 0.06, height=h - 0.06, stroke_color=color, stroke_width=6).move_to(center)
-
-
-def check_mark(ok: bool, size: float = 40) -> Text:
-    return T("✓" if ok else "✗", size, OK if ok else BAD, "BOLD")
 
 
 class Video2Scene(TimedScene):
@@ -263,11 +157,7 @@ class V2E02_RepresentacionesEquivalentes(Video2Scene):
         area = SurroundingRectangle(ua.shaded, color=GOLD, buff=0.06, stroke_width=6)
         self.beat(Create(area), t=0.7)
 
-        half = simplify(a)
-        rel = "=" if eq else r"\neq"
-        result = tex(rf"\frac{{{a[0]}}}{{{a[1]}}} {rel} \frac{{{b[0]}}}{{{b[1]}}}"
-                     + (rf" = \frac{{{half[0]}}}{{{half[1]}}}" if eq else ""),
-                     font_size=64, color=GOLD)
+        result = fraction_equation(a, b, eq, font_size=64)
         result.move_to(DOWN * 0.5 + ORIGIN)
         cap = rotulo("Distintas representaciones. La misma fracción." if eq
                      else "Se ven parecidas, pero no son la misma fracción.")
