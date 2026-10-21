@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from video_automation.script_parser import parse_script
 from video_automation.youtube_uploader import YouTubeUploader
-from video_automation.narrator import generate_tts_edge, parse_yaml_text
+from video_automation.narrator import generate_script_audio, generate_tts_edge, parse_yaml_text
 
 logging.basicConfig(
     level=logging.INFO,
@@ -107,18 +107,17 @@ async def run_pipeline_async(args: argparse.Namespace) -> int:
         logger.error(f"❌ Error al parsear el guion '{script_path}': {e}")
         return 1
 
-    # 2. Generación de Narración (TTS)
+    # 2. Generación de Narración (TTS Multi-Voz por Escena y Diálogo)
     audio_output = output_dir / f"{episode_slug}_audio.mp3"
-    logger.info(f"🎙️ [Paso 2/4] Generando narración TTS con la voz '{args.voice}'...")
+    logger.info(f"🎙️ [Paso 2/4] Generando narración TTS multi-voz escena por escena...")
     try:
-        text_content = parse_yaml_text(script_path)
-        if not text_content.strip():
-            logger.warning("⚠️ No se encontró texto de narración en las escenas del guion.")
-            text_content = title
-
-        success = await generate_tts_edge(text=text_content, output_path=audio_output, voice=args.voice)
+        success = await generate_script_audio(
+            yaml_path=script_path,
+            output_path=audio_output,
+            default_voice=args.voice,
+        )
         if not success:
-            raise RuntimeError("Falló la generación de audio con edge-tts.")
+            raise RuntimeError("Falló la generación de audio multi-voz.")
             
         logger.info(f"✅ Audio generado en: {audio_output}")
     except Exception as e:
