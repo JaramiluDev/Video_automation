@@ -64,6 +64,89 @@ class TTSNarrator:
     def _audio_file_is_valid(self, output: Path) -> bool:
         return output.exists() and output.stat().st_size > 0
 
+    def _convert_to_seconds(self, value: Any) -> float | None:
+        if value is None:
+            return None
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                return None
+            try:
+                value = float(value)
+            except ValueError:
+                return None
+        if not isinstance(value, (int, float)):
+            return None
+        if value > 1_000_000_000:
+            return float(value) / 10_000_000.0
+        if value > 1_000:
+            return float(value) / 1000.0
+        return float(value)
+
+    def _parse_word_events(self, events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        word_events: List[Dict[str, Any]] = []
+        for event in events:
+            if not isinstance(event, dict):
+                continue
+            if "words" in event and isinstance(event["words"], list):
+                word_events.extend(self._parse_word_events(event["words"]))
+                continue
+
+            text = (
+                event.get("word")
+                or event.get("Word")
+                or event.get("text")
+                or event.get("Text")
+                or event.get("wordText")
+                or event.get("word_text")
+            )
+            if text is None or str(text).strip() == "":
+                continue
+
+            offset = (
+                event.get("offset")
+                or event.get("Offset")
+                or event.get("offsetInMs")
+                or event.get("offsetInTicks")
+                or event.get("audio_offset")
+                or event.get("audioOffset")
+            )
+            duration = (
+                event.get("duration")
+                or event.get("Duration")
+                or event.get("durationInMs")
+                or event.get("durationInTicks")
+                or event.get("word_duration")
+                or event.get("wordDuration")
+            )
+
+            start_s = self._convert_to_seconds(offset)
+            duration_s = self._convert_to_seconds(duration)
+            if start_s is None:
+                start_s = 0.0
+            if duration_s is None:
+                duration_s = 0.2
+
+            cleaned_word = str(text).strip()
+            if cleaned_word in {"", " ", "\n"}:
+                continue
+            word_events.append({
+                "word": cleaned_word,
+                "start": round(start_s, 3),
+                "end": round(start_s + duration_s, 3),
+            })
+
+        # Remove duplicate or empty entries and keep strict ordering.
+        unique: List[Dict[str, Any]] = []
+        seen: set[str] = set()
+        for item in word_events:
+            key = (item["word"], item["start"], item["end"])
+            if key in seen:
+                continue
+            seen.add(key)
+            unique.append(item)
+        return unique
+
     async def _edge_stream_to_file(self, text: str, output_path: Path):
         """Internal helper that streams audio from edge-tts and yields events.
 
@@ -78,47 +161,19 @@ class TTSNarrator:
         word_events: List[Dict[str, Any]] = []
         wrote_audio = False
 
-        # edge_tts yields events; we write audio chunks and capture WordBoundary
         out_file = open(output_path, "wb")
         try:
             async for msg in communicate.stream():
+                if not isinstance(msg, dict):
+                    continue
                 mtype = msg.get("type") or msg.get("event")
                 if mtype in ("AudioChunk", "audio"):
                     chunk = msg.get("data") or msg.get("audio") or msg.get("chunk")
                     if isinstance(chunk, bytes):
                         out_file.write(chunk)
                         wrote_audio = True
-                elif mtype == "WordBoundary" or msg.get("Word") or msg.get("word"):
-                    # Attempt to parse multiple possible schemas for offset/duration
-                    word = msg.get("Word") or msg.get("word") or msg.get("Text") or msg.get("TextFragment")
-                    offset = msg.get("OffsetInTicks") or msg.get("Offset") or msg.get("OffsetInMs")
-                    duration = msg.get("DurationInTicks") or msg.get("Duration") or msg.get("DurationInMs")
-                    # Convert ticks (100ns) to seconds if needed
-                    start_s = None
-                    dur_s = None
-                    if isinstance(offset, (int, float)):
-                        # assume ticks if large; ticks -> seconds = ticks / 10000000
-                        if offset > 1e6:
-                            start_s = float(offset) / 10000000.0
-                        else:
-                            # assume milliseconds
-                            start_s = float(offset) / 1000.0
-                    if isinstance(duration, (int, float)):
-                        if duration > 1e6:
-                            dur_s = float(duration) / 10000000.0
-                        else:
-                            dur_s = float(duration) / 1000.0
-
-                    if word is None:
-                        continue
-
-                    if start_s is None:
-                        start_s = 0.0
-                    if dur_s is None:
-                        dur_s = 0.0
-
-                    word_events.append({"word": str(word), "start": round(start_s, 3), "end": round(start_s + dur_s, 3)})
-
+                elif mtype == "WordBoundary" or "offset" in msg or "duration" in msg or "word" in msg or "words" in msg:
+                    word_events.extend(self._parse_word_events([msg]))
         finally:
             out_file.close()
 

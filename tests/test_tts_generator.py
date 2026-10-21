@@ -1,7 +1,40 @@
 from pathlib import Path
 
+import pytest
+
+from scripts.fetch_sheet_script import rows_to_script
 from video_automation.models import Scene
 from video_automation.narrator import TTSNarrator
+
+
+def test_rows_to_script_requires_narration_for_each_scene():
+    with pytest.raises(ValueError, match="Narracion|dialogo|diálogo"):
+        rows_to_script([
+            {
+                "Escena": "Intro",
+                "Narracion": "",
+                "TipoVisual": "images",
+                "Recurso": "data/assets/placeholder_1.png",
+                "DuracionEstimada": "2.0",
+            }
+        ], 3)
+
+
+def test_edge_tts_event_parser_handles_ms_and_ticks():
+    narrator = TTSNarrator()
+    events = [
+        {"type": "WordBoundary", "offset": 5000, "duration": 1200, "text": "Hola"},
+        {"type": "WordBoundary", "offset": 6200, "duration": 900, "text": "mundo"},
+    ]
+
+    parsed = narrator._parse_word_events(events)
+
+    assert parsed[0]["word"] == "Hola"
+    assert parsed[0]["start"] == pytest.approx(5.0)
+    assert parsed[0]["end"] == pytest.approx(6.2)
+    assert parsed[1]["word"] == "mundo"
+    assert parsed[1]["start"] == pytest.approx(6.2)
+    assert parsed[1]["end"] == pytest.approx(7.1)
 
 
 def test_tts_narrator_creates_audio_and_timestamps(tmp_path):

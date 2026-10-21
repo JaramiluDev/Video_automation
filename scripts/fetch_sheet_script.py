@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from pathlib import Path
 from typing import List, Dict, Any
@@ -27,28 +28,48 @@ except Exception:
 SCRIPTS_DIR = Path("assets/source_scripts")
 
 
+def _normalize_header(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", (value or "").lower().replace("-", "").replace("_", "").replace(" ", ""))
+
+
+def _pick_text(row: Dict[str, Any], candidates: List[str]) -> str:
+    normalized = { _normalize_header(key): value for key, value in row.items() }
+    for key in candidates:
+        value = normalized.get(_normalize_header(key), "")
+        if value is not None and str(value).strip():
+            return str(value).strip()
+    return ""
+
+
 def rows_to_script(sheet_rows: List[Dict[str, Any]], episode: int) -> Dict[str, Any]:
     scenes = []
     for idx, row in enumerate(sheet_rows, start=1):
         scene_id = f"GUION-{episode:02d}-ESCENA-{idx:02d}"
-        narration = row.get("Narracion") or row.get("Narración") or row.get("Narration") or row.get("Narr") or ""
-        render_type = (row.get("TipoVisual") or row.get("Tipo") or "images").lower()
-        recurso = row.get("Recurso") or row.get("Resource") or ""
+        narration = _pick_text(row, ["Narracion", "Narración", "Narration", "Narr", "dialogo", "diálogo", "dialogue", "texto", "text"])
+        if not narration:
+            raise ValueError(f"La escena {scene_id} no tiene texto de narración o diálogo. Revisa la columna Narracion/Dialogo antes de generar audio.")
+
+        render_type = _pick_text(row, ["TipoVisual", "Tipo", "RenderType", "VisualType"]) or "images"
+        recurso = _pick_text(row, ["Recurso", "Resource", "ImagePath", "Imagen"]) or ""
+        duration_raw = _pick_text(row, ["DuracionEstimada", "DuraciónEstimada", "Duration", "Duracion", "Tiempo"])
         try:
-            duration = float(row.get("DuracionEstimada") or row.get("DuraciónEstimada") or row.get("Duration") or 2.0)
-        except Exception:
+            duration = float(duration_raw) if duration_raw else 2.0
+        except ValueError:
             duration = 2.0
 
         image_paths = [recurso] if recurso else []
 
         scenes.append({
             "id": scene_id,
-            "title": row.get("Escena") or row.get("Scene") or scene_id,
+            "title": _pick_text(row, ["Escena", "Scene", "Titulo", "Title"]) or scene_id,
             "narration": narration,
             "image_paths": image_paths,
             "duration": duration,
-            "render_type": render_type,
+            "render_type": render_type.lower(),
         })
+
+    if not scenes:
+        raise ValueError("La hoja de Google Sheets no tiene escenas válidas para transformar en YAML.")
 
     script = {
         "title": f"GUION-{episode:02d}",
@@ -143,6 +164,9 @@ def main(argv: List[str] | None = None) -> int:
         script = rows_to_script(rows, args.episode)
         path = save_script_yaml(script, args.episode)
         return 0
+    except ValueError as exc:
+        print(f"❌ Validación de la hoja fallida: {exc}")
+        return 1
     except Exception as exc:
         print(f"❌ Error al leer Google Sheets: {exc}\nGenerando YAML de fallback.")
         fallback_sample_yaml(args.episode)
