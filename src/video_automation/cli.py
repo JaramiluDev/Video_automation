@@ -8,6 +8,8 @@ import argparse
 from .pipeline import run_pipeline
 from .render_profiles import add_quality_arguments, profile_from_args
 from .script_parser import parse_script
+from typing import Optional
+from importlib import import_module
 
 
 def build_parser() -> argparse.ArgumentParser:

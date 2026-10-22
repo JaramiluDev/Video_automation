@@ -7,6 +7,18 @@ from moviepy import AudioFileClip, ImageClip, concatenate_videoclips
 from .render_profiles import RenderProfile, default_profile
 
 
+def _normalize_resolution(resolution):
+    if isinstance(resolution, str):
+        try:
+            width, height = [int(part.strip()) for part in resolution.lower().split("x")]
+            return (width, height)
+        except ValueError as exc:
+            raise ValueError(f"Resolución inválida: {resolution!r}. Usa el formato '1280x720'.") from exc
+    if isinstance(resolution, (list, tuple)) and len(resolution) == 2:
+        return (int(resolution[0]), int(resolution[1]))
+    raise TypeError(f"Tipo de resolución no soportado: {type(resolution).__name__}")
+
+
 def build_image_clip(image_path: str, duration: float, resolution: tuple[int, int] = (1920, 1080)):
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"No se encontró la imagen: {image_path}")
@@ -29,14 +41,7 @@ def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str,
         "ffmpeg", "-y",
         "-i", video_path,
         "-vf", f"subtitles='{safe_subtitle_path}'",
-<<<<<<< HEAD
-        "-c:v", "libx264",
-        "-crf", "18",
-        "-preset", "slow",
-        "-pix_fmt", "yuv420p",
-=======
         "-c:v", "libx264", *(profile or default_profile()).x264_args(), "-pix_fmt", "yuv420p",
->>>>>>> origin/HG
         "-c:a", "copy",
         output_path,
     ]
@@ -56,25 +61,17 @@ def compose_clips(
     profile: RenderProfile = None,
 ) -> str:
     """
-<<<<<<< HEAD
-    Concatena una lista de clips de MoviePy y exporta el video final,
-    con audio real y subtítulos quemados si se proveen.
-=======
-    Concatena una lista de clips de MoviePy YA CONSTRUIDOS (pueden venir de
-    imágenes o de animaciones renderizadas con Manim, mezclados en cualquier
-    orden) y exporta el video final, con audio real y subtítulos quemados si
-    se proveen. Devuelve la ruta del archivo final.
-
-    `profile` (render_profiles.py) decide preset/CRF/hilos de la exportación;
-    sin perfil se usa $VA_QUALITY o "production".
->>>>>>> origin/HG
+    Concatena una lista de clips de MoviePy YA CONSTRUIDOS y exporta el video final,
+    con audio real y subtítulos quemados si se proveen. Devuelve la ruta del archivo final.
     """
     profile = profile or default_profile()
     write_kwargs = profile.moviepy_write_kwargs()
     clips = [c for c in clips if c is not None]
+
     if not clips:
         raise ValueError("No se generaron clips válidos.")
 
+    normalized_resolution = _normalize_resolution(resolution)
     final_video = concatenate_videoclips(clips, method="compose")
 
     if audio_path and os.path.exists(audio_path):
@@ -86,29 +83,14 @@ def compose_clips(
     if subtitle_path and not has_subtitles:
         print(f"⚠️ Advertencia: no se encontró el .srt {subtitle_path}, se exporta sin subtítulos.")
 
-    video_export_kwargs = {
-        "fps": fps,
-        "bitrate": "12000k",
-        "ffmpeg_params": ["-crf", "18", "-preset", "slow", "-pix_fmt", "yuv420p"],
-    }
-
     if has_subtitles:
         temp_path = output_path.replace(".mp4", "_temp.mp4")
-<<<<<<< HEAD
-        final_video.write_videofile(temp_path, **video_export_kwargs)
-        _burn_subtitles(temp_path, subtitle_path, output_path)
-        os.remove(temp_path)
-    else:
-        final_video.write_videofile(output_path, **video_export_kwargs)
-=======
-        # El intermedio se re-encoda al quemar: va con el preset más rápido.
         temp_kwargs = {**write_kwargs, "preset": "ultrafast"}
         final_video.write_videofile(temp_path, fps=fps, **temp_kwargs)
         _burn_subtitles(temp_path, subtitle_path, output_path, profile=profile)
         os.remove(temp_path)
     else:
         final_video.write_videofile(output_path, fps=fps, **write_kwargs)
->>>>>>> origin/HG
 
     print(f"✅ Video final exportado en: {output_path}")
     return output_path
@@ -132,10 +114,5 @@ def compose_video(
     return compose_clips(
         clips, output_path,
         audio_path=audio_path, subtitle_path=subtitle_path,
-<<<<<<< HEAD
-        fps=fps, resolution=resolution,
-    )
-=======
         fps=fps, resolution=resolution, profile=profile,
     )
->>>>>>> origin/HG

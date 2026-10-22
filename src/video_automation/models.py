@@ -6,6 +6,9 @@ class Dialogue(BaseModel):
     voice_model: str
     text: str
 
+from pydantic import BaseModel, model_validator
+
+
 class Scene(BaseModel):
     id: Optional[str] = None
     title: str
@@ -48,6 +51,17 @@ class Scene(BaseModel):
                 data["dialogues"] = dialogue
             elif dialogues is not None and dialogue is None:
                 data["dialogue"] = dialogues
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_narration_fields(cls, data):
+        if isinstance(data, dict):
+            if data.get("narration") in (None, ""):
+                if data.get("dialogue") is not None:
+                    data["narration"] = data["dialogue"]
+                elif data.get("text") is not None:
+                    data["narration"] = data["text"]
         return data
 
 class OutputSettings(BaseModel):
