@@ -1,0 +1,904 @@
+scenes:
+  - id: escena_01
+    title: Escena 1. Comprender qué se va a construir
+    narration: '(muestra el cartel). Un alumno me preguntó: «¿Cómo pueden ser iguales
+      un medio y dos cuartos?». ¿Por dónde empezamos? (acerca la lupa). Por su duda.
+      Mira: las dos representaciones muestran la mitad de la unidad. Podríamos convertir
+      esa dificultad en un juego. Y en un buen prompt: las instrucciones que daremos
+      a la IA. Primero decidimos qué necesita comprender el grupo; después pedimos
+      el programa. Entonces nuestro caso empieza en el aula, no en el código. (observa
+      la mesa). ¿Todo esto saldrá del mismo programa? Yo pensaba pedir solamente unas
+      fichas. Necesitamos fichas recortables, hojas imprimibles, una guía con respuestas
+      y práctica en pantalla. Cada material cumple una función. También pediré variantes
+      y archivos que podamos guardar. Las respuestas del profesor irán separadas del
+      material del alumnado. (señala la computadora). Y comprobaremos las equivalencias.
+      No estamos encargando solo dibujos: estamos definiendo un sistema didáctico
+      que podamos utilizar en clase. (lee su nota). «Hazme un juego de fracciones».
+      Listo, ya tengo el prompt. (señala las tarjetas). Todavía faltan pistas: ¿para
+      quién?, ¿qué aprenderá?, ¿cómo jugará? y ¿qué debe entregar el programa? ¿No
+      basta con pedir que sea bonito e innovador? Esas palabras no explican lo que
+      necesitas. Cada pregunta resuelve una decisión que no conviene dejar al azar.
+      Entendido. Voy a convertir mi idea en instrucciones concretas.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: '(muestra el cartel). Un alumno me preguntó: «¿Cómo pueden ser iguales
+          un medio y dos cuartos?». ¿Por dónde empezamos?'
+      - character: Detective
+        voice_model: DrSimi
+        text: '(acerca la lupa). Por su duda. Mira: las dos representaciones muestran
+          la mitad de la unidad.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Podríamos convertir esa dificultad en un juego.
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Y en un buen prompt: las instrucciones que daremos a la IA. Primero
+          decidimos qué necesita comprender el grupo; después pedimos el programa.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces nuestro caso empieza en el aula, no en el código.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (observa la mesa). ¿Todo esto saldrá del mismo programa? Yo pensaba
+          pedir solamente unas fichas.
+      - character: Detective
+        voice_model: DrSimi
+        text: Necesitamos fichas recortables, hojas imprimibles, una guía con respuestas
+          y práctica en pantalla. Cada material cumple una función.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: También pediré variantes y archivos que podamos guardar. Las respuestas
+          del profesor irán separadas del material del alumnado.
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala la computadora). Y comprobaremos las equivalencias. No estamos
+          encargando solo dibujos: estamos definiendo un sistema didáctico que podamos
+          utilizar en clase.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (lee su nota). «Hazme un juego de fracciones». Listo, ya tengo el prompt.
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala las tarjetas). Todavía faltan pistas: ¿para quién?, ¿qué aprenderá?,
+          ¿cómo jugará? y ¿qué debe entregar el programa?'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿No basta con pedir que sea bonito e innovador?
+      - character: Detective
+        voice_model: DrSimi
+        text: Esas palabras no explican lo que necesitas. Cada pregunta resuelve una
+          decisión que no conviene dejar al azar.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entendido. Voy a convertir mi idea en instrucciones concretas.
+  - id: escena_02
+    title: Escena 2. Definir el aprendizaje antes del programa
+    narration: '(presenta su planeación). Antes de escribir, describamos el grupo:
+      grado, conocimientos previos y dificultades. No todos necesitan lo mismo. Comenzaré
+      así: «Actúa como especialista en didáctica de las matemáticas y desarrollo de
+      recursos educativos». Después indicaré a quién va dirigido. (señala el aviso).
+      Pero sin nombres ni datos personales del alumnado. Nos interesa el contexto
+      de aprendizaje. Completemos los espacios con las características reales del
+      grupo. Así el encargo tendrá un destinatario claro. (muestra su tarjeta). Aquí
+      están sombreadas dos de cuatro partes iguales. Y aquí, cuatro de ocho. Las unidades
+      tienen el mismo tamaño y ambas muestran la mitad. Entonces el objetivo será
+      que encuentren las fichas que coinciden. Y que expliquen por qué coinciden.
+      No basta con acertar una unión. Escribamos: «Que el alumnado identifique fracciones
+      equivalentes y explique por qué representan la misma proporción de una unidad».
+      Eso sí podremos observar durante el juego. (examina las divisiones). Cada unidad
+      debe dividirse en partes de igual área. La precisión también tiene que aparecer
+      en el prompt. El numerador indicará las partes sombreadas y el denominador,
+      el total. Trabajaremos con fracciones positivas menores que uno. (señala la
+      operación). Para comprobar 2/4 = 4/8, comparo 2 × 8 y 4 × 4: ambos dan dieciséis.
+      Pidamos esa comprobación con enteros, sin aproximaciones decimales, además de
+      dibujos correctamente divididos.'
+    dialogue:
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: '(presenta su planeación). Antes de escribir, describamos el grupo:
+          grado, conocimientos previos y dificultades. No todos necesitan lo mismo.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Comenzaré así: «Actúa como especialista en didáctica de las matemáticas
+          y desarrollo de recursos educativos». Después indicaré a quién va dirigido.'
+      - character: Detective
+        voice_model: DrSimi
+        text: (señala el aviso). Pero sin nombres ni datos personales del alumnado.
+          Nos interesa el contexto de aprendizaje.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Completemos los espacios con las características reales del grupo. Así
+          el encargo tendrá un destinatario claro.
+      - character: Detective
+        voice_model: DrSimi
+        text: (muestra su tarjeta). Aquí están sombreadas dos de cuatro partes iguales.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Y aquí, cuatro de ocho. Las unidades tienen el mismo tamaño y ambas
+          muestran la mitad.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces el objetivo será que encuentren las fichas que coinciden.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Y que expliquen por qué coinciden. No basta con acertar una unión.
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Escribamos: «Que el alumnado identifique fracciones equivalentes y
+          explique por qué representan la misma proporción de una unidad». Eso sí
+          podremos observar durante el juego.'
+      - character: Detective
+        voice_model: DrSimi
+        text: (examina las divisiones). Cada unidad debe dividirse en partes de igual
+          área. La precisión también tiene que aparecer en el prompt.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: El numerador indicará las partes sombreadas y el denominador, el total.
+          Trabajaremos con fracciones positivas menores que uno.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: '(señala la operación). Para comprobar 2/4 = 4/8, comparo 2 × 8 y 4
+          × 4: ambos dan dieciséis.'
+      - character: Detective
+        voice_model: DrSimi
+        text: Pidamos esa comprobación con enteros, sin aproximaciones decimales,
+          además de dibujos correctamente divididos.
+  - id: escena_03
+    title: Escena 3. Explicar qué hace que el juego sea un dominó
+    narration: '(acerca dos fichas). ¿Las dos mitades de cada ficha tienen que valer
+      lo mismo? (señala la unión). No necesariamente. Lo que debe coincidir son los
+      extremos de fichas distintas que se tocan: por ejemplo, un medio con dos cuartos.
+      Las otras mitades pueden mostrar valores diferentes. Así continuamos la cadena.
+      Exacto. Escribe esa regla en el prompt. Queremos un dominó de equivalencias,
+      no solamente tarjetas con parejas de respuestas. Jugaremos por turnos, de dos
+      a cuatro participantes. Primero repartimos y dejamos las restantes en el pozo.
+      Si no tengo una jugada, tomo del pozo. Si la ficha no sirve, paso. Y antes de
+      colocarla, explica por qué los extremos son equivalentes. El prompt debe incluir
+      reparto, turnos y finalización. Gana quien termina sus fichas; si hay bloqueo
+      y el pozo está vacío, quien conserve menos. (levanta las fichas). Podríamos
+      asignar un color a cada valor. Encontrar las parejas sería muy rápido. Pero
+      podrían seguir el color sin comparar las fracciones. Queremos que razonen la
+      equivalencia. (muestra la versión impresa). Pidamos el mismo color para todas
+      las familias y una trama común para imprimir en blanco y negro. Lo escribiré
+      como restricción: «No utilices colores diferentes para revelar las equivalencias».
+      La respuesta tiene que salir de la comparación, no de una pista de color.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (acerca dos fichas). ¿Las dos mitades de cada ficha tienen que valer
+          lo mismo?
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala la unión). No necesariamente. Lo que debe coincidir son los
+          extremos de fichas distintas que se tocan: por ejemplo, un medio con dos
+          cuartos.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Las otras mitades pueden mostrar valores diferentes. Así continuamos
+          la cadena.
+      - character: Detective
+        voice_model: DrSimi
+        text: Exacto. Escribe esa regla en el prompt. Queremos un dominó de equivalencias,
+          no solamente tarjetas con parejas de respuestas.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Jugaremos por turnos, de dos a cuatro participantes. Primero repartimos
+          y dejamos las restantes en el pozo.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Si no tengo una jugada, tomo del pozo. Si la ficha no sirve, paso.
+      - character: Detective
+        voice_model: DrSimi
+        text: Y antes de colocarla, explica por qué los extremos son equivalentes.
+          El prompt debe incluir reparto, turnos y finalización.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Gana quien termina sus fichas; si hay bloqueo y el pozo está vacío,
+          quien conserve menos.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (levanta las fichas). Podríamos asignar un color a cada valor. Encontrar
+          las parejas sería muy rápido.
+      - character: Detective
+        voice_model: DrSimi
+        text: Pero podrían seguir el color sin comparar las fracciones. Queremos que
+          razonen la equivalencia.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (muestra la versión impresa). Pidamos el mismo color para todas las
+          familias y una trama común para imprimir en blanco y negro.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Lo escribiré como restricción: «No utilices colores diferentes para
+          revelar las equivalencias». La respuesta tiene que salir de la comparación,
+          no de una pista de color.'
+  - id: escena_04
+    title: Escena 4. Pedir variantes útiles para distintos grupos
+    narration: '(compara las bandejas). ¿Cómo traduzco «fácil, medio y difícil» en
+      una instrucción útil? Con cantidades concretas: inicial, quince fichas y cinco
+      familias; intermedio, veintiocho y siete; avanzado, cuarenta y cinco y nueve.
+      También especificaremos las familias de fracciones. Esas decisiones definen
+      los conjuntos que debe producir el programa. ¿Asigno cada nivel a una edad?
+      No automáticamente. Estos niveles no son una clasificación por edad validada.
+      Elegiremos según lo que necesite trabajar el grupo. (ordena las muestras). Tenemos
+      tres posibilidades: solo fracciones, solo imágenes o fracción más imagen. Hay
+      que pedirlas expresamente. ¿Y las figuras? ¿Basta con escribir «usa muchas formas»?
+      Mejor concreta: rectángulos, círculos o una combinación de ambos. En cualquier
+      caso, revisaremos que las particiones sean iguales. Así podremos elegir cómo
+      presentar el mismo contenido. Ya veo la diferencia: no pediré «muchas variantes»;
+      indicaré cuáles deben aparecer entre las opciones. (muestra la tarjeta). He
+      escrito «AULA-2026» como semilla. ¿Servirá para recuperar este juego? Sí, siempre
+      que conserves también las mismas opciones en esta versión del programa. La semilla
+      no actúa sola. (guarda la configuración). Anotaré nivel, representación, figuras,
+      papel y tinta junto a esa semilla. Entonces podremos generar otra vez las mismas
+      fichas. Ese es el requisito que debe expresar el prompt: repetir una versión
+      de forma reproducible, no confiar en que salga parecida.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (compara las bandejas). ¿Cómo traduzco «fácil, medio y difícil» en una
+          instrucción útil?
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Con cantidades concretas: inicial, quince fichas y cinco familias;
+          intermedio, veintiocho y siete; avanzado, cuarenta y cinco y nueve.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: También especificaremos las familias de fracciones. Esas decisiones
+          definen los conjuntos que debe producir el programa.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Asigno cada nivel a una edad?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: No automáticamente. Estos niveles no son una clasificación por edad
+          validada. Elegiremos según lo que necesite trabajar el grupo.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: '(ordena las muestras). Tenemos tres posibilidades: solo fracciones,
+          solo imágenes o fracción más imagen. Hay que pedirlas expresamente.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Y las figuras? ¿Basta con escribir «usa muchas formas»?
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Mejor concreta: rectángulos, círculos o una combinación de ambos. En
+          cualquier caso, revisaremos que las particiones sean iguales.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Así podremos elegir cómo presentar el mismo contenido.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Ya veo la diferencia: no pediré «muchas variantes»; indicaré cuáles
+          deben aparecer entre las opciones.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (muestra la tarjeta). He escrito «AULA-2026» como semilla. ¿Servirá
+          para recuperar este juego?
+      - character: Detective
+        voice_model: DrSimi
+        text: Sí, siempre que conserves también las mismas opciones en esta versión
+          del programa. La semilla no actúa sola.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (guarda la configuración). Anotaré nivel, representación, figuras, papel
+          y tinta junto a esa semilla.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces podremos generar otra vez las mismas fichas.
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Ese es el requisito que debe expresar el prompt: repetir una versión
+          de forma reproducible, no confiar en que salga parecida.'
+  - id: escena_05
+    title: Escena 5. Describir el programa que recibirá el profesor
+    narration: '(sostiene el archivo). ¿Todo debe quedar dentro de «domino_fracciones.html»?
+      Sí. HTML, CSS, JavaScript y los dibujos SVG, integrados en un único archivo
+      completo, sin dependencias externas. (señala el navegador). Así podremos abrir
+      el programa en el navegador y usarlo sin conexión una vez obtenido. ¿También
+      podremos generar el código sin internet? No necesariamente. Una cosa es el servicio
+      de IA que lo genera y otra, el funcionamiento del archivo terminado. Dejemos
+      clara esa diferencia. (señala la pantalla). Cada sección debe tener una función
+      clara. Empecemos por «Crear e imprimir»: ahí prepararemos las fichas. En «Practicar»
+      podremos trabajar con el dominó en pantalla. Y en «Guía docente» encontraremos
+      las orientaciones y respuestas para preparar la clase. Son tres tareas distintas;
+      conviene que se reconozcan enseguida. Pide esas tres secciones y una interfaz
+      en español. Organizar el programa también forma parte de redactar el prompt.
+      (selecciona una ficha). Quiero invertirla y colocarla en uno de los extremos.
+      Invertir significa intercambiar sus mitades, no cambiar numerador por denominador.
+      Después podrás unirla a la izquierda o a la derecha. Y si la unión no es válida,
+      el programa debe explicar por qué, sin limitarse a rechazarla. Añadiré también
+      «Pedir una pista», «Deshacer» y «Reiniciar». Con retroalimentación clara y respetuosa.
+      Queremos que cada intento ayude a comprender la equivalencia.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (sostiene el archivo). ¿Todo debe quedar dentro de «domino_fracciones.html»?
+      - character: Detective
+        voice_model: DrSimi
+        text: Sí. HTML, CSS, JavaScript y los dibujos SVG, integrados en un único
+          archivo completo, sin dependencias externas.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (señala el navegador). Así podremos abrir el programa en el navegador
+          y usarlo sin conexión una vez obtenido.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿También podremos generar el código sin internet?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: No necesariamente. Una cosa es el servicio de IA que lo genera y otra,
+          el funcionamiento del archivo terminado. Dejemos clara esa diferencia.
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala la pantalla). Cada sección debe tener una función clara. Empecemos
+          por «Crear e imprimir»: ahí prepararemos las fichas.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: En «Practicar» podremos trabajar con el dominó en pantalla.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Y en «Guía docente» encontraremos las orientaciones y respuestas para
+          preparar la clase.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Son tres tareas distintas; conviene que se reconozcan enseguida.
+      - character: Detective
+        voice_model: DrSimi
+        text: Pide esas tres secciones y una interfaz en español. Organizar el programa
+          también forma parte de redactar el prompt.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (selecciona una ficha). Quiero invertirla y colocarla en uno de los
+          extremos.
+      - character: Detective
+        voice_model: DrSimi
+        text: Invertir significa intercambiar sus mitades, no cambiar numerador por
+          denominador. Después podrás unirla a la izquierda o a la derecha.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Y si la unión no es válida, el programa debe explicar por qué, sin limitarse
+          a rechazarla.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Añadiré también «Pedir una pista», «Deshacer» y «Reiniciar».
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Con retroalimentación clara y respetuosa. Queremos que cada intento
+          ayude a comprender la equivalencia.
+  - id: escena_06
+    title: Escena 6. Especificar cómo deben salir los materiales
+    narration: '(muestra la regla). Pidamos fichas de aproximadamente nueve por cuatro
+      centímetros. El formato físico también necesita instrucciones. (acerca las tijeras
+      al borde). El contorno discontinuo indicará por dónde recortar. (señala el centro).
+      ¡Pero esta línea no se corta! Si separo las mitades, desarmo la ficha. Debe
+      quedar escrito: contorno para recortar y división central para distinguir las
+      mitades. Las dos permanecen unidas. Así sabremos qué pedir y qué revisar en
+      la impresión. (presenta la hoja). Dos columnas por cinco filas: hasta diez fichas
+      en cada hoja. Y un selector para papel A4 o Carta. Al imprimir, elegiremos el
+      tamaño que corresponda. (señala la referencia). Incluyamos esta regla de cinco
+      centímetros para comprobar que se conservaron las medidas. Imprimiremos a escala
+      cien por ciento, sin encabezados ni pies del navegador. Todo eso debe figurar
+      en el encargo. Una hoja bien organizada facilita preparar y recortar el material.
+      (muestra su hoja). ¿Es suficiente pedir imágenes de «alta calidad»? (examina
+      la ampliación). No. Especifica SVG vectoriales y PNG a trescientos píxeles por
+      pulgada, respetando las dimensiones físicas. (organiza la carpeta). Las hojas,
+      fichas y guía se reunirán en el ZIP con los archivos de apoyo. ¿Y el PDF también
+      va dentro? En este programa lo obtenemos desde el diálogo de impresión. No confundamos
+      esa salida con los PNG y SVG del paquete.'
+    dialogue:
+      - character: Detective
+        voice_model: DrSimi
+        text: (muestra la regla). Pidamos fichas de aproximadamente nueve por cuatro
+          centímetros. El formato físico también necesita instrucciones.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (acerca las tijeras al borde). El contorno discontinuo indicará por
+          dónde recortar.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (señala el centro). ¡Pero esta línea no se corta! Si separo las mitades,
+          desarmo la ficha.
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Debe quedar escrito: contorno para recortar y división central para
+          distinguir las mitades.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Las dos permanecen unidas. Así sabremos qué pedir y qué revisar en la
+          impresión.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: '(presenta la hoja). Dos columnas por cinco filas: hasta diez fichas
+          en cada hoja.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Y un selector para papel A4 o Carta. Al imprimir, elegiremos el tamaño
+          que corresponda.
+      - character: Detective
+        voice_model: DrSimi
+        text: (señala la referencia). Incluyamos esta regla de cinco centímetros para
+          comprobar que se conservaron las medidas.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Imprimiremos a escala cien por ciento, sin encabezados ni pies del navegador.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Todo eso debe figurar en el encargo. Una hoja bien organizada facilita
+          preparar y recortar el material.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (muestra su hoja). ¿Es suficiente pedir imágenes de «alta calidad»?
+      - character: Detective
+        voice_model: DrSimi
+        text: (examina la ampliación). No. Especifica SVG vectoriales y PNG a trescientos
+          píxeles por pulgada, respetando las dimensiones físicas.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (organiza la carpeta). Las hojas, fichas y guía se reunirán en el ZIP
+          con los archivos de apoyo.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Y el PDF también va dentro?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: En este programa lo obtenemos desde el diálogo de impresión. No confundamos
+          esa salida con los PNG y SVG del paquete.
+  - id: escena_07
+    title: Escena 7. Pedir acompañamiento docente y comprobaciones
+    narration: '(abre la carpeta). Esta guía tendrá reglas, la clave de las fichas
+      y una cadena completa posible. ¿Podemos utilizar una explicación general de
+      cualquier dominó? (revisa las orientaciones). Necesitamos la guía del juego
+      generado: los valores de ambas mitades y el orden de una solución, indicando
+      colocación normal o invertida. Así podremos preparar la clase y revisar las
+      uniones. (separa las hojas). Dejaré las respuestas con el profesor. Las páginas
+      del alumnado irán por separado. (guarda el archivo). Ya tengo «juego.json».
+      ¿También guarda hasta dónde iba jugando? No. Conserva la configuración del juego:
+      nivel, representación, figuras, papel, tinta y semilla. (abre la configuración).
+      Al importarlo, recuperamos las opciones y el programa vuelve a generar y verificar
+      el material. Entonces recupero el juego preparado, no una partida en curso.
+      Precisamente. Esa diferencia debe quedar clara tanto en el prompt como en las
+      instrucciones que reciba el profesor. (presenta la lista). Revisaremos cantidad
+      de fichas, equivalencias, ausencia de duplicados y existencia de una cadena
+      completa. (ordena las piezas). ¿La solución de referencia tiene que usar todas
+      las fichas? Todas, exactamente una vez. Anotaré cada comprobación. Entonces
+      cualquier orden debería funcionar. No. Que exista una solución no garantiza
+      que cualquier secuencia termine sin bloqueo. Pidamos una cadena válida y pruebas
+      que permitan revisarla, no una promesa sobre todas las jugadas posibles.'
+    dialogue:
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (abre la carpeta). Esta guía tendrá reglas, la clave de las fichas y
+          una cadena completa posible.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Podemos utilizar una explicación general de cualquier dominó?
+      - character: Detective
+        voice_model: DrSimi
+        text: '(revisa las orientaciones). Necesitamos la guía del juego generado:
+          los valores de ambas mitades y el orden de una solución, indicando colocación
+          normal o invertida.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Así podremos preparar la clase y revisar las uniones.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (separa las hojas). Dejaré las respuestas con el profesor. Las páginas
+          del alumnado irán por separado.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (guarda el archivo). Ya tengo «juego.json». ¿También guarda hasta dónde
+          iba jugando?
+      - character: Detective
+        voice_model: DrSimi
+        text: 'No. Conserva la configuración del juego: nivel, representación, figuras,
+          papel, tinta y semilla.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (abre la configuración). Al importarlo, recuperamos las opciones y el
+          programa vuelve a generar y verificar el material.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces recupero el juego preparado, no una partida en curso.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Precisamente. Esa diferencia debe quedar clara tanto en el prompt como
+          en las instrucciones que reciba el profesor.
+      - character: Detective
+        voice_model: DrSimi
+        text: (presenta la lista). Revisaremos cantidad de fichas, equivalencias,
+          ausencia de duplicados y existencia de una cadena completa.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (ordena las piezas). ¿La solución de referencia tiene que usar todas
+          las fichas?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Todas, exactamente una vez. Anotaré cada comprobación.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces cualquier orden debería funcionar.
+      - character: Detective
+        voice_model: DrSimi
+        text: No. Que exista una solución no garantiza que cualquier secuencia termine
+          sin bloqueo. Pidamos una cadena válida y pruebas que permitan revisarla,
+          no una promesa sobre todas las jugadas posibles.
+  - id: escena_08
+    title: Escena 8. Integrar y enviar el prompt
+    narration: '(reúne las tarjetas). Ya tengo muchas decisiones. ¿Cómo las convierto
+      en un solo prompt? Ordénalas por bloques: contexto, objetivo, matemáticas, reglas,
+      funciones, materiales y pruebas. (empieza a redactar). Cada bloque responderá
+      a una necesidad del aula. Yo los integraré en el documento. Así no perderemos
+      los requisitos entre tantas frases. Primero decidimos; después redactamos. El
+      prompt completo será el resultado de ese trabajo, no una lista de palabras que
+      suenan bien. (mira los recortes). Aquí hay fragmentos de código, pero no sé
+      cómo unirlos. (señala el archivo completo). Por eso debemos especificar la entrega:
+      un único HTML completo, sin funciones omitidas ni partes pendientes. (muestra
+      su lista). También necesitamos saber cómo guardarlo, abrirlo en el navegador
+      y comprobarlo. Añadiré: «Entrega el código completo y las instrucciones de uso».
+      Eso nos permitirá pasar del texto recibido a un recurso que podamos probar,
+      sin tener que reconstruirlo con piezas sueltas. (señala la respuesta). ¡Ya llegó
+      el archivo! ¿Lo llevamos a clase? (revisa la lista). Todavía no. Recibir una
+      respuesta no equivale a aprobarla. Hay que abrirla y contrastarla con lo que
+      pedimos. (mantiene visible la meta). Sin olvidar el objetivo: que el alumnado
+      comprenda y explique fracciones equivalentes. Entonces revisaré reglas, funciones
+      y materiales antes de aceptarlo. Y las pruebas. Si algo falla, describiremos
+      el problema y pediremos el ajuste correspondiente.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (reúne las tarjetas). Ya tengo muchas decisiones. ¿Cómo las convierto
+          en un solo prompt?
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Ordénalas por bloques: contexto, objetivo, matemáticas, reglas, funciones,
+          materiales y pruebas.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (empieza a redactar). Cada bloque responderá a una necesidad del aula.
+          Yo los integraré en el documento.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Así no perderemos los requisitos entre tantas frases.
+      - character: Detective
+        voice_model: DrSimi
+        text: Primero decidimos; después redactamos. El prompt completo será el resultado
+          de ese trabajo, no una lista de palabras que suenan bien.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (mira los recortes). Aquí hay fragmentos de código, pero no sé cómo
+          unirlos.
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala el archivo completo). Por eso debemos especificar la entrega:
+          un único HTML completo, sin funciones omitidas ni partes pendientes.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (muestra su lista). También necesitamos saber cómo guardarlo, abrirlo
+          en el navegador y comprobarlo.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Añadiré: «Entrega el código completo y las instrucciones de uso».'
+      - character: Detective
+        voice_model: DrSimi
+        text: Eso nos permitirá pasar del texto recibido a un recurso que podamos
+          probar, sin tener que reconstruirlo con piezas sueltas.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (señala la respuesta). ¡Ya llegó el archivo! ¿Lo llevamos a clase?
+      - character: Detective
+        voice_model: DrSimi
+        text: (revisa la lista). Todavía no. Recibir una respuesta no equivale a aprobarla.
+          Hay que abrirla y contrastarla con lo que pedimos.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: '(mantiene visible la meta). Sin olvidar el objetivo: que el alumnado
+          comprenda y explique fracciones equivalentes.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces revisaré reglas, funciones y materiales antes de aceptarlo.
+      - character: Detective
+        voice_model: DrSimi
+        text: Y las pruebas. Si algo falla, describiremos el problema y pediremos
+          el ajuste correspondiente.
+  - id: escena_09
+    title: Escena 9. Abrir el programa y comprobar resultados básicos
+    narration: '(compara los nombres). Estos archivos parecen iguales: «domino_fracciones.html»
+      y «domino_fracciones.html.txt». Observa el final. El que necesitamos debe terminar
+      en «.html», no en «.txt». (prepara el archivo). Guardaremos el código como texto
+      sin formato, no como un documento de un procesador de palabras. Después revisaré
+      el nombre completo y lo abriré en el navegador. Ese pequeño detalle importa.
+      Antes de buscar un error del programa, asegurémonos de haber guardado correctamente
+      el archivo. (señala las opciones). Probemos una configuración concreta: nivel
+      intermedio, fracción más imagen y rectángulos. Selecciono A4, color uniforme
+      y semilla «AULA-2026». Ahora pulso «Generar juego». Esperamos veintiocho fichas
+      de siete familias, distribuidas en tres hojas para imprimir. ¿Con ver la pantalla
+      ya damos la prueba por terminada? No. Compara lo obtenido con esas cantidades
+      y revisa las fichas. La configuración nos da un resultado esperado contra el
+      cual comprobar el programa. (señala la pizarra). Comprobemos dos casos: 2/4
+      = 4/8, pero 2/4 no es igual a 2/8. En el segundo caso hay dos partes sombreadas
+      en cada dibujo. ¿Por qué no son iguales? Porque cambia el total de partes iguales:
+      dos de cuatro es la mitad; dos de ocho, un cuarto. Por eso no basta con que
+      las fichas se vean bien. Revisemos la unidad, sus divisiones y la fracción,
+      y contrastemos el resultado con la clave docente.'
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: '(compara los nombres). Estos archivos parecen iguales: «domino_fracciones.html»
+          y «domino_fracciones.html.txt».'
+      - character: Detective
+        voice_model: DrSimi
+        text: Observa el final. El que necesitamos debe terminar en «.html», no en
+          «.txt».
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (prepara el archivo). Guardaremos el código como texto sin formato,
+          no como un documento de un procesador de palabras.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Después revisaré el nombre completo y lo abriré en el navegador.
+      - character: Detective
+        voice_model: DrSimi
+        text: Ese pequeño detalle importa. Antes de buscar un error del programa,
+          asegurémonos de haber guardado correctamente el archivo.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: '(señala las opciones). Probemos una configuración concreta: nivel intermedio,
+          fracción más imagen y rectángulos.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Selecciono A4, color uniforme y semilla «AULA-2026». Ahora pulso «Generar
+          juego».
+      - character: Detective
+        voice_model: DrSimi
+        text: Esperamos veintiocho fichas de siete familias, distribuidas en tres
+          hojas para imprimir.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Con ver la pantalla ya damos la prueba por terminada?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: No. Compara lo obtenido con esas cantidades y revisa las fichas. La
+          configuración nos da un resultado esperado contra el cual comprobar el programa.
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala la pizarra). Comprobemos dos casos: 2/4 = 4/8, pero 2/4 no
+          es igual a 2/8.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: En el segundo caso hay dos partes sombreadas en cada dibujo. ¿Por qué
+          no son iguales?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: 'Porque cambia el total de partes iguales: dos de cuatro es la mitad;
+          dos de ocho, un cuarto.'
+      - character: Detective
+        voice_model: DrSimi
+        text: Por eso no basta con que las fichas se vean bien. Revisemos la unidad,
+          sus divisiones y la fracción, y contrastemos el resultado con la clave docente.
+  - id: escena_10
+    title: Escena 10. Probar la práctica y obtener los archivos
+    narration: (selecciona una ficha). Voy a invertirla, unirla y después deshacer
+      la jugada. Comprueba que cada acción haga lo previsto. No estamos probando solo
+      que existan los botones. (lee la pista). Esta ayuda propone una unión válida
+      ahora, pero no garantiza terminar toda la cadena sin bloqueo. ¿Y contra quién
+      se juega en pantalla? La práctica es individual o cooperativa, no contra un
+      rival automático. Revisemos también la pista y el reinicio antes de usarla en
+      clase. (pulsa el control). Elijo «Imprimir fichas / PDF». ¿Dónde aparece ahora
+      el archivo? Primero se abre el diálogo de impresión del navegador. Ahí seleccionamos
+      «Guardar como PDF» y guardamos. (separa los materiales). Si imprimimos solo
+      las fichas, la guía docente no se incluye. Debemos elegir qué material necesitamos.
+      Entonces no buscaré otro botón de exportación directa. Así es. En este programa,
+      obtener el PDF pasa por la impresión del navegador. (abre el paquete). El ZIP
+      tiene varios archivos. ¿Qué corresponde a cada cosa? «hojas», «fichas_individuales»
+      y «guia_docente» reúnen los materiales en PNG y SVG. (señala los archivos de
+      apoyo). «juego.json» conserva la configuración e «INSTRUCCIONES.txt» explica
+      el uso. Revisa el contenido, no solo que la descarga termine. ¿Y si necesito
+      un PDF? Lo obtendremos mediante impresión. Aquí comprobamos las hojas, las fichas,
+      la guía y los archivos de apoyo del paquete.
+    dialogue:
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (selecciona una ficha). Voy a invertirla, unirla y después deshacer
+          la jugada.
+      - character: Detective
+        voice_model: DrSimi
+        text: Comprueba que cada acción haga lo previsto. No estamos probando solo
+          que existan los botones.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (lee la pista). Esta ayuda propone una unión válida ahora, pero no garantiza
+          terminar toda la cadena sin bloqueo.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Y contra quién se juega en pantalla?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: La práctica es individual o cooperativa, no contra un rival automático.
+          Revisemos también la pista y el reinicio antes de usarla en clase.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (pulsa el control). Elijo «Imprimir fichas / PDF». ¿Dónde aparece ahora
+          el archivo?
+      - character: Detective
+        voice_model: DrSimi
+        text: Primero se abre el diálogo de impresión del navegador. Ahí seleccionamos
+          «Guardar como PDF» y guardamos.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (separa los materiales). Si imprimimos solo las fichas, la guía docente
+          no se incluye. Debemos elegir qué material necesitamos.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Entonces no buscaré otro botón de exportación directa.
+      - character: Detective
+        voice_model: DrSimi
+        text: Así es. En este programa, obtener el PDF pasa por la impresión del navegador.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (abre el paquete). El ZIP tiene varios archivos. ¿Qué corresponde a
+          cada cosa?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: «hojas», «fichas_individuales» y «guia_docente» reúnen los materiales
+          en PNG y SVG.
+      - character: Detective
+        voice_model: DrSimi
+        text: (señala los archivos de apoyo). «juego.json» conserva la configuración
+          e «INSTRUCCIONES.txt» explica el uso. Revisa el contenido, no solo que la
+          descarga termine.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Y si necesito un PDF?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Lo obtendremos mediante impresión. Aquí comprobamos las hojas, las fichas,
+          la guía y los archivos de apoyo del paquete.
+  - id: escena_11
+    title: Escena 11. Aprender a corregir el prompt
+    narration: '(abre el JSON). Voy a recuperar la configuración que guardamos antes.
+      (compara las hojas). Tengo la versión anterior y la recuperada. Revisaré que
+      las fichas coincidan. Compara también las opciones y la semilla «AULA-2026».
+      Dentro de esta versión del programa deben reproducir el mismo material. ¿Después
+      puedo pulsar «Crear otra versión»? Sí, después de comprobar la recuperación.
+      Recuperar un juego conocido y generar una variante nueva son pruebas diferentes.
+      (muestra el ejemplo hipotético). Supongamos que pedí partes iguales y recibí
+      este dibujo. ¿Escribo simplemente «no funciona»? Mejor responde tres preguntas:
+      qué hiciste, qué ocurrió y qué debía ocurrir. (prepara la lista). Incluye la
+      configuración utilizada para que el problema pueda reproducirse. Diré: «Elegí
+      rectángulos; aparecieron divisiones desiguales; necesito que todas representen
+      partes de igual área». Ahora el reporte es preciso. Y recordemos: este es un
+      ejemplo hipotético, no un fallo comprobado del archivo. (empieza a escribir).
+      Voy a pedir la corrección. ¿Cómo evito que desaparezcan las funciones que ya
+      sirven? (señala el panel). Pide conservarlas expresamente: interfaz, controles,
+      impresión, guía docente y ZIP. Escribiré: «Corrige el problema descrito, conserva
+      las funciones existentes, entrega de nuevo el archivo completo y explica qué
+      cambió». (revisa las pruebas pendientes). Cuando llegue, repetiremos las comprobaciones
+      afectadas y revisaremos que lo demás siga funcionando. Una corrección no termina
+      al recibir otra respuesta.'
+    dialogue:
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (abre el JSON). Voy a recuperar la configuración que guardamos antes.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (compara las hojas). Tengo la versión anterior y la recuperada. Revisaré
+          que las fichas coincidan.
+      - character: Detective
+        voice_model: DrSimi
+        text: Compara también las opciones y la semilla «AULA-2026». Dentro de esta
+          versión del programa deben reproducir el mismo material.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: ¿Después puedo pulsar «Crear otra versión»?
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Sí, después de comprobar la recuperación. Recuperar un juego conocido
+          y generar una variante nueva son pruebas diferentes.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (muestra el ejemplo hipotético). Supongamos que pedí partes iguales
+          y recibí este dibujo. ¿Escribo simplemente «no funciona»?
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Mejor responde tres preguntas: qué hiciste, qué ocurrió y qué debía
+          ocurrir.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (prepara la lista). Incluye la configuración utilizada para que el problema
+          pueda reproducirse.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Diré: «Elegí rectángulos; aparecieron divisiones desiguales; necesito
+          que todas representen partes de igual área».'
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Ahora el reporte es preciso. Y recordemos: este es un ejemplo hipotético,
+          no un fallo comprobado del archivo.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (empieza a escribir). Voy a pedir la corrección. ¿Cómo evito que desaparezcan
+          las funciones que ya sirven?
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala el panel). Pide conservarlas expresamente: interfaz, controles,
+          impresión, guía docente y ZIP.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: 'Escribiré: «Corrige el problema descrito, conserva las funciones existentes,
+          entrega de nuevo el archivo completo y explica qué cambió».'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (revisa las pruebas pendientes). Cuando llegue, repetiremos las comprobaciones
+          afectadas y revisaremos que lo demás siga funcionando. Una corrección no
+          termina al recibir otra respuesta.
+  - id: escena_12
+    title: Escena 12. Llevar el material al aula y cerrar el aprendizaje
+    narration: '(examina la primera hoja). Antes de preparar todos los juegos, revisemos
+      esta impresión: tamaño, legibilidad y sombreado. (mide la referencia). Compararé
+      la marca de cinco centímetros con la regla. Y probemos el recorte por el contorno
+      exterior. La línea central debe quedar intacta. Las respuestas permanecerán
+      separadas del material del alumnado. Primero una prueba; después las copias.
+      Si algo no coincide, lo ajustaremos antes de imprimir todo el material para
+      el grupo. ¿Por qué representan la misma fracción? (escucha antes de intervenir).
+      Muéstrenlo ahora con dos dibujos de unidades del mismo tamaño. (mantiene la
+      guía aparte). Las respuestas se quedan aquí; primero escucharemos sus razones.
+      (muestra el material). ¿Tengo que memorizar este prompt para crear otro recurso?
+      (señala el recorrido). No. Conserva el procedimiento: objetivo, requisitos,
+      código, pruebas y aula. (abre una carpeta nueva). El prompt expresa nuestras
+      instrucciones; el código es el programa resultante. Para otro material, adaptaremos
+      las decisiones al nuevo objetivo. Y lo comprobaremos antes de llevarlo al grupo.
+      Esa es la lección del caso: diseña, pide, comprueba y enseña. La próxima idea
+      empieza otra vez en el aula.'
+    dialogue:
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: '(examina la primera hoja). Antes de preparar todos los juegos, revisemos
+          esta impresión: tamaño, legibilidad y sombreado.'
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (mide la referencia). Compararé la marca de cinco centímetros con la
+          regla.
+      - character: Detective
+        voice_model: DrSimi
+        text: Y probemos el recorte por el contorno exterior. La línea central debe
+          quedar intacta.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: Las respuestas permanecerán separadas del material del alumnado.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Primero una prueba; después las copias. Si algo no coincide, lo ajustaremos
+          antes de imprimir todo el material para el grupo.
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: ¿Por qué representan la misma fracción?
+      - character: Detective
+        voice_model: DrSimi
+        text: (escucha antes de intervenir). Muéstrenlo ahora con dos dibujos de unidades
+          del mismo tamaño.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (mantiene la guía aparte). Las respuestas se quedan aquí; primero escucharemos
+          sus razones.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: (muestra el material). ¿Tengo que memorizar este prompt para crear otro
+          recurso?
+      - character: Detective
+        voice_model: DrSimi
+        text: '(señala el recorrido). No. Conserva el procedimiento: objetivo, requisitos,
+          código, pruebas y aula.'
+      - character: Ana
+        voice_model: PersonajeFemenino
+        text: (abre una carpeta nueva). El prompt expresa nuestras instrucciones;
+          el código es el programa resultante. Para otro material, adaptaremos las
+          decisiones al nuevo objetivo.
+      - character: AgenteCero
+        voice_model: PersonajeVaronil2
+        text: Y lo comprobaremos antes de llevarlo al grupo.
+      - character: Detective
+        voice_model: DrSimi
+        text: 'Esa es la lección del caso: diseña, pide, comprueba y enseña. La próxima
+          idea empieza otra vez en el aula.'

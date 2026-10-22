@@ -1,0 +1,102 @@
+# Video 2 — Dominó de fracciones equivalentes (GUION-02)
+# Solo las escenas de animación matemática (Manim). En el guion completo se
+# intercalan con las escenas de imágenes/Ken Burns del resto del equipo.
+#
+# Contrato de tiempos: cada clip dura EXACTAMENTE `duration` segundos
+# (round(duration * fps) cuadros). Cambia la duración aquí y la animación se
+# reacomoda sola: si hay más tiempo se alargan las pausas; si hay menos, se
+# comprime todo.
+#
+# Probar:  python scripts/render_video2_scenes.py examples/video2_manim.yaml
+title: "Video 2 · Animaciones matemáticas"
+output_filename: "video2_manim.mp4"
+output_settings:
+  resolution: [1920, 1080]
+  fps: 30
+scenes:
+  - id: "ESCENA-02-IMG05"
+    title: "Distintas representaciones, la misma fracción"
+    narration: "Dos unidades del mismo tamaño: dos de cuatro partes y cuatro de ocho partes ocupan la misma mitad."
+    image_paths: []
+    duration: 10.0
+    render_type: "manim"
+    manim_scene: "V2E02_RepresentacionesEquivalentes"
+    manim_params: {a: "2/4", b: "4/8", figura: "rect"}
+
+  - id: "ESCENA-02-IMG06"
+    title: "Las matemáticas también deben especificarse"
+    narration: "Dos cuartos es igual a cuatro octavos porque dos por ocho y cuatro por cuatro dan dieciséis."
+    image_paths: []
+    duration: 9.5
+    render_type: "manim"
+    manim_scene: "V2E02_ProductosCruzados"
+    manim_params: {a: "2/4", b: "4/8"}
+
+  - id: "ESCENA-03-IMG07"
+    title: "Se unen los extremos equivalentes"
+    narration: "La equivalencia se exige entre las mitades de fichas distintas que se tocan."
+    image_paths: []
+    duration: 10.0
+    render_type: "manim"
+    manim_scene: "V2E03_UnionDomino"
+
+  - id: "ESCENA-03-IMG09"
+    title: "Comparar valores, no colores"
+    narration: "Si cada valor tiene un color, el color da la respuesta. Usamos un color uniforme y una trama para blanco y negro."
+    image_paths: []
+    duration: 9.0
+    render_type: "manim"
+    manim_scene: "V2E03_ColorUniforme"
+
+  - id: "ESCENA-04-IMG10"
+    title: "Tres niveles"
+    narration: "Con cinco, siete y nueve familias se obtienen quince, veintiocho y cuarenta y cinco fichas."
+    image_paths: []
+    duration: 13.0
+    render_type: "manim"
+    manim_scene: "V2E04_NivelesDificultad"
+    manim_params: {nivel_detalle: "inicial"}
+
+  - id: "ESCENA-04-IMG11"
+    title: "Fracciones, imágenes o ambas"
+    narration: "La misma fracción puede mostrarse escrita, con una imagen o con ambas."
+    image_paths: []
+    duration: 9.0
+    render_type: "manim"
+    manim_scene: "V2E04_FigurasRepresentacion"
+    manim_params: {fraccion: "3/4", multiplicador: 2}
+
+  - id: "ESCENA-06-IMG16"
+    title: "Medidas de la ficha y de la hoja"
+    narration: "Cada ficha mide noventa por cuarenta milímetros; se recorta el contorno y se conserva la línea central."
+    image_paths: []
+    duration: 11.0
+    render_type: "manim"
+    manim_scene: "V2E06_MedidasFicha"
+    manim_params: {papel: "A4"}
+
+  - id: "ESCENA-07-IMG21"
+    title: "Cadena completa"
+    narration: "La solución de referencia usa todas las fichas exactamente una vez."
+    image_paths: []
+    duration: 15.0
+    render_type: "manim"
+    manim_scene: "V2E07_CadenaCompleta"
+    manim_params: {nivel: "inicial", semilla: "AULA-2026", modo: "mixto", figuras: "rect"}
+
+  - id: "ESCENA-09-IMG27"
+    title: "Comprobación manual"
+    narration: "Dos cuartos es igual a cuatro octavos, pero dos cuartos no es igual a dos octavos."
+    image_paths: []
+    duration: 11.0
+    render_type: "manim"
+    manim_scene: "V2E09_ComprobacionManual"
+    manim_params: {a: "2/4", b: "4/8", c: "2/8"}
+
+  - id: "ESCENA-12-IMG36"
+    title: "Diseña. Pide. Comprueba. Enseña."
+    narration: "Objetivo, requisitos, código, pruebas y aula."
+    image_paths: []
+    duration: 9.0
+    render_type: "manim"
+    manim_scene: "V2E12_CierreRecorrido"

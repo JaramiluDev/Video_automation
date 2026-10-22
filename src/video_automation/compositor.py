@@ -1,7 +1,10 @@
 import os
+import subprocess
 from pathlib import Path
 
 from moviepy import AudioFileClip, ImageClip, concatenate_videoclips
+
+from .render_profiles import RenderProfile, default_profile
 
 
 def _normalize_resolution(resolution):
@@ -24,7 +27,47 @@ def build_image_clip(image_path: str, duration: float, resolution: tuple[int, in
     return clip.resized(resolution)
 
 
-def compose_clips(clips, output_path: str, audio_path: str | None = None, subtitle_path: str | None = None, fps: int = 30, resolution: tuple[int, int] | str = (1920, 1080)) -> str:
+def _burn_subtitles(video_path: str, subtitle_path: str, output_path: str,
+                    profile: RenderProfile = None) -> None:
+    """
+    Quema (hardcodea) un archivo .srt directamente sobre el video usando el
+    filtro 'subtitles' de FFmpeg.
+    """
+    print(f"Quemando subtítulos desde: {subtitle_path}")
+
+    safe_subtitle_path = subtitle_path.replace("\\", "/").replace(":", "\\:")
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", video_path,
+        "-vf", f"subtitles='{safe_subtitle_path}'",
+        "-c:v", "libx264", *(profile or default_profile()).x264_args(), "-pix_fmt", "yuv420p",
+        "-c:a", "copy",
+        output_path,
+    ]
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"❌ Error al quemar subtítulos con FFmpeg:\n{result.stderr}")
+
+
+def compose_clips(
+    clips: list,
+    output_path: str,
+    audio_path: str = None,
+    subtitle_path: str = None,
+    fps: int = 30,
+    resolution: tuple = (1920, 1080),
+    profile: RenderProfile = None,
+) -> str:
+    """
+    Concatena una lista de clips de MoviePy YA CONSTRUIDOS y exporta el video final,
+    con audio real y subtítulos quemados si se proveen. Devuelve la ruta del archivo final.
+    """
+    profile = profile or default_profile()
+    write_kwargs = profile.moviepy_write_kwargs()
+    clips = [c for c in clips if c is not None]
+
     if not clips:
         raise ValueError("No se generaron clips válidos.")
 
@@ -34,34 +77,42 @@ def compose_clips(clips, output_path: str, audio_path: str | None = None, subtit
     if audio_path and os.path.exists(audio_path):
         final_video = final_video.with_audio(AudioFileClip(audio_path))
 
-    output_file = Path(output_path)
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    final_video.write_videofile(str(output_file), fps=fps, codec="libx264")
-    return str(output_file)
+    os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
+    has_subtitles = bool(subtitle_path) and os.path.exists(subtitle_path)
+    if subtitle_path and not has_subtitles:
+        print(f"⚠️ Advertencia: no se encontró el .srt {subtitle_path}, se exporta sin subtítulos.")
 
-def compose_video(images_or_clips, durations_or_clips, output_path: str, audio_path: str | None = None, subtitle_path: str | None = None, fps: int = 30, resolution: tuple[int, int] | str = (1920, 1080)) -> str:
-    """Compatibilidad con el pipeline y con la API pública esperada por el proyecto.
-
-    Acepta dos formas:
-    - una lista de clips ya creados
-    - una lista de rutas de imagen + una lista de duraciones
-    """
-    normalized_resolution = _normalize_resolution(resolution)
-
-    if images_or_clips and isinstance(images_or_clips[0], str):
-        if not isinstance(durations_or_clips, (list, tuple)):
-            raise TypeError("Cuando se pasan rutas de imagen, se requiere una lista de duraciones.")
-        clips = [build_image_clip(img, duration, normalized_resolution) for img, duration in zip(images_or_clips, durations_or_clips)]
+    if has_subtitles:
+        temp_path = output_path.replace(".mp4", "_temp.mp4")
+        temp_kwargs = {**write_kwargs, "preset": "ultrafast"}
+        final_video.write_videofile(temp_path, fps=fps, **temp_kwargs)
+        _burn_subtitles(temp_path, subtitle_path, output_path, profile=profile)
+        os.remove(temp_path)
     else:
-        clips = list(images_or_clips)
+        final_video.write_videofile(output_path, fps=fps, **write_kwargs)
 
+    print(f"✅ Video final exportado en: {output_path}")
+    return output_path
+
+
+def compose_video(
+    image_paths: list,
+    durations: list,
+    output_path: str,
+    audio_path: str = None,
+    subtitle_path: str = None,
+    fps: int = 30,
+    resolution: tuple = (1920, 1080),
+    profile: RenderProfile = None,
+) -> str:
+    """
+    Compatibilidad hacia atrás: arma clips a partir de una lista de imágenes
+    y duraciones y delega en compose_clips().
+    """
+    clips = [build_image_clip(img, dur, resolution) for img, dur in zip(image_paths, durations)]
     return compose_clips(
-        clips,
-        output_path,
-        audio_path=audio_path,
-        subtitle_path=subtitle_path,
-        fps=fps,
-        resolution=normalized_resolution,
+        clips, output_path,
+        audio_path=audio_path, subtitle_path=subtitle_path,
+        fps=fps, resolution=resolution, profile=profile,
     )
-

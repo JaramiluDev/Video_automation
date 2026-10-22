@@ -1,102 +1,199 @@
+#!/usr/bin/env python3
+"""
+Orquestador Principal del Pipeline de Automatización de Video (Dinamico).
+Soporta procesamiento completo E2E resolviendo rutas por convención a partir del ID del guion.
+"""
+
+import argparse
+import asyncio
+import logging
 from pathlib import Path
+import sys
+import subprocess
 
-from .compositor import compose_video
-from .narrator import TTSNarrator
-from .script_parser import parse_script
-from .subtitles import SubtitleGenerator
-from moviepy import AudioFileClip, concatenate_audioclips
+# Asegurar que 'src' esté en el PATH para importaciones relativas
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+from video_automation.script_parser import parse_script
+from video_automation.youtube_uploader import YouTubeUploader
+from video_automation.narrator import generate_script_audio, generate_tts_edge, parse_yaml_text
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger("run_pipeline")
 
 
-def run_pipeline(script_path: str, output_dir: str, fps: int = 30, resolution: str = "1920x1080", include_audio: bool = True, combine_audio: bool = False) -> str:
-    print(f"Iniciando pipeline para: {script_path}")
-    script = parse_script(script_path)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Ejecuta el pipeline E2E dinámicamente a partir de un nombre o ruta de guion YAML.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "-s",
+        "--script",
+        type=str,
+        required=True,
+        help="Nombre del guion (ej. GUION-02) o ruta relativa al archivo YAML.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        type=Path,
+        default=Path("data/output"),
+        help="Directorio base donde se guardarán los entregables generados",
+    )
+    parser.add_argument(
+        "--voice",
+        type=str,
+        default="es-MX-DaliaNeural",
+        help="Voz de Edge-TTS a utilizar para la narración",
+    )
+    parser.add_argument(
+        "--upload",
+        action="store_true",
+        help="Si se activa, el video renderizado se subirá automáticamente a YouTube",
+    )
+    parser.add_argument(
+        "--privacy",
+        type=str,
+        choices=["private", "unlisted", "public"],
+        default="private",
+        help="Estado de privacidad para la subida a YouTube",
+    )
+    parser.add_argument(
+        "--thumbnail",
+        type=Path,
+        default=None,
+        help="Ruta a una miniatura personalizada (opcional)",
+    )
+    return parser.parse_args()
 
-    all_images = []
-    all_durations = []
-    narrative_audio = []
 
-    output_root = Path(output_dir)
-    output_root.mkdir(parents=True, exist_ok=True)
+async def run_pipeline_async(args: argparse.Namespace) -> int:
+    input_arg = args.script.strip()
+    
+    # --- RESOLUCIÓN DIRECTA SEGÚN TU ESTRUCTURA DE VS CODE ---
+    # Si pasas "GUION-02", armamos la ruta exacta que sabemos que existe en assets/source_scripts/
+    if not input_arg.endswith(".yaml"):
+        script_path = Path("assets/source_scripts") / input_arg / f"{input_arg}.yaml"
+    else:
+        script_path = Path(input_arg)
 
-    for scene in script.scenes:
-        for img in scene.image_paths:
-            all_images.append(img)
-            all_durations.append(scene.duration / len(scene.image_paths))
+    script_path = script_path.resolve()
+    
+    if not script_path.is_file():
+        logger.error(f"❌ No se encontró el archivo en la ruta esperada: {script_path}")
+        return 1
 
-        if include_audio and scene.narration.strip():
-            audio_output = output_root / "audio" / f"{scene.id}.wav"
-            audio_output.parent.mkdir(parents=True, exist_ok=True)
-            narration_result = TTSNarrator().generate_audio(scene.narration, str(audio_output))
-            generated_path = Path(narration_result["audio_path"])
-            if not generated_path.exists() or generated_path.stat().st_size == 0:
-                raise ValueError(f"El archivo de audio no se creó correctamente para la escena {scene.id}: {generated_path}")
-            # Write per-scene SRT (word-level) and keep for a combined SRT
-            words = narration_result.get("words", [])
-            srt_segments = []
-            for w in words:
-                srt_segments.append({"start": w["start"], "end": w["end"], "text": w["word"]})
-            srt_path = output_root / "audio" / f"{scene.id}.srt"
-            SubtitleGenerator.export_srt(srt_segments, str(srt_path))
+    episode_slug = script_path.stem
+    output_dir: Path = args.output_dir.resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-            narrative_audio.append({
-                "scene_id": scene.id,
-                "audio_path": narration_result["audio_path"],
-                "duration": narration_result["duration"],
-                "srt_path": str(srt_path),
-                "words": words,
-            })
+    logger.info(f"🎬 Iniciando pipeline para el episodio: {episode_slug}")
+    logger.info(f"📂 Archivo de guion localizado en: {script_path}")
 
-    output_file = output_root / script.output_filename
-    compose_video(all_images, all_durations, str(output_file), fps=fps, resolution=resolution)
+  # 1. Parseo del Guion YAML
+    logger.info("📄 [Paso 1/4] Parseando y validando guion YAML...")
+    try:
+        # CONVERTIMOS A STRING PLANO PARA QUE EL PARSER NO SE EQUIVOQUE
+        parsed_script = parse_script(str(script_path))
+        title = getattr(parsed_script, "title", episode_slug)
+        description = getattr(parsed_script, "description", f"Video automatizado del episodio {episode_slug}")
+        logger.info(f"✅ Guion validado: '{title}'")
+    except Exception as e:
+        logger.error(f"❌ Error al parsear el guion '{script_path}': {e}")
+        return 1
 
-    # Merge per-scene srt segments into a single subtitles file aligned to
-    # the composed timeline start. If requested, also create a single MP3.
-    if include_audio and narrative_audio:
-        subtitles_dir = output_root / "subtitles"
-        subtitles_dir.mkdir(parents=True, exist_ok=True)
-        combined_path = subtitles_dir / f"{Path(script.output_filename).stem}.srt"
+    # 2. Generación de Narración (TTS Multi-Voz por Escena y Diálogo)
+    audio_output = output_dir / f"{episode_slug}_audio.mp3"
+    logger.info(f"🎙️ [Paso 2/4] Generando narración TTS multi-voz escena por escena...")
+    try:
+        success = await generate_script_audio(
+            yaml_path=script_path,
+            output_path=audio_output,
+            default_voice=args.voice,
+        )
+        if not success:
+            raise RuntimeError("Falló la generación de audio multi-voz.")
+            
+        logger.info(f"✅ Audio generado en: {audio_output}")
+    except Exception as e:
+        logger.error(f"❌ Error en la generación de TTS: {e}")
+        return 1
 
-        if combine_audio:
-            # Build combined audio and remap word timestamps
-            audio_clips = []
-            combined_words = []
-            cursor = 0.0
-            for item in narrative_audio:
-                clip = AudioFileClip(str(item["audio_path"]))
-                audio_clips.append(clip)
-                for w in item.get("words", []):
-                    combined_words.append({"start": round(float(w["start"]) + cursor, 3), "end": round(float(w["end"]) + cursor, 3), "text": w["word"]})
-                # Advance cursor by the duration of the clip for correct offsets
-                cursor += float(item.get("duration", clip.duration))
+    # 3. Muxing / Ensamble Final (Búsqueda inteligente del video base)
+    final_video = output_dir / f"{episode_slug}_final.mp4"
+    logger.info(f"🎞️ [Paso 3/4] Ensamblando video final en: {final_video}")
+    
+    try:
+        # Buscamos dinámicamente el video base en la misma carpeta del guion o en el output
+        candidates = [
+            script_path.parent / "manim_overlay.mp4",
+            script_path.parent / f"{episode_slug}_base.mp4",
+            output_dir / f"{episode_slug}_base.mp4"
+        ]
+        
+        base_video_candidate = next((c for c in candidates if c.is_file()), None)
 
-            if audio_clips:
-                final_audio = concatenate_audioclips(audio_clips)
-                output_combined = output_root / "audio" / "combined.mp3"
-                output_combined.parent.mkdir(parents=True, exist_ok=True)
-                final_audio.write_audiofile(str(output_combined), codec="mp3")
-                # Close clips
-                for c in audio_clips:
-                    c.close()
-
-                # Export combined SRT using remapped combined_words
-                SubtitleGenerator.export_srt(combined_words, str(combined_path))
-                print(f"Audio combinado en: {output_combined}. Subtítulos combinados: {combined_path}")
-            else:
-                print("No hay clips de audio para combinar.")
+        if base_video_candidate:
+            logger.info(f"🔍 Video base localizado dinámicamente en: {base_video_candidate}")
+            cmd = [
+                "ffmpeg", "-y",
+                "-i", str(base_video_candidate),
+                "-i", str(audio_output),
+                "-c:v", "copy",
+                "-c:a", "aac",
+                "-shortest",
+                str(final_video)
+            ]
+            subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            logger.info("✅ Ensamble con FFmpeg completado con éxito.")
         else:
-            # Simple concatenation of per-scene SRT files
-            all_text = []
-            for item in narrative_audio:
-                try:
-                    text = Path(item["srt_path"]).read_text(encoding="utf-8")
-                    all_text.append(text)
-                except Exception:
-                    pass
-            with open(combined_path, "w", encoding="utf-8") as outf:
-                for piece in all_text:
-                    outf.write(piece)
+            logger.warning(
+                f"⚠️ No se encontró ningún video base (ni manim_overlay.mp4 ni *_base.mp4) en la carpeta del episodio. "
+                f"Se empaquetará únicamente la pista de audio lista en {audio_output}."
+            )
+            final_video = audio_output
+            
+    except Exception as e:
+        logger.error(f"❌ Error durante el ensamble del video: {e}")
+        return 1
 
-            print(f"Audio generado para {len(narrative_audio)} escenas. Carpeta: {output_root / 'audio'}. Subtítulos: {combined_path}")
+    # 4. Subida Opcional a YouTube
+    if args.upload:
+        logger.info("🚀 [Paso 4/4] Publicando video en YouTube...")
+        if not final_video.suffix == ".mp4":
+            logger.error("❌ Se requiere un archivo .mp4 válido para subir a YouTube.")
+            return 1
 
-    print(f"Pipeline completado. Video guardado en: {output_file}")
-    return str(output_file)
+        try:
+            uploader = YouTubeUploader(auto_authenticate=True)
+            uploader.upload_video(
+                title=title,
+                description=description,
+                file_path=final_video,
+                thumbnail_path=args.thumbnail,
+                privacy_status=args.privacy,
+            )
+            logger.info("🎉 ¡Proceso de subida a YouTube finalizado!")
+        except Exception as e:
+            logger.error(f"❌ Error durante la subida a YouTube: {e}")
+            return 1
+    else:
+        logger.info("ℹ️ [Paso 4/4] Subida a YouTube omitida (usa --upload para activar).")
+
+    logger.info("✨ ¡Pipeline completado exitosamente!")
+    return 0
+
+
+def main() -> None:
+    args = parse_args()
+    exit_code = asyncio.run(run_pipeline_async(args))
+    sys.exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()

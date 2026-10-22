@@ -6,6 +6,7 @@ Permite validar guiones YAML y ejecutar el pipeline de renderizado de video.
 import argparse
 
 from .pipeline import run_pipeline
+from .render_profiles import add_quality_arguments, profile_from_args
 from .script_parser import parse_script
 from typing import Optional
 from importlib import import_module
@@ -21,20 +22,19 @@ def build_parser() -> argparse.ArgumentParser:
     ren_parser = subparsers.add_parser("render", help="Renderiza el video")
     ren_parser.add_argument("--script", required=True, help="Ruta al script YAML")
     ren_parser.add_argument("--output", default="data/renders", help="Directorio de salida")
-    ren_parser.add_argument("--fps", type=int, default=30, help="Frames por segundo del video")
-    ren_parser.add_argument("--resolution", default="1920x1080", help="Resolución del video (ej. 1280x720)")
+    ren_parser.add_argument("--fps", type=int, default=None,
+                            help="Frames por segundo (por defecto, output_settings del guion o 30)")
+    ren_parser.add_argument("--resolution", default=None,
+                            help="Resolución base, ej. 1280x720 (por defecto, la del guion o 1920x1080). "
+                                 "El perfil de calidad la escala después.")
     ren_parser.add_argument("--no-audio", action="store_true", help="Desactiva la generación de audio")
-    ren_parser.add_argument("--combine-audio", action="store_true", help="Combina los audios por escena en un MP3 único y remapea los subtítulos")
+    ren_parser.add_argument("--no-cache", action="store_true",
+                            help="Vuelve a renderizar los clips Manim aunque estén en caché")
+    add_quality_arguments(ren_parser)
 
-    fetch_render = subparsers.add_parser("fetch-render", help="Descarga un guion desde Google Sheets y lo renderiza")
-    fetch_render.add_argument("--sheet-id", required=True, help="ID del Google Sheet")
-    fetch_render.add_argument("--credentials", required=False, help="Ruta al JSON de la service account")
-    fetch_render.add_argument("--episode", required=True, type=int, help="Número de episodio (ej. 3)")
-    fetch_render.add_argument("--output", default="data/renders", help="Directorio de salida")
-    fetch_render.add_argument("--fps", type=int, default=30, help="Frames por segundo del video")
-    fetch_render.add_argument("--resolution", default="1920x1080", help="Resolución del video (ej. 1280x720)")
-    fetch_render.add_argument("--no-audio", action="store_true", help="Desactiva la generación de audio")
-    fetch_render.add_argument("--combine-audio", action="store_true", help="Combina los audios por escena en un MP3 único y remapea los subtítulos")
+    prof_parser = subparsers.add_parser("profiles", help="Lista los perfiles de calidad")
+    prof_parser.add_argument("--resolution", default="1920x1080", help="Resolución base para el ejemplo")
+    prof_parser.add_argument("--fps", type=int, default=30)
 
     return parser
 
@@ -57,48 +57,21 @@ def main():
             fps=args.fps,
             resolution=args.resolution,
             include_audio=not args.no_audio,
-            combine_audio=args.combine_audio,
+            profile=profile_from_args(args),
+            use_cache=not args.no_cache,
         )
-    elif args.command == "fetch-render":
-        # Lazy import to avoid adding Sheets deps for users who don't need it
-        try:
-            fetch_mod = import_module("scripts.fetch_sheet_script")
-        except Exception:
-            # try package-style import
-            fetch_mod = import_module("..scripts.fetch_sheet_script", package=__package__)
+    elif args.command == "profiles":
+        from .pipeline import parse_resolution
+        from .render_profiles import ENV_VAR, PROFILES, get_profile
 
-        # Call the fetcher to write YAML into assets/source_scripts/GUION-XX/
-        fetch_args = [
-            "--sheet-id",
-            args.sheet_id,
-            "--episode",
-            str(args.episode),
-        ]
-        if getattr(args, "credentials", None):
-            fetch_args += ["--credentials", args.credentials]
-
-        try:
-            ret = fetch_mod.main(fetch_args)
-        except SystemExit as e:
-            # fetch_mod.main may call SystemExit; swallow non-zero only if failed
-            if getattr(e, "code", 0) != 0:
-                print("❌ La descarga del guion falló. Abortando render.")
-                return
-        except Exception as e:
-            print(f"❌ Error ejecutando el fetch: {e}")
-            return
-
-        # Construct expected YAML path and render
-        ep = int(args.episode)
-        script_path = f"assets/source_scripts/GUION-{ep:02d}/GUION-{ep:02d}.yaml"
-        run_pipeline(
-            script_path,
-            args.output,
-            fps=args.fps,
-            resolution=args.resolution,
-            include_audio=not args.no_audio,
-            combine_audio=args.combine_audio,
-        )
+        base = parse_resolution(args.resolution)
+        current = get_profile(None).name
+        for name, prof in PROFILES.items():
+            res, fps = prof.resolve(base, args.fps)
+            mark = "*" if name == current else " "
+            print(f"{mark} {name:<11} {prof.summary(res, fps)}")
+            print(f"  {'':<11} {prof.description}")
+        print(f"\n* = perfil por defecto (${ENV_VAR} o production)")
     else:
         parser.print_help()
 
