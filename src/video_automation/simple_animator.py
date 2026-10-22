@@ -80,11 +80,12 @@ def create_ken_burns_clip(
     image_path: Path,
     output_path: Path,
     is_even_scene: bool,
-    duration: int = DURATION_SECONDS,
+    duration: float = DURATION_SECONDS,
     fps: int = FPS,
     width: int = WIDTH,
     height: int = HEIGHT,
     encode_args: Optional[List[str]] = None,
+    frames: Optional[int] = None,
 ) -> bool:
     """
     Ejecuta FFmpeg mediante subprocess.run para transformar una imagen estática
@@ -96,8 +97,12 @@ def create_ken_burns_clip(
     encode_args: argumentos extra de libx264 (preset/crf/hilos). Los da el
     perfil de calidad (render_profiles.py, --fast/--low-res/--production);
     si es None se usan los valores por defecto de FFmpeg, como antes.
+
+    frames: número EXACTO de cuadros del clip. Si se da, manda sobre
+    `duration` (heavy_render lo usa para que la suma de clips empate con el
+    audio cuadro a cuadro). Sin él: round(duration × fps), como antes.
     """
-    total_frames = duration * fps
+    total_frames = max(1, int(frames if frames is not None else round(float(duration) * fps)))
     # Incremento/decremento por frame para cubrir de 1.0 a 1.25 en total_frames
     step = 0.25 / total_frames  # ~0.0016667 para 150 frames
 
@@ -130,7 +135,8 @@ def create_ken_burns_clip(
         "-pix_fmt", PIXEL_FORMAT,   # Formato de píxel yuv420p
         *(encode_args or []),       # Perfil de calidad: -preset/-crf/-threads
         "-r", str(fps),             # 30 fps
-        "-t", str(duration),        # Duración exacta de 5 segundos
+        "-frames:v", str(total_frames),  # Cuadros exactos (= duración × fps)
+        "-an",
         str(output_path)
     ]
 
