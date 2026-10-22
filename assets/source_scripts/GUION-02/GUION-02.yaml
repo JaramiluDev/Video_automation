@@ -1,0 +1,2331 @@
+title: "GUION-02"
+output_filename: "audio_tts.mp3"
+scenes:
+  - id: "1"
+    title: "Escena 1"
+    narration: "GUION VISUAL DEL VIDEO FORMATIVO"
+    text: "GUION VISUAL DEL VIDEO FORMATIVO"
+    image_paths: []
+    duration: 5.0
+  - id: "2"
+    title: "Escena 2"
+    narration: "Cómo construir un prompt para generar el programa del dominó de fracciones equivalentes y sus materiales didácticos"
+    text: "Cómo construir un prompt para generar el programa del dominó de fracciones equivalentes y sus materiales didácticos"
+    image_paths: []
+    duration: 5.0
+  - id: "3"
+    title: "Escena 3"
+    narration: "Esta recopilación reúne las 12 escenas de la propuesta y las 36 ilustraciones elaboradas para un video dirigido a profesores de educación básica. Cada momento incluye su composición, las acciones de los personajes, el mensaje principal y la enseñanza que se pretende comunicar."
+    text: "Esta recopilación reúne las 12 escenas de la propuesta y las 36 ilustraciones elaboradas para un video dirigido a profesores de educación básica. Cada momento incluye su composición, las acciones de los personajes, el mensaje principal y la enseñanza que se pretende comunicar."
+    image_paths: []
+    duration: 5.0
+  - id: "4"
+    title: "Escena 4"
+    narration: "El recorrido parte de una necesidad del grupo y avanza hacia el objetivo de aprendizaje, las características del juego, los requisitos del programa, la redacción del prompt, la ejecución y revisión del recurso y su uso en clase."
+    text: "El recorrido parte de una necesidad del grupo y avanza hacia el objetivo de aprendizaje, las características del juego, los requisitos del programa, la redacción del prompt, la ejecución y revisión del recurso y su uso en clase."
+    image_paths: []
+    duration: 5.0
+  - id: "5"
+    title: "Escena 5"
+    narration: "Ficha del proyecto"
+    text: "Ficha del proyecto"
+    image_paths: []
+    duration: 5.0
+  - id: "6"
+    title: "Escena 6"
+    narration: "Descripción"
+    text: "Descripción"
+    image_paths: []
+    duration: 5.0
+  - id: "7"
+    title: "Escena 7"
+    narration: "Público"
+    text: "Público"
+    image_paths: []
+    duration: 5.0
+  - id: "8"
+    title: "Escena 8"
+    narration: "Profesores de educación básica; no se presupone experiencia en programación."
+    text: "Profesores de educación básica; no se presupone experiencia en programación."
+    image_paths: []
+    duration: 5.0
+  - id: "9"
+    title: "Escena 9"
+    narration: "Organización"
+    text: "Organización"
+    image_paths: []
+    duration: 5.0
+  - id: "10"
+    title: "Escena 10"
+    narration: "12 escenas y 36 imágenes: tres ilustraciones por escena, numeradas del 1 al 36."
+    text: "12 escenas y 36 imágenes: tres ilustraciones por escena, numeradas del 1 al 36."
+    image_paths: []
+    duration: 5.0
+  - id: "11"
+    title: "Escena 11"
+    narration: "Duración propuesta"
+    text: "Duración propuesta"
+    image_paths: []
+    duration: 5.0
+  - id: "12"
+    title: "Escena 12"
+    narration: "Aproximadamente 15 a 18 minutos; estimación de planificación, no duración de un montaje ya realizado."
+    text: "Aproximadamente 15 a 18 minutos; estimación de planificación, no duración de un montaje ya realizado."
+    image_paths: []
+    duration: 5.0
+  - id: "13"
+    title: "Escena 13"
+    narration: "Recurso de referencia"
+    text: "Recurso de referencia"
+    image_paths: []
+    duration: 5.0
+  - id: "14"
+    title: "Escena 14"
+    narration: "Domino_Fracciones_Programa(1).html. Programa autónomo en un archivo HTML con CSS, JavaScript y dibujos SVG integrados."
+    text: "Domino_Fracciones_Programa(1).html. Programa autónomo en un archivo HTML con CSS, JavaScript y dibujos SVG integrados."
+    image_paths: []
+    duration: 5.0
+  - id: "15"
+    title: "Escena 15"
+    narration: "Personajes y continuidad visual"
+    text: "Personajes y continuidad visual"
+    image_paths: []
+    duration: 5.0
+  - id: "16"
+    title: "Escena 16"
+    narration: "Las referencias comparten ilustración caricaturesca, composición horizontal 16:9, iluminación cálida, pizarrón verde, mobiliario de madera y expresiones reconocibles. En todas las imágenes se prevén al menos dos personajes. En los acercamientos a la pantalla, pueden situarse a los lados sin cubrir los controles."
+    text: "Las referencias comparten ilustración caricaturesca, composición horizontal 16:9, iluminación cálida, pizarrón verde, mobiliario de madera y expresiones reconocibles. En todas las imágenes se prevén al menos dos personajes. En los acercamientos a la pantalla, pueden situarse a los lados sin cubrir los controles."
+    image_paths: []
+    duration: 5.0
+  - id: "17"
+    title: "Escena 17"
+    narration: "Personaje"
+    text: "Personaje"
+    image_paths: []
+    duration: 5.0
+  - id: "18"
+    title: "Escena 18"
+    narration: "Apariencia y función narrativa"
+    text: "Apariencia y función narrativa"
+    image_paths: []
+    duration: 5.0
+  - id: "19"
+    title: "Escena 19"
+    narration: "Profesor detective"
+    text: "Profesor detective"
+    image_paths: []
+    duration: 5.0
+  - id: "20"
+    title: "Escena 20"
+    narration: "Cabello gris, anteojos, sombrero y saco café. Investiga qué necesita aprender el alumnado y revisa que las instrucciones sean precisas. Su lupa representa la comprobación, no una capacidad especial de la IA."
+    text: "Cabello gris, anteojos, sombrero y saco café. Investiga qué necesita aprender el alumnado y revisa que las instrucciones sean precisas. Su lupa representa la comprobación, no una capacidad especial de la IA."
+    image_paths: []
+    duration: 5.0
+  - id: "21"
+    title: "Escena 21"
+    narration: "Agente Cero"
+    text: "Agente Cero"
+    image_paths: []
+    duration: 5.0
+  - id: "22"
+    title: "Escena 22"
+    narration: "Profesor con gorra y chaleco azul. Maneja la computadora, formula preguntas y propone primeras versiones del prompt. Sus dudas permiten explicar los pasos sin dar por hecho conocimientos de programación."
+    text: "Profesor con gorra y chaleco azul. Maneja la computadora, formula preguntas y propone primeras versiones del prompt. Sus dudas permiten explicar los pasos sin dar por hecho conocimientos de programación."
+    image_paths: []
+    duration: 5.0
+  - id: "23"
+    title: "Escena 23"
+    narration: "Profesora Ana"
+    text: "Profesora Ana"
+    image_paths: []
+    duration: 5.0
+  - id: "24"
+    title: "Escena 24"
+    narration: "Personaje adicional con chaqueta morada y cuaderno de planeación. Relaciona el programa con situaciones de clase, revisa la impresión y acompaña al alumnado."
+    text: "Personaje adicional con chaqueta morada y cuaderno de planeación. Relaciona el programa con situaciones de clase, revisa la impresión y acompaña al alumnado."
+    image_paths: []
+    duration: 5.0
+  - id: "25"
+    title: "Escena 25"
+    narration: "Alcance de esta edición"
+    text: "Alcance de esta edición"
+    image_paths: []
+    duration: 5.0
+  - id: "26"
+    title: "Escena 26"
+    narration: "Los textos de las escenas corresponden a la propuesta narrativa original y permanecen editables. Las ilustraciones se incorporan sin corregir sus leyendas ni sus dibujos; no son capturas verificadas del programa y algunas contienen discrepancias respecto del guion. La nota editorial final identifica aspectos que deben cotejarse antes de producir el video."
+    text: "Los textos de las escenas corresponden a la propuesta narrativa original y permanecen editables. Las ilustraciones se incorporan sin corregir sus leyendas ni sus dibujos; no son capturas verificadas del programa y algunas contienen discrepancias respecto del guion. La nota editorial final identifica aspectos que deben cotejarse antes de producir el video."
+    image_paths: []
+    duration: 5.0
+  - id: "27"
+    title: "Escena 27"
+    narration: "Un prompt puede describir las funcionalidades del archivo para solicitar un programa equivalente, pero no garantiza reproducir literalmente el mismo código. Para conservar exactamente una versión debe mantenerse el archivo original como referencia."
+    text: "Un prompt puede describir las funcionalidades del archivo para solicitar un programa equivalente, pero no garantiza reproducir literalmente el mismo código. Para conservar exactamente una versión debe mantenerse el archivo original como referencia."
+    image_paths: []
+    duration: 5.0
+  - id: "28"
+    title: "Escena 28"
+    narration: "Mapa de las 12 escenas"
+    text: "Mapa de las 12 escenas"
+    image_paths: []
+    duration: 5.0
+  - id: "29"
+    title: "Escena 29"
+    narration: "La numeración de imágenes sigue el orden didáctico del guion, independientemente del orden en que aparecieron las respuestas gráficas durante la conversación. Los números de página remiten al desarrollo de cada escena."
+    text: "La numeración de imágenes sigue el orden didáctico del guion, independientemente del orden en que aparecieron las respuestas gráficas durante la conversación. Los números de página remiten al desarrollo de cada escena."
+    image_paths: []
+    duration: 5.0
+  - id: "30"
+    title: "Escena 30"
+    narration: "No."
+    text: "No."
+    image_paths: []
+    duration: 5.0
+  - id: "31"
+    title: "Escena 31"
+    narration: "Escena"
+    text: "Escena"
+    image_paths: []
+    duration: 5.0
+  - id: "32"
+    title: "Escena 32"
+    narration: "Imágenes"
+    text: "Imágenes"
+    image_paths: []
+    duration: 5.0
+  - id: "33"
+    title: "Escena 33"
+    narration: "Pág."
+    text: "Pág."
+    image_paths: []
+    duration: 5.0
+  - id: "34"
+    title: "Escena 34"
+    narration: "1"
+    text: "1"
+    image_paths: []
+    duration: 5.0
+  - id: "35"
+    title: "Escena 35"
+    narration: "Comprender qué se va a construir"
+    text: "Comprender qué se va a construir"
+    image_paths: []
+    duration: 5.0
+  - id: "36"
+    title: "Escena 36"
+    narration: "01–03"
+    text: "01–03"
+    image_paths: []
+    duration: 5.0
+  - id: "37"
+    title: "Escena 37"
+    narration: "3"
+    text: "3"
+    image_paths: []
+    duration: 5.0
+  - id: "38"
+    title: "Escena 38"
+    narration: "2"
+    text: "2"
+    image_paths: []
+    duration: 5.0
+  - id: "39"
+    title: "Escena 39"
+    narration: "Definir el aprendizaje antes del programa"
+    text: "Definir el aprendizaje antes del programa"
+    image_paths: []
+    duration: 5.0
+  - id: "40"
+    title: "Escena 40"
+    narration: "04–06"
+    text: "04–06"
+    image_paths: []
+    duration: 5.0
+  - id: "41"
+    title: "Escena 41"
+    narration: "4"
+    text: "4"
+    image_paths: []
+    duration: 5.0
+  - id: "42"
+    title: "Escena 42"
+    narration: "3"
+    text: "3"
+    image_paths: []
+    duration: 5.0
+  - id: "43"
+    title: "Escena 43"
+    narration: "Explicar qué hace que el juego sea un dominó"
+    text: "Explicar qué hace que el juego sea un dominó"
+    image_paths: []
+    duration: 5.0
+  - id: "44"
+    title: "Escena 44"
+    narration: "07–09"
+    text: "07–09"
+    image_paths: []
+    duration: 5.0
+  - id: "45"
+    title: "Escena 45"
+    narration: "5"
+    text: "5"
+    image_paths: []
+    duration: 5.0
+  - id: "46"
+    title: "Escena 46"
+    narration: "4"
+    text: "4"
+    image_paths: []
+    duration: 5.0
+  - id: "47"
+    title: "Escena 47"
+    narration: "Pedir variantes útiles para distintos grupos"
+    text: "Pedir variantes útiles para distintos grupos"
+    image_paths: []
+    duration: 5.0
+  - id: "48"
+    title: "Escena 48"
+    narration: "10–12"
+    text: "10–12"
+    image_paths: []
+    duration: 5.0
+  - id: "49"
+    title: "Escena 49"
+    narration: "6"
+    text: "6"
+    image_paths: []
+    duration: 5.0
+  - id: "50"
+    title: "Escena 50"
+    narration: "5"
+    text: "5"
+    image_paths: []
+    duration: 5.0
+  - id: "51"
+    title: "Escena 51"
+    narration: "Describir el programa que recibirá el profesor"
+    text: "Describir el programa que recibirá el profesor"
+    image_paths: []
+    duration: 5.0
+  - id: "52"
+    title: "Escena 52"
+    narration: "13–15"
+    text: "13–15"
+    image_paths: []
+    duration: 5.0
+  - id: "53"
+    title: "Escena 53"
+    narration: "7"
+    text: "7"
+    image_paths: []
+    duration: 5.0
+  - id: "54"
+    title: "Escena 54"
+    narration: "6"
+    text: "6"
+    image_paths: []
+    duration: 5.0
+  - id: "55"
+    title: "Escena 55"
+    narration: "Especificar cómo deben salir los materiales"
+    text: "Especificar cómo deben salir los materiales"
+    image_paths: []
+    duration: 5.0
+  - id: "56"
+    title: "Escena 56"
+    narration: "16–18"
+    text: "16–18"
+    image_paths: []
+    duration: 5.0
+  - id: "57"
+    title: "Escena 57"
+    narration: "8"
+    text: "8"
+    image_paths: []
+    duration: 5.0
+  - id: "58"
+    title: "Escena 58"
+    narration: "7"
+    text: "7"
+    image_paths: []
+    duration: 5.0
+  - id: "59"
+    title: "Escena 59"
+    narration: "Pedir acompañamiento docente y comprobaciones"
+    text: "Pedir acompañamiento docente y comprobaciones"
+    image_paths: []
+    duration: 5.0
+  - id: "60"
+    title: "Escena 60"
+    narration: "19–21"
+    text: "19–21"
+    image_paths: []
+    duration: 5.0
+  - id: "61"
+    title: "Escena 61"
+    narration: "9"
+    text: "9"
+    image_paths: []
+    duration: 5.0
+  - id: "62"
+    title: "Escena 62"
+    narration: "8"
+    text: "8"
+    image_paths: []
+    duration: 5.0
+  - id: "63"
+    title: "Escena 63"
+    narration: "Integrar y enviar el prompt"
+    text: "Integrar y enviar el prompt"
+    image_paths: []
+    duration: 5.0
+  - id: "64"
+    title: "Escena 64"
+    narration: "22–24"
+    text: "22–24"
+    image_paths: []
+    duration: 5.0
+  - id: "65"
+    title: "Escena 65"
+    narration: "10"
+    text: "10"
+    image_paths: []
+    duration: 5.0
+  - id: "66"
+    title: "Escena 66"
+    narration: "9"
+    text: "9"
+    image_paths: []
+    duration: 5.0
+  - id: "67"
+    title: "Escena 67"
+    narration: "Abrir el programa y comprobar resultados básicos"
+    text: "Abrir el programa y comprobar resultados básicos"
+    image_paths: []
+    duration: 5.0
+  - id: "68"
+    title: "Escena 68"
+    narration: "25–27"
+    text: "25–27"
+    image_paths: []
+    duration: 5.0
+  - id: "69"
+    title: "Escena 69"
+    narration: "11"
+    text: "11"
+    image_paths: []
+    duration: 5.0
+  - id: "70"
+    title: "Escena 70"
+    narration: "10"
+    text: "10"
+    image_paths: []
+    duration: 5.0
+  - id: "71"
+    title: "Escena 71"
+    narration: "Probar la práctica y obtener los archivos"
+    text: "Probar la práctica y obtener los archivos"
+    image_paths: []
+    duration: 5.0
+  - id: "72"
+    title: "Escena 72"
+    narration: "28–30"
+    text: "28–30"
+    image_paths: []
+    duration: 5.0
+  - id: "73"
+    title: "Escena 73"
+    narration: "12"
+    text: "12"
+    image_paths: []
+    duration: 5.0
+  - id: "74"
+    title: "Escena 74"
+    narration: "11"
+    text: "11"
+    image_paths: []
+    duration: 5.0
+  - id: "75"
+    title: "Escena 75"
+    narration: "Aprender a corregir el prompt"
+    text: "Aprender a corregir el prompt"
+    image_paths: []
+    duration: 5.0
+  - id: "76"
+    title: "Escena 76"
+    narration: "31–33"
+    text: "31–33"
+    image_paths: []
+    duration: 5.0
+  - id: "77"
+    title: "Escena 77"
+    narration: "13"
+    text: "13"
+    image_paths: []
+    duration: 5.0
+  - id: "78"
+    title: "Escena 78"
+    narration: "12"
+    text: "12"
+    image_paths: []
+    duration: 5.0
+  - id: "79"
+    title: "Escena 79"
+    narration: "Llevar el material al aula y cerrar el aprendizaje"
+    text: "Llevar el material al aula y cerrar el aprendizaje"
+    image_paths: []
+    duration: 5.0
+  - id: "80"
+    title: "Escena 80"
+    narration: "34–36"
+    text: "34–36"
+    image_paths: []
+    duration: 5.0
+  - id: "81"
+    title: "Escena 81"
+    narration: "14"
+    text: "14"
+    image_paths: []
+    duration: 5.0
+  - id: "82"
+    title: "Escena 82"
+    narration: "Cómo leer cada escena"
+    text: "Cómo leer cada escena"
+    image_paths: []
+    duration: 5.0
+  - id: "83"
+    title: "Escena 83"
+    narration: "Cada sección presenta primero su finalidad. Después reúne tres bloques: a la izquierda aparece la ilustración correspondiente; a la derecha se recupera la descripción de la composición y las acciones, seguida del texto principal y de la enseñanza prevista. Las imágenes mantienen su proporción horizontal y pueden ampliarse con el zoom del documento."
+    text: "Cada sección presenta primero su finalidad. Después reúne tres bloques: a la izquierda aparece la ilustración correspondiente; a la derecha se recupera la descripción de la composición y las acciones, seguida del texto principal y de la enseñanza prevista. Las imágenes mantienen su proporción horizontal y pueden ampliarse con el zoom del documento."
+    image_paths: []
+    duration: 5.0
+  - id: "84"
+    title: "Escena 84"
+    narration: "La tabla de cada escena distingue lo que se quiso representar de lo que efectivamente quedó dibujado. En producción, los textos principales deben ser breves; las explicaciones largas y el prompt completo se muestran mediante acercamientos, desplazamientos de pantalla o sobreimpresiones, no como párrafos diminutos dentro de una ilustración."
+    text: "La tabla de cada escena distingue lo que se quiso representar de lo que efectivamente quedó dibujado. En producción, los textos principales deben ser breves; las explicaciones largas y el prompt completo se muestran mediante acercamientos, desplazamientos de pantalla o sobreimpresiones, no como párrafos diminutos dentro de una ilustración."
+    image_paths: []
+    duration: 5.0
+  - id: "85"
+    title: "Escena 85"
+    narration: "Del programa a los materiales"
+    text: "Del programa a los materiales"
+    image_paths: []
+    duration: 5.0
+  - id: "86"
+    title: "Escena 86"
+    narration: "El recurso de referencia integra creación de fichas, impresión, exportación de imágenes, configuración recuperable y práctica en pantalla. El PDF se obtiene mediante el diálogo de impresión. La descarga ZIP reúne imágenes y otros archivos del juego; esta diferencia forma parte de la explicación del video."
+    text: "El recurso de referencia integra creación de fichas, impresión, exportación de imágenes, configuración recuperable y práctica en pantalla. El PDF se obtiene mediante el diálogo de impresión. La descarga ZIP reúne imágenes y otros archivos del juego; esta diferencia forma parte de la explicación del video."
+    image_paths: []
+    duration: 5.0
+  - id: "87"
+    title: "Escena 87"
+    narration: "Al final se incorpora el prompt completo de referencia para acompañar las escenas de redacción y envío. Los campos entre corchetes deben adaptarse al grupo real. Su texto forma parte de la propuesta; no se presenta como un resultado de ejecución ya comprobado."
+    text: "Al final se incorpora el prompt completo de referencia para acompañar las escenas de redacción y envío. Los campos entre corchetes deben adaptarse al grupo real. Su texto forma parte de la propuesta; no se presenta como un resultado de ejecución ya comprobado."
+    image_paths: []
+    duration: 5.0
+  - id: "88"
+    title: "Escena 88"
+    narration: "Escena 1. Comprender qué se va a construir"
+    text: "Escena 1. Comprender qué se va a construir"
+    image_paths: []
+    duration: 5.0
+  - id: "89"
+    title: "Escena 89"
+    narration: "Finalidad:  Presentar el problema docente y mostrar el producto esperado antes de redactar instrucciones."
+    text: "Finalidad:  Presentar el problema docente y mostrar el producto esperado antes de redactar instrucciones."
+    image_paths: []
+    duration: 5.0
+  - id: "90"
+    title: "Escena 90"
+    narration: "Imagen 1. El caso de las fracciones que parecen diferentes"
+    text: "Imagen 1. El caso de las fracciones que parecen diferentes"
+    image_paths: []
+    duration: 5.0
+  - id: "91"
+    title: "Escena 91"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "92"
+    title: "Escena 92"
+    narration: "El Profesor detective observa un pizarrón con dos representaciones de la mitad. Agente Cero sostiene un cuaderno con la pregunta de un alumno: «¿Cómo pueden ser iguales?». Sobre la mesa hay materiales todavía sin organizar."
+    text: "El Profesor detective observa un pizarrón con dos representaciones de la mitad. Agente Cero sostiene un cuaderno con la pregunta de un alumno: «¿Cómo pueden ser iguales?». Sobre la mesa hay materiales todavía sin organizar."
+    image_paths: []
+    duration: 5.0
+  - id: "93"
+    title: "Escena 93"
+    narration: "«Un problema del aula puede iniciar un buen prompt»."
+    text: "«Un problema del aula puede iniciar un buen prompt»."
+    image_paths: []
+    duration: 5.0
+  - id: "94"
+    title: "Escena 94"
+    narration: "La narración explica que la primera decisión no es qué lenguaje de programación utilizar, sino qué dificultad del alumnado se pretende atender."
+    text: "La narración explica que la primera decisión no es qué lenguaje de programación utilizar, sino qué dificultad del alumnado se pretende atender."
+    image_paths: []
+    duration: 5.0
+  - id: "95"
+    title: "Escena 95"
+    narration: "Imagen 2. La meta: un programa y varios materiales"
+    text: "Imagen 2. La meta: un programa y varios materiales"
+    image_paths: []
+    duration: 5.0
+  - id: "96"
+    title: "Escena 96"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "97"
+    title: "Escena 97"
+    narration: "Ambos profesores contemplan una mesa organizada con fichas recortables, hojas imprimibles, guía docente y computadora con la práctica digital. Se distinguen los materiales para estudiantes de las respuestas para el profesor."
+    text: "Ambos profesores contemplan una mesa organizada con fichas recortables, hojas imprimibles, guía docente y computadora con la práctica digital. Se distinguen los materiales para estudiantes de las respuestas para el profesor."
+    image_paths: []
+    duration: 5.0
+  - id: "98"
+    title: "Escena 98"
+    narration: "«No pediremos solo dibujos: pediremos un sistema didáctico»."
+    text: "«No pediremos solo dibujos: pediremos un sistema didáctico»."
+    image_paths: []
+    duration: 5.0
+  - id: "99"
+    title: "Escena 99"
+    narration: "Se anticipa que el encargo incluirá generación de variantes, instrucciones, materiales descargables y comprobación de equivalencias."
+    text: "Se anticipa que el encargo incluirá generación de variantes, instrucciones, materiales descargables y comprobación de equivalencias."
+    image_paths: []
+    duration: 5.0
+  - id: "100"
+    title: "Escena 100"
+    narration: "Imagen 3. De una petición vaga a una petición concreta"
+    text: "Imagen 3. De una petición vaga a una petición concreta"
+    image_paths: []
+    duration: 5.0
+  - id: "101"
+    title: "Escena 101"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "102"
+    title: "Escena 102"
+    narration: "Agente Cero presenta una nota: «Hazme un juego de fracciones». El Detective coloca a su lado tarjetas con preguntas: «¿Para quién?», «¿Qué aprenderá?», «¿Cómo jugará?» y «¿Qué debe entregar?»."
+    text: "Agente Cero presenta una nota: «Hazme un juego de fracciones». El Detective coloca a su lado tarjetas con preguntas: «¿Para quién?», «¿Qué aprenderá?», «¿Cómo jugará?» y «¿Qué debe entregar?»."
+    image_paths: []
+    duration: 5.0
+  - id: "103"
+    title: "Escena 103"
+    narration: "«Una idea necesita instrucciones»."
+    text: "«Una idea necesita instrucciones»."
+    image_paths: []
+    duration: 5.0
+  - id: "104"
+    title: "Escena 104"
+    narration: "El video muestra que una petición breve deja decisiones importantes sin especificar. El prompt se construirá respondiendo esas preguntas, no acumulando adjetivos como «bonito» o «innovador»."
+    text: "El video muestra que una petición breve deja decisiones importantes sin especificar. El prompt se construirá respondiendo esas preguntas, no acumulando adjetivos como «bonito» o «innovador»."
+    image_paths: []
+    duration: 5.0
+  - id: "105"
+    title: "Escena 105"
+    narration: "Escena 2. Definir el aprendizaje antes del programa"
+    text: "Escena 2. Definir el aprendizaje antes del programa"
+    image_paths: []
+    duration: 5.0
+  - id: "106"
+    title: "Escena 106"
+    narration: "Finalidad:  Transformar una intención general en una tarea educativa observable."
+    text: "Finalidad:  Transformar una intención general en una tarea educativa observable."
+    image_paths: []
+    duration: 5.0
+  - id: "107"
+    title: "Escena 107"
+    narration: "Imagen 4. Describir al grupo y el papel de la IA"
+    text: "Imagen 4. Describir al grupo y el papel de la IA"
+    image_paths: []
+    duration: 5.0
+  - id: "108"
+    title: "Escena 108"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "109"
+    title: "Escena 109"
+    narration: "Profesora Ana presenta una ficha de planeación con espacios para grado, conocimientos previos y dificultades. Agente Cero empieza a escribir. El Detective señala que no deben incorporarse nombres ni datos personales del alumnado."
+    text: "Profesora Ana presenta una ficha de planeación con espacios para grado, conocimientos previos y dificultades. Agente Cero empieza a escribir. El Detective señala que no deben incorporarse nombres ni datos personales del alumnado."
+    image_paths: []
+    duration: 5.0
+  - id: "110"
+    title: "Escena 110"
+    narration: "«¿Para quién se diseña el material?»."
+    text: "«¿Para quién se diseña el material?»."
+    image_paths: []
+    duration: 5.0
+  - id: "111"
+    title: "Escena 111"
+    narration: "Fragmento que se añade al prompt: «Actúa como especialista en didáctica de las matemáticas y desarrollo de recursos educativos. El material está dirigido a…». Los espacios se completan con las características reales del grupo."
+    text: "Fragmento que se añade al prompt: «Actúa como especialista en didáctica de las matemáticas y desarrollo de recursos educativos. El material está dirigido a…». Los espacios se completan con las características reales del grupo."
+    image_paths: []
+    duration: 5.0
+  - id: "112"
+    title: "Escena 112"
+    narration: "Imagen 5. Escribir un objetivo que pueda observarse"
+    text: "Imagen 5. Escribir un objetivo que pueda observarse"
+    image_paths: []
+    duration: 5.0
+  - id: "113"
+    title: "Escena 113"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "114"
+    title: "Escena 114"
+    narration: "El Detective sostiene un rectángulo con dos de cuatro partes sombreadas. Profesora Ana muestra otro del mismo tamaño con cuatro de ocho partes sombreadas. Agente Cero observa que ambas regiones ocupan la mitad."
+    text: "El Detective sostiene un rectángulo con dos de cuatro partes sombreadas. Profesora Ana muestra otro del mismo tamaño con cuatro de ocho partes sombreadas. Agente Cero observa que ambas regiones ocupan la mitad."
+    image_paths: []
+    duration: 5.0
+  - id: "115"
+    title: "Escena 115"
+    narration: "«Distintas representaciones. La misma fracción»."
+    text: "«Distintas representaciones. La misma fracción»."
+    image_paths: []
+    duration: 5.0
+  - id: "116"
+    title: "Escena 116"
+    narration: "Se incorpora el objetivo: «Que el alumnado identifique fracciones equivalentes y explique por qué representan la misma proporción de una unidad». La explicación del estudiante forma parte del propósito."
+    text: "Se incorpora el objetivo: «Que el alumnado identifique fracciones equivalentes y explique por qué representan la misma proporción de una unidad». La explicación del estudiante forma parte del propósito."
+    image_paths: []
+    duration: 5.0
+  - id: "117"
+    title: "Escena 117"
+    narration: "Imagen 6. Indicar las condiciones matemáticas"
+    text: "Imagen 6. Indicar las condiciones matemáticas"
+    image_paths: []
+    duration: 5.0
+  - id: "118"
+    title: "Escena 118"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "119"
+    title: "Escena 119"
+    narration: "El Detective revisa con su lupa que las divisiones de los dibujos sean iguales. Agente Cero escribe en el pizarrón: 2/4 = 4/8 y, debajo, 2 × 8 = 4 × 4."
+    text: "El Detective revisa con su lupa que las divisiones de los dibujos sean iguales. Agente Cero escribe en el pizarrón: 2/4 = 4/8 y, debajo, 2 × 8 = 4 × 4."
+    image_paths: []
+    duration: 5.0
+  - id: "120"
+    title: "Escena 120"
+    narration: "«Las matemáticas también deben especificarse»."
+    text: "«Las matemáticas también deben especificarse»."
+    image_paths: []
+    duration: 5.0
+  - id: "121"
+    title: "Escena 121"
+    narration: "El prompt debe exigir dibujos correctamente divididos y comprobación exacta de equivalencias. El archivo utiliza fracciones positivas propias y compara productos cruzados de enteros, no aproximaciones decimales."
+    text: "El prompt debe exigir dibujos correctamente divididos y comprobación exacta de equivalencias. El archivo utiliza fracciones positivas propias y compara productos cruzados de enteros, no aproximaciones decimales."
+    image_paths: []
+    duration: 5.0
+  - id: "122"
+    title: "Escena 122"
+    narration: "Escena 3. Explicar qué hace que el juego sea un dominó"
+    text: "Escena 3. Explicar qué hace que el juego sea un dominó"
+    image_paths: []
+    duration: 5.0
+  - id: "123"
+    title: "Escena 123"
+    narration: "Finalidad:  Evitar que la IA genere tarjetas de asociación que no respondan a la mecánica solicitada."
+    text: "Finalidad:  Evitar que la IA genere tarjetas de asociación que no respondan a la mecánica solicitada."
+    image_paths: []
+    duration: 5.0
+  - id: "124"
+    title: "Escena 124"
+    narration: "Imagen 7. La equivalencia está en la unión entre fichas"
+    text: "Imagen 7. La equivalencia está en la unión entre fichas"
+    image_paths: []
+    duration: 5.0
+  - id: "125"
+    title: "Escena 125"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "126"
+    title: "Escena 126"
+    narration: "Los dos profesores acercan fichas grandes sobre una mesa. Una flecha ilumina exclusivamente las mitades que se tocan: una fracción escrita y una representación equivalente. Las otras mitades muestran valores diferentes."
+    text: "Los dos profesores acercan fichas grandes sobre una mesa. Una flecha ilumina exclusivamente las mitades que se tocan: una fracción escrita y una representación equivalente. Las otras mitades muestran valores diferentes."
+    image_paths: []
+    duration: 5.0
+  - id: "127"
+    title: "Escena 127"
+    narration: "«Se unen los extremos equivalentes»."
+    text: "«Se unen los extremos equivalentes»."
+    image_paths: []
+    duration: 5.0
+  - id: "128"
+    title: "Escena 128"
+    narration: "Se añade: «Cada ficha tendrá dos mitades. La equivalencia se exige entre los extremos de fichas distintas que se tocan, no necesariamente entre las dos mitades de una misma ficha»."
+    text: "Se añade: «Cada ficha tendrá dos mitades. La equivalencia se exige entre los extremos de fichas distintas que se tocan, no necesariamente entre las dos mitades de una misma ficha»."
+    image_paths: []
+    duration: 5.0
+  - id: "129"
+    title: "Escena 129"
+    narration: "Imagen 8. Especificar las reglas de la partida física"
+    text: "Imagen 8. Especificar las reglas de la partida física"
+    image_paths: []
+    duration: 5.0
+  - id: "130"
+    title: "Escena 130"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "131"
+    title: "Escena 131"
+    narration: "Profesora Ana, Agente Cero, el Detective y un estudiante se distribuyen alrededor de una mesa. Se ven fichas en las manos, una cadena central y un pequeño pozo de fichas boca abajo."
+    text: "Profesora Ana, Agente Cero, el Detective y un estudiante se distribuyen alrededor de una mesa. Se ven fichas en las manos, una cadena central y un pequeño pozo de fichas boca abajo."
+    image_paths: []
+    duration: 5.0
+  - id: "132"
+    title: "Escena 132"
+    narration: "«También hay que pedir las reglas»."
+    text: "«También hay que pedir las reglas»."
+    image_paths: []
+    duration: 5.0
+  - id: "133"
+    title: "Escena 133"
+    narration: "El encargo debe indicar participantes, reparto, turnos, uso del pozo y finalización. El programa contempla de dos a cuatro participantes y exige justificar las uniones."
+    text: "El encargo debe indicar participantes, reparto, turnos, uso del pozo y finalización. El programa contempla de dos a cuatro participantes y exige justificar las uniones."
+    image_paths: []
+    duration: 5.0
+  - id: "134"
+    title: "Escena 134"
+    narration: "Imagen 9. Evitar pistas que sustituyan el razonamiento"
+    text: "Imagen 9. Evitar pistas que sustituyan el razonamiento"
+    image_paths: []
+    duration: 5.0
+  - id: "135"
+    title: "Escena 135"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "136"
+    title: "Escena 136"
+    narration: "Agente Cero propone fichas con un color diferente para cada valor. El Detective señala una alternativa: todas las familias usan un mismo color. Profesora Ana muestra la versión con trama para impresión en blanco y negro."
+    text: "Agente Cero propone fichas con un color diferente para cada valor. El Detective señala una alternativa: todas las familias usan un mismo color. Profesora Ana muestra la versión con trama para impresión en blanco y negro."
+    image_paths: []
+    duration: 5.0
+  - id: "137"
+    title: "Escena 137"
+    narration: "«Comparar valores, no colores»."
+    text: "«Comparar valores, no colores»."
+    image_paths: []
+    duration: 5.0
+  - id: "138"
+    title: "Escena 138"
+    narration: "Se incorpora una restricción: «No utilices colores diferentes para revelar qué fracciones son equivalentes». El archivo aplica color uniforme y una trama para blanco y negro."
+    text: "Se incorpora una restricción: «No utilices colores diferentes para revelar qué fracciones son equivalentes». El archivo aplica color uniforme y una trama para blanco y negro."
+    image_paths: []
+    duration: 5.0
+  - id: "139"
+    title: "Escena 139"
+    narration: "Escena 4. Pedir variantes útiles para distintos grupos"
+    text: "Escena 4. Pedir variantes útiles para distintos grupos"
+    image_paths: []
+    duration: 5.0
+  - id: "140"
+    title: "Escena 140"
+    narration: "Finalidad:  Enseñar a describir opciones concretas, en lugar de solicitar «muchas variantes» sin precisar cuáles."
+    text: "Finalidad:  Enseñar a describir opciones concretas, en lugar de solicitar «muchas variantes» sin precisar cuáles."
+    image_paths: []
+    duration: 5.0
+  - id: "141"
+    title: "Escena 141"
+    narration: "Imagen 10. Definir los tres niveles"
+    text: "Imagen 10. Definir los tres niveles"
+    image_paths: []
+    duration: 5.0
+  - id: "142"
+    title: "Escena 142"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "143"
+    title: "Escena 143"
+    narration: "El Detective presenta tres bandejas rotuladas: «Inicial: 15 fichas», «Intermedio: 28 fichas» y «Avanzado: 45 fichas». Agente Cero compara la cantidad de familias y el tamaño de cada conjunto."
+    text: "El Detective presenta tres bandejas rotuladas: «Inicial: 15 fichas», «Intermedio: 28 fichas» y «Avanzado: 45 fichas». Agente Cero compara la cantidad de familias y el tamaño de cada conjunto."
+    image_paths: []
+    duration: 5.0
+  - id: "144"
+    title: "Escena 144"
+    narration: "«La dificultad debe tener características concretas»."
+    text: "«La dificultad debe tener características concretas»."
+    image_paths: []
+    duration: 5.0
+  - id: "145"
+    title: "Escena 145"
+    narration: "El prompt especifica cantidades y familias de fracciones. No se presentan los niveles como una clasificación automática por edad: el propio archivo aclara que no constituye una clasificación etaria validada externamente."
+    text: "El prompt especifica cantidades y familias de fracciones. No se presentan los niveles como una clasificación automática por edad: el propio archivo aclara que no constituye una clasificación etaria validada externamente."
+    image_paths: []
+    duration: 5.0
+  - id: "146"
+    title: "Escena 146"
+    narration: "Imagen 11. Elegir formas de representación"
+    text: "Imagen 11. Elegir formas de representación"
+    image_paths: []
+    duration: 5.0
+  - id: "147"
+    title: "Escena 147"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "148"
+    title: "Escena 148"
+    narration: "Profesora Ana organiza tres muestras: solo fracciones, solo imágenes y fracción con imagen. Agente Cero coloca debajo dos tipos de figuras: rectángulos y círculos. El Detective revisa las particiones."
+    text: "Profesora Ana organiza tres muestras: solo fracciones, solo imágenes y fracción con imagen. Agente Cero coloca debajo dos tipos de figuras: rectángulos y círculos. El Detective revisa las particiones."
+    image_paths: []
+    duration: 5.0
+  - id: "149"
+    title: "Escena 149"
+    narration: "«Fracciones, imágenes o ambas»."
+    text: "«Fracciones, imágenes o ambas»."
+    image_paths: []
+    duration: 5.0
+  - id: "150"
+    title: "Escena 150"
+    narration: "Se añade al prompt la selección de representación y de figuras. Estas opciones corresponden a los controles incluidos en el programa."
+    text: "Se añade al prompt la selección de representación y de figuras. Estas opciones corresponden a los controles incluidos en el programa."
+    image_paths: []
+    duration: 5.0
+  - id: "151"
+    title: "Escena 151"
+    narration: "Imagen 12. Pedir que una versión pueda repetirse"
+    text: "Imagen 12. Pedir que una versión pueda repetirse"
+    image_paths: []
+    duration: 5.0
+  - id: "152"
+    title: "Escena 152"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "153"
+    title: "Escena 153"
+    narration: "Agente Cero escribe «AULA-2026» en una tarjeta de configuración. El Detective compara dos juegos iguales junto a una lista de opciones también iguales. Profesora Ana conserva esa ficha de preparación."
+    text: "Agente Cero escribe «AULA-2026» en una tarjeta de configuración. El Detective compara dos juegos iguales junto a una lista de opciones también iguales. Profesora Ana conserva esa ficha de preparación."
+    image_paths: []
+    duration: 5.0
+  - id: "154"
+    title: "Escena 154"
+    narration: "«La semilla permite repetir una versión»."
+    text: "«La semilla permite repetir una versión»."
+    image_paths: []
+    duration: 5.0
+  - id: "155"
+    title: "Escena 155"
+    narration: "Se explica que la semilla es un identificador para reproducir el juego. Deben mantenerse también las mismas opciones; conservar únicamente la semilla no basta."
+    text: "Se explica que la semilla es un identificador para reproducir el juego. Deben mantenerse también las mismas opciones; conservar únicamente la semilla no basta."
+    image_paths: []
+    duration: 5.0
+  - id: "156"
+    title: "Escena 156"
+    narration: "Escena 5. Describir el programa que recibirá el profesor"
+    text: "Escena 5. Describir el programa que recibirá el profesor"
+    image_paths: []
+    duration: 5.0
+  - id: "157"
+    title: "Escena 157"
+    narration: "Finalidad:  Convertir los requisitos educativos en un producto informático sencillo de utilizar."
+    text: "Finalidad:  Convertir los requisitos educativos en un producto informático sencillo de utilizar."
+    image_paths: []
+    duration: 5.0
+  - id: "158"
+    title: "Escena 158"
+    narration: "Imagen 13. Solicitar un solo archivo autónomo"
+    text: "Imagen 13. Solicitar un solo archivo autónomo"
+    image_paths: []
+    duration: 5.0
+  - id: "159"
+    title: "Escena 159"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "160"
+    title: "Escena 160"
+    narration: "Agente Cero sostiene un archivo grande rotulado «domino_fracciones.html». El Detective reúne dentro de ese archivo cuatro piezas identificadas como HTML, CSS, JavaScript y SVG. En segundo plano aparece un navegador."
+    text: "Agente Cero sostiene un archivo grande rotulado «domino_fracciones.html». El Detective reúne dentro de ese archivo cuatro piezas identificadas como HTML, CSS, JavaScript y SVG. En segundo plano aparece un navegador."
+    image_paths: []
+    duration: 5.0
+  - id: "161"
+    title: "Escena 161"
+    narration: "«Un archivo que se abre en el navegador»."
+    text: "«Un archivo que se abre en el navegador»."
+    image_paths: []
+    duration: 5.0
+  - id: "162"
+    title: "Escena 162"
+    narration: "Se añade: «Entrega un único HTML completo, sin dependencias externas». Se aclara que el funcionamiento sin conexión corresponde al programa terminado, no necesariamente al servicio de IA utilizado para generarlo."
+    text: "Se añade: «Entrega un único HTML completo, sin dependencias externas». Se aclara que el funcionamiento sin conexión corresponde al programa terminado, no necesariamente al servicio de IA utilizado para generarlo."
+    image_paths: []
+    duration: 5.0
+  - id: "163"
+    title: "Escena 163"
+    narration: "Imagen 14. Organizar la interfaz en tres secciones"
+    text: "Imagen 14. Organizar la interfaz en tres secciones"
+    image_paths: []
+    duration: 5.0
+  - id: "164"
+    title: "Escena 164"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "165"
+    title: "Escena 165"
+    narration: "Los profesores observan una maqueta de pantalla con tres pestañas: «Crear e imprimir», «Practicar» y «Guía docente». Profesora Ana relaciona cada pestaña con una tarea de su preparación de clase."
+    text: "Los profesores observan una maqueta de pantalla con tres pestañas: «Crear e imprimir», «Practicar» y «Guía docente». Profesora Ana relaciona cada pestaña con una tarea de su preparación de clase."
+    image_paths: []
+    duration: 5.0
+  - id: "166"
+    title: "Escena 166"
+    narration: "«Cada sección debe tener una función clara»."
+    text: "«Cada sección debe tener una función clara»."
+    image_paths: []
+    duration: 5.0
+  - id: "167"
+    title: "Escena 167"
+    narration: "El prompt solicita una interfaz en español y una organización reconocible. Las tres secciones reproducen la estructura del archivo adjunto."
+    text: "El prompt solicita una interfaz en español y una organización reconocible. Las tres secciones reproducen la estructura del archivo adjunto."
+    image_paths: []
+    duration: 5.0
+  - id: "168"
+    title: "Escena 168"
+    narration: "Imagen 15. Pedir interacción con explicaciones"
+    text: "Imagen 15. Pedir interacción con explicaciones"
+    image_paths: []
+    duration: 5.0
+  - id: "169"
+    title: "Escena 169"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "170"
+    title: "Escena 170"
+    narration: "Agente Cero selecciona una ficha en una maqueta de la práctica. El Detective señala los controles para invertirla y unirla. Una segunda viñeta muestra retroalimentación respetuosa ante una unión incorrecta."
+    text: "Agente Cero selecciona una ficha en una maqueta de la práctica. El Detective señala los controles para invertirla y unirla. Una segunda viñeta muestra retroalimentación respetuosa ante una unión incorrecta."
+    image_paths: []
+    duration: 5.0
+  - id: "171"
+    title: "Escena 171"
+    narration: "«No basta con aceptar o rechazar»."
+    text: "«No basta con aceptar o rechazar»."
+    image_paths: []
+    duration: 5.0
+  - id: "172"
+    title: "Escena 172"
+    narration: "Se pide seleccionar fichas, invertirlas, colocarlas en ambos extremos y recibir explicaciones. También se incluyen pista, deshacer y reiniciar. Son funciones presentes en la práctica del archivo."
+    text: "Se pide seleccionar fichas, invertirlas, colocarlas en ambos extremos y recibir explicaciones. También se incluyen pista, deshacer y reiniciar. Son funciones presentes en la práctica del archivo."
+    image_paths: []
+    duration: 5.0
+  - id: "173"
+    title: "Escena 173"
+    narration: "Escena 6. Especificar cómo deben salir los materiales"
+    text: "Escena 6. Especificar cómo deben salir los materiales"
+    image_paths: []
+    duration: 5.0
+  - id: "174"
+    title: "Escena 174"
+    narration: "Finalidad:  Mostrar que la impresión y la exportación también se diseñan desde el prompt."
+    text: "Finalidad:  Mostrar que la impresión y la exportación también se diseñan desde el prompt."
+    image_paths: []
+    duration: 5.0
+  - id: "175"
+    title: "Escena 175"
+    narration: "Imagen 16. Definir tamaño y líneas de corte"
+    text: "Imagen 16. Definir tamaño y líneas de corte"
+    image_paths: []
+    duration: 5.0
+  - id: "176"
+    title: "Escena 176"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "177"
+    title: "Escena 177"
+    narration: "El Detective mide una ficha con una regla. Profesora Ana sostiene tijeras junto al contorno discontinuo. Agente Cero coloca una señal de advertencia sobre la línea central, sin cortarla."
+    text: "El Detective mide una ficha con una regla. Profesora Ana sostiene tijeras junto al contorno discontinuo. Agente Cero coloca una señal de advertencia sobre la línea central, sin cortarla."
+    image_paths: []
+    duration: 5.0
+  - id: "178"
+    title: "Escena 178"
+    narration: "«Recorta el contorno; conserva las dos mitades»."
+    text: "«Recorta el contorno; conserva las dos mitades»."
+    image_paths: []
+    duration: 5.0
+  - id: "179"
+    title: "Escena 179"
+    narration: "Se solicita una ficha de aproximadamente 9 × 4 cm, con borde discontinuo y división central que no sea una línea de corte."
+    text: "Se solicita una ficha de aproximadamente 9 × 4 cm, con borde discontinuo y división central que no sea una línea de corte."
+    image_paths: []
+    duration: 5.0
+  - id: "180"
+    title: "Escena 180"
+    narration: "Imagen 17. Diseñar la hoja imprimible"
+    text: "Imagen 17. Diseñar la hoja imprimible"
+    image_paths: []
+    duration: 5.0
+  - id: "181"
+    title: "Escena 181"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "182"
+    title: "Escena 182"
+    narration: "Agente Cero presenta una hoja con dos columnas y cinco filas. El Detective verifica la regla de 5 cm. Profesora Ana compara los selectores A4 y Carta y señala «Escala 100 %»."
+    text: "Agente Cero presenta una hoja con dos columnas y cinco filas. El Detective verifica la regla de 5 cm. Profesora Ana compara los selectores A4 y Carta y señala «Escala 100 %»."
+    image_paths: []
+    duration: 5.0
+  - id: "183"
+    title: "Escena 183"
+    narration: "«La impresión debe conservar las medidas»."
+    text: "«La impresión debe conservar las medidas»."
+    image_paths: []
+    duration: 5.0
+  - id: "184"
+    title: "Escena 184"
+    narration: "Se pide organizar hasta diez fichas por hoja e incluir una referencia de tamaño. El código distribuye las fichas en dos columnas y cinco filas y dibuja una regla de comprobación."
+    text: "Se pide organizar hasta diez fichas por hoja e incluir una referencia de tamaño. El código distribuye las fichas en dos columnas y cinco filas y dibuja una regla de comprobación."
+    image_paths: []
+    duration: 5.0
+  - id: "185"
+    title: "Escena 185"
+    narration: "Imagen 18. Precisar los formatos de imagen"
+    text: "Imagen 18. Precisar los formatos de imagen"
+    image_paths: []
+    duration: 5.0
+  - id: "186"
+    title: "Escena 186"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "187"
+    title: "Escena 187"
+    narration: "El Detective amplía una ficha SVG sin convertirla en un dibujo borroso. Agente Cero sostiene una hoja identificada como «PNG · 300 ppp». Profesora Ana reúne los archivos dentro de una carpeta ZIP."
+    text: "El Detective amplía una ficha SVG sin convertirla en un dibujo borroso. Agente Cero sostiene una hoja identificada como «PNG · 300 ppp». Profesora Ana reúne los archivos dentro de una carpeta ZIP."
+    image_paths: []
+    duration: 5.0
+  - id: "188"
+    title: "Escena 188"
+    narration: "«Pide formatos, no solamente «alta calidad»»."
+    text: "«Pide formatos, no solamente «alta calidad»»."
+    image_paths: []
+    duration: 5.0
+  - id: "189"
+    title: "Escena 189"
+    narration: "Se especifican imágenes PNG a 300 ppp y SVG vectoriales. El archivo genera el PNG a partir del SVG utilizando las dimensiones físicas del material."
+    text: "Se especifican imágenes PNG a 300 ppp y SVG vectoriales. El archivo genera el PNG a partir del SVG utilizando las dimensiones físicas del material."
+    image_paths: []
+    duration: 5.0
+  - id: "190"
+    title: "Escena 190"
+    narration: "Escena 7. Pedir acompañamiento docente y comprobaciones"
+    text: "Escena 7. Pedir acompañamiento docente y comprobaciones"
+    image_paths: []
+    duration: 5.0
+  - id: "191"
+    title: "Escena 191"
+    narration: "Finalidad:  Evitar que el producto se limite a fichas visualmente atractivas, pero incompletas para su uso."
+    text: "Finalidad:  Evitar que el producto se limite a fichas visualmente atractivas, pero incompletas para su uso."
+    image_paths: []
+    duration: 5.0
+  - id: "192"
+    title: "Escena 192"
+    narration: "Imagen 19. Solicitar una guía para el profesor"
+    text: "Imagen 19. Solicitar una guía para el profesor"
+    image_paths: []
+    duration: 5.0
+  - id: "193"
+    title: "Escena 193"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "194"
+    title: "Escena 194"
+    narration: "Profesora Ana abre una carpeta con tres separadores: «Reglas», «Clave de las fichas» y «Una cadena completa». El Detective revisa la orientación de las fichas y Agente Cero separa esta carpeta de las hojas del alumnado."
+    text: "Profesora Ana abre una carpeta con tres separadores: «Reglas», «Clave de las fichas» y «Una cadena completa». El Detective revisa la orientación de las fichas y Agente Cero separa esta carpeta de las hojas del alumnado."
+    image_paths: []
+    duration: 5.0
+  - id: "195"
+    title: "Escena 195"
+    narration: "«El material necesita instrucciones y respuestas»."
+    text: "«El material necesita instrucciones y respuestas»."
+    image_paths: []
+    duration: 5.0
+  - id: "196"
+    title: "Escena 196"
+    narration: "Se pide una guía del juego generado, no una explicación genérica. El archivo incluye clave de ambas mitades y una secuencia completa con orientación normal o invertida."
+    text: "Se pide una guía del juego generado, no una explicación genérica. El archivo incluye clave de ambas mitades y una secuencia completa con orientación normal o invertida."
+    image_paths: []
+    duration: 5.0
+  - id: "197"
+    title: "Escena 197"
+    narration: "Imagen 20. Guardar la configuración, no una partida en curso"
+    text: "Imagen 20. Guardar la configuración, no una partida en curso"
+    image_paths: []
+    duration: 5.0
+  - id: "198"
+    title: "Escena 198"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "199"
+    title: "Escena 199"
+    narration: "Agente Cero guarda un archivo «juego.json». El Detective señala una tarjeta con nivel, representación, figuras, papel, tinta y semilla. Profesora Ana vuelve a abrirlo y observa el juego reconstruido."
+    text: "Agente Cero guarda un archivo «juego.json». El Detective señala una tarjeta con nivel, representación, figuras, papel, tinta y semilla. Profesora Ana vuelve a abrirlo y observa el juego reconstruido."
+    image_paths: []
+    duration: 5.0
+  - id: "200"
+    title: "Escena 200"
+    narration: "«Guardar la configuración permite recuperar el material»."
+    text: "«Guardar la configuración permite recuperar el material»."
+    image_paths: []
+    duration: 5.0
+  - id: "201"
+    title: "Escena 201"
+    narration: "Se explica que el archivo JSON no representa el avance de una partida digital: al importarlo, el programa recupera las opciones y vuelve a generar y verificar el juego."
+    text: "Se explica que el archivo JSON no representa el avance de una partida digital: al importarlo, el programa recupera las opciones y vuelve a generar y verificar el juego."
+    image_paths: []
+    duration: 5.0
+  - id: "202"
+    title: "Escena 202"
+    narration: "Imagen 21. Convertir la calidad en una lista de pruebas"
+    text: "Imagen 21. Convertir la calidad en una lista de pruebas"
+    image_paths: []
+    duration: 5.0
+  - id: "203"
+    title: "Escena 203"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "204"
+    title: "Escena 204"
+    narration: "El Detective sostiene una lista: cantidad de fichas, equivalencias, ausencia de duplicados y cadena completa. Agente Cero coloca una ficha por vez en una solución de referencia. Profesora Ana marca las comprobaciones."
+    text: "El Detective sostiene una lista: cantidad de fichas, equivalencias, ausencia de duplicados y cadena completa. Agente Cero coloca una ficha por vez en una solución de referencia. Profesora Ana marca las comprobaciones."
+    image_paths: []
+    duration: 5.0
+  - id: "205"
+    title: "Escena 205"
+    narration: "«Lo que se pide también debe poder revisarse»."
+    text: "«Lo que se pide también debe poder revisarse»."
+    image_paths: []
+    duration: 5.0
+  - id: "206"
+    title: "Escena 206"
+    narration: "Se exige una solución que use todas las fichas una vez. Se aclara que disponer de esa solución no significa que cualquier secuencia de jugadas termine sin bloqueo."
+    text: "Se exige una solución que use todas las fichas una vez. Se aclara que disponer de esa solución no significa que cualquier secuencia de jugadas termine sin bloqueo."
+    image_paths: []
+    duration: 5.0
+  - id: "207"
+    title: "Escena 207"
+    narration: "Escena 8. Integrar y enviar el prompt"
+    text: "Escena 8. Integrar y enviar el prompt"
+    image_paths: []
+    duration: 5.0
+  - id: "208"
+    title: "Escena 208"
+    narration: "Finalidad:  Mostrar que el texto final surge de las decisiones anteriores."
+    text: "Finalidad:  Mostrar que el texto final surge de las decisiones anteriores."
+    image_paths: []
+    duration: 5.0
+  - id: "209"
+    title: "Escena 209"
+    narration: "Imagen 22. Armar el prompt por bloques"
+    text: "Imagen 22. Armar el prompt por bloques"
+    image_paths: []
+    duration: 5.0
+  - id: "210"
+    title: "Escena 210"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "211"
+    title: "Escena 211"
+    narration: "El Detective y Agente Cero organizan tarjetas sobre una mesa: contexto, objetivo, matemáticas, reglas, funciones, materiales y pruebas. Profesora Ana las ordena antes de trasladarlas al documento."
+    text: "El Detective y Agente Cero organizan tarjetas sobre una mesa: contexto, objetivo, matemáticas, reglas, funciones, materiales y pruebas. Profesora Ana las ordena antes de trasladarlas al documento."
+    image_paths: []
+    duration: 5.0
+  - id: "212"
+    title: "Escena 212"
+    narration: "«El prompt se construye por decisiones»."
+    text: "«El prompt se construye por decisiones»."
+    image_paths: []
+    duration: 5.0
+  - id: "213"
+    title: "Escena 213"
+    narration: "Durante la edición se muestran acercamientos a cada bloque. No se introduce todavía un párrafo extenso e ilegible: se explica cómo cada requisito responde a una necesidad del aula."
+    text: "Durante la edición se muestran acercamientos a cada bloque. No se introduce todavía un párrafo extenso e ilegible: se explica cómo cada requisito responde a una necesidad del aula."
+    image_paths: []
+    duration: 5.0
+  - id: "214"
+    title: "Escena 214"
+    narration: "Imagen 23. Especificar cómo debe entregarse el código"
+    text: "Imagen 23. Especificar cómo debe entregarse el código"
+    image_paths: []
+    duration: 5.0
+  - id: "215"
+    title: "Escena 215"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "216"
+    title: "Escena 216"
+    narration: "Agente Cero compara dos respuestas ilustrativas: fragmentos sueltos frente a un archivo HTML completo. El Detective coloca una marca de revisión junto al archivo completo y una hoja de instrucciones de uso."
+    text: "Agente Cero compara dos respuestas ilustrativas: fragmentos sueltos frente a un archivo HTML completo. El Detective coloca una marca de revisión junto al archivo completo y una hoja de instrucciones de uso."
+    image_paths: []
+    duration: 5.0
+  - id: "217"
+    title: "Escena 217"
+    narration: "«Pide el archivo completo y las instrucciones»."
+    text: "«Pide el archivo completo y las instrucciones»."
+    image_paths: []
+    duration: 5.0
+  - id: "218"
+    title: "Escena 218"
+    narration: "Se añade: «No omitas funciones ni uses fragmentos pendientes. Entrega el código completo e indica cómo guardarlo, abrirlo y comprobarlo»."
+    text: "Se añade: «No omitas funciones ni uses fragmentos pendientes. Entrega el código completo e indica cómo guardarlo, abrirlo y comprobarlo»."
+    image_paths: []
+    duration: 5.0
+  - id: "219"
+    title: "Escena 219"
+    narration: "Imagen 24. Enviar el encargo y revisar lo recibido"
+    text: "Imagen 24. Enviar el encargo y revisar lo recibido"
+    image_paths: []
+    duration: 5.0
+  - id: "220"
+    title: "Escena 220"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "221"
+    title: "Escena 221"
+    narration: "Agente Cero envía el prompt desde una interfaz de conversación genérica. El Detective revisa una lista de requisitos mientras aparece el archivo entregado. Profesora Ana mantiene visible el objetivo de aprendizaje."
+    text: "Agente Cero envía el prompt desde una interfaz de conversación genérica. El Detective revisa una lista de requisitos mientras aparece el archivo entregado. Profesora Ana mantiene visible el objetivo de aprendizaje."
+    image_paths: []
+    duration: 5.0
+  - id: "222"
+    title: "Escena 222"
+    narration: "«Recibir una respuesta no equivale a aprobarla»."
+    text: "«Recibir una respuesta no equivale a aprobarla»."
+    image_paths: []
+    duration: 5.0
+  - id: "223"
+    title: "Escena 223"
+    narration: "La narración presenta la siguiente etapa: abrir, comprobar y ajustar. La escena no debe representar que el código generado ya está garantizado como correcto."
+    text: "La narración presenta la siguiente etapa: abrir, comprobar y ajustar. La escena no debe representar que el código generado ya está garantizado como correcto."
+    image_paths: []
+    duration: 5.0
+  - id: "224"
+    title: "Escena 224"
+    narration: "Escena 9. Abrir el programa y comprobar resultados básicos"
+    text: "Escena 9. Abrir el programa y comprobar resultados básicos"
+    image_paths: []
+    duration: 5.0
+  - id: "225"
+    title: "Escena 225"
+    narration: "Finalidad:  Enseñar al profesor qué hacer con el archivo recibido."
+    text: "Finalidad:  Enseñar al profesor qué hacer con el archivo recibido."
+    image_paths: []
+    duration: 5.0
+  - id: "226"
+    title: "Escena 226"
+    narration: "Imagen 25. Guardar correctamente el archivo"
+    text: "Imagen 25. Guardar correctamente el archivo"
+    image_paths: []
+    duration: 5.0
+  - id: "227"
+    title: "Escena 227"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "228"
+    title: "Escena 228"
+    narration: "Agente Cero muestra el nombre «domino_fracciones.html». El Detective detecta en otra tarjeta el error «domino_fracciones.html.txt». Profesora Ana señala que el contenido debe guardarse como texto, sin formato de procesador de palabras."
+    text: "Agente Cero muestra el nombre «domino_fracciones.html». El Detective detecta en otra tarjeta el error «domino_fracciones.html.txt». Profesora Ana señala que el contenido debe guardarse como texto, sin formato de procesador de palabras."
+    image_paths: []
+    duration: 5.0
+  - id: "229"
+    title: "Escena 229"
+    narration: "«La extensión del archivo importa»."
+    text: "«La extensión del archivo importa»."
+    image_paths: []
+    duration: 5.0
+  - id: "230"
+    title: "Escena 230"
+    narration: "Se explica cómo reconocer el archivo HTML y abrirlo en el navegador. Conviene mostrar el nombre con claridad, sin depender de un menú específico de una aplicación."
+    text: "Se explica cómo reconocer el archivo HTML y abrirlo en el navegador. Conviene mostrar el nombre con claridad, sin depender de un menú específico de una aplicación."
+    image_paths: []
+    duration: 5.0
+  - id: "231"
+    title: "Escena 231"
+    narration: "Imagen 26. Generar el primer juego de prueba"
+    text: "Imagen 26. Generar el primer juego de prueba"
+    image_paths: []
+    duration: 5.0
+  - id: "232"
+    title: "Escena 232"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "233"
+    title: "Escena 233"
+    narration: "Ambos profesores aparecen junto a una captura del programa. Se seleccionan nivel intermedio, fracción más imagen, rectángulos, A4, color uniforme y semilla «AULA-2026». Agente Cero pulsa «Generar juego»."
+    text: "Ambos profesores aparecen junto a una captura del programa. Se seleccionan nivel intermedio, fracción más imagen, rectángulos, A4, color uniforme y semilla «AULA-2026». Agente Cero pulsa «Generar juego»."
+    image_paths: []
+    duration: 5.0
+  - id: "234"
+    title: "Escena 234"
+    narration: "«Comprueba una configuración concreta»."
+    text: "«Comprueba una configuración concreta»."
+    image_paths: []
+    duration: 5.0
+  - id: "235"
+    title: "Escena 235"
+    narration: "El resultado esperado es de 28 fichas y siete familias, distribuidas en tres hojas para las fichas. Esta configuración corresponde a las opciones iniciales del archivo."
+    text: "El resultado esperado es de 28 fichas y siete familias, distribuidas en tres hojas para las fichas. Esta configuración corresponde a las opciones iniciales del archivo."
+    image_paths: []
+    duration: 5.0
+  - id: "236"
+    title: "Escena 236"
+    narration: "Imagen 27. Hacer una comprobación matemática manual"
+    text: "Imagen 27. Hacer una comprobación matemática manual"
+    image_paths: []
+    duration: 5.0
+  - id: "237"
+    title: "Escena 237"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "238"
+    title: "Escena 238"
+    narration: "El Detective utiliza una pequeña pizarra de control: 2/4 = 4/8, pero 2/4 ≠ 2/8. Agente Cero cuenta las partes de los dibujos. Profesora Ana compara los resultados con la clave docente."
+    text: "El Detective utiliza una pequeña pizarra de control: 2/4 = 4/8, pero 2/4 ≠ 2/8. Agente Cero cuenta las partes de los dibujos. Profesora Ana compara los resultados con la clave docente."
+    image_paths: []
+    duration: 5.0
+  - id: "239"
+    title: "Escena 239"
+    narration: "«No basta con que las fichas se vean bien»."
+    text: "«No basta con que las fichas se vean bien»."
+    image_paths: []
+    duration: 5.0
+  - id: "240"
+    title: "Escena 240"
+    narration: "Se comprueba una equivalencia correcta y una comparación incorrecta. Se recuerda que tener el mismo número de partes sombreadas no implica representar la misma fracción."
+    text: "Se comprueba una equivalencia correcta y una comparación incorrecta. Se recuerda que tener el mismo número de partes sombreadas no implica representar la misma fracción."
+    image_paths: []
+    duration: 5.0
+  - id: "241"
+    title: "Escena 241"
+    narration: "Escena 10. Probar la práctica y obtener los archivos"
+    text: "Escena 10. Probar la práctica y obtener los archivos"
+    image_paths: []
+    duration: 5.0
+  - id: "242"
+    title: "Escena 242"
+    narration: "Finalidad:  Verificar las funciones que se solicitaron, utilizando el programa real."
+    text: "Finalidad:  Verificar las funciones que se solicitaron, utilizando el programa real."
+    image_paths: []
+    duration: 5.0
+  - id: "243"
+    title: "Escena 243"
+    narration: "Imagen 28. Probar selección, giro, pista y deshacer"
+    text: "Imagen 28. Probar selección, giro, pista y deshacer"
+    image_paths: []
+    duration: 5.0
+  - id: "244"
+    title: "Escena 244"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "245"
+    title: "Escena 245"
+    narration: "Agente Cero realiza una unión en la práctica digital. El Detective le propone invertir una ficha y después deshacer. Profesora Ana observa el mensaje de una pista y la advertencia sobre la continuación del juego."
+    text: "Agente Cero realiza una unión en la práctica digital. El Detective le propone invertir una ficha y después deshacer. Profesora Ana observa el mensaje de una pista y la advertencia sobre la continuación del juego."
+    image_paths: []
+    duration: 5.0
+  - id: "246"
+    title: "Escena 246"
+    narration: "«Prueba las acciones, no solo los botones»."
+    text: "«Prueba las acciones, no solo los botones»."
+    image_paths: []
+    duration: 5.0
+  - id: "247"
+    title: "Escena 247"
+    narration: "Debe verse que una pista propone una unión válida inmediata, pero no garantiza completar toda la cadena. La práctica tampoco debe representarse como una partida contra un rival automático."
+    text: "Debe verse que una pista propone una unión válida inmediata, pero no garantiza completar toda la cadena. La práctica tampoco debe representarse como una partida contra un rival automático."
+    image_paths: []
+    duration: 5.0
+  - id: "248"
+    title: "Escena 248"
+    narration: "Imagen 29. Obtener el PDF mediante impresión"
+    text: "Imagen 29. Obtener el PDF mediante impresión"
+    image_paths: []
+    duration: 5.0
+  - id: "249"
+    title: "Escena 249"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "250"
+    title: "Escena 250"
+    narration: "Agente Cero pulsa «Imprimir fichas / PDF». El Detective señala «Guardar como PDF» en una representación del diálogo de impresión. Profesora Ana conserva la guía en un grupo separado de documentos."
+    text: "Agente Cero pulsa «Imprimir fichas / PDF». El Detective señala «Guardar como PDF» en una representación del diálogo de impresión. Profesora Ana conserva la guía en un grupo separado de documentos."
+    image_paths: []
+    duration: 5.0
+  - id: "251"
+    title: "Escena 251"
+    narration: "«Imprimir y guardar como PDF»."
+    text: "«Imprimir y guardar como PDF»."
+    image_paths: []
+    duration: 5.0
+  - id: "252"
+    title: "Escena 252"
+    narration: "Se evita mostrar un botón inexistente de exportación directa a PDF. También se explica que imprimir solo las fichas no incorpora la guía docente."
+    text: "Se evita mostrar un botón inexistente de exportación directa a PDF. También se explica que imprimir solo las fichas no incorpora la guía docente."
+    image_paths: []
+    duration: 5.0
+  - id: "253"
+    title: "Escena 253"
+    narration: "Imagen 30. Revisar el contenido del ZIP"
+    text: "Imagen 30. Revisar el contenido del ZIP"
+    image_paths: []
+    duration: 5.0
+  - id: "254"
+    title: "Escena 254"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "255"
+    title: "Escena 255"
+    narration: "Los profesores abren una carpeta descomprimida. Se distinguen «hojas», «fichas_individuales», «guia_docente», «juego.json» e «INSTRUCCIONES.txt». Una ficha y una hoja ampliadas permiten reconocer sus diferentes usos."
+    text: "Los profesores abren una carpeta descomprimida. Se distinguen «hojas», «fichas_individuales», «guia_docente», «juego.json» e «INSTRUCCIONES.txt». Una ficha y una hoja ampliadas permiten reconocer sus diferentes usos."
+    image_paths: []
+    duration: 5.0
+  - id: "256"
+    title: "Escena 256"
+    narration: "«Cada archivo tiene una función»."
+    text: "«Cada archivo tiene una función»."
+    image_paths: []
+    duration: 5.0
+  - id: "257"
+    title: "Escena 257"
+    narration: "Se muestra que el ZIP contiene hojas, guía y fichas individuales en PNG y SVG, además de configuración e instrucciones. No se representa un PDF dentro del ZIP."
+    text: "Se muestra que el ZIP contiene hojas, guía y fichas individuales en PNG y SVG, además de configuración e instrucciones. No se representa un PDF dentro del ZIP."
+    image_paths: []
+    duration: 5.0
+  - id: "258"
+    title: "Escena 258"
+    narration: "Escena 11. Aprender a corregir el prompt"
+    text: "Escena 11. Aprender a corregir el prompt"
+    image_paths: []
+    duration: 5.0
+  - id: "259"
+    title: "Escena 259"
+    narration: "Finalidad:  Enseñar una revisión específica y reproducible, en lugar de recurrir a peticiones generales."
+    text: "Finalidad:  Enseñar una revisión específica y reproducible, en lugar de recurrir a peticiones generales."
+    image_paths: []
+    duration: 5.0
+  - id: "260"
+    title: "Escena 260"
+    narration: "Imagen 31. Comprobar que la configuración se reproduce"
+    text: "Imagen 31. Comprobar que la configuración se reproduce"
+    image_paths: []
+    duration: 5.0
+  - id: "261"
+    title: "Escena 261"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "262"
+    title: "Escena 262"
+    narration: "Profesora Ana abre el JSON guardado. Agente Cero compara las fichas con la versión anterior y el Detective revisa que coincidan las opciones y la semilla. Después se señala el botón «Crear otra versión»."
+    text: "Profesora Ana abre el JSON guardado. Agente Cero compara las fichas con la versión anterior y el Detective revisa que coincidan las opciones y la semilla. Después se señala el botón «Crear otra versión»."
+    image_paths: []
+    duration: 5.0
+  - id: "263"
+    title: "Escena 263"
+    narration: "«Una versión debe poder recuperarse»."
+    text: "«Una versión debe poder recuperarse»."
+    image_paths: []
+    duration: 5.0
+  - id: "264"
+    title: "Escena 264"
+    narration: "Se comprueba la reproducción antes de generar otra variante. La escena diferencia recuperar un juego conocido de solicitar uno nuevo."
+    text: "Se comprueba la reproducción antes de generar otra variante. La escena diferencia recuperar un juego conocido de solicitar uno nuevo."
+    image_paths: []
+    duration: 5.0
+  - id: "265"
+    title: "Escena 265"
+    narration: "Imagen 32. Describir un error con precisión"
+    text: "Imagen 32. Describir un error con precisión"
+    image_paths: []
+    duration: 5.0
+  - id: "266"
+    title: "Escena 266"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "267"
+    title: "Escena 267"
+    narration: "En una viñeta claramente rotulada «Ejemplo hipotético», Agente Cero presenta un dibujo con partes desiguales. El Detective organiza tres tarjetas: «Qué hice», «Qué ocurrió» y «Qué debía ocurrir»."
+    text: "En una viñeta claramente rotulada «Ejemplo hipotético», Agente Cero presenta un dibujo con partes desiguales. El Detective organiza tres tarjetas: «Qué hice», «Qué ocurrió» y «Qué debía ocurrir»."
+    image_paths: []
+    duration: 5.0
+  - id: "268"
+    title: "Escena 268"
+    narration: "«Explica el error, no solo «no funciona»»."
+    text: "«Explica el error, no solo «no funciona»»."
+    image_paths: []
+    duration: 5.0
+  - id: "269"
+    title: "Escena 269"
+    narration: "La narración propone: «Al generar esta configuración aparece un dibujo con divisiones desiguales; necesito que todas representen partes de igual área». No debe atribuirse ese defecto al archivo adjunto."
+    text: "La narración propone: «Al generar esta configuración aparece un dibujo con divisiones desiguales; necesito que todas representen partes de igual área». No debe atribuirse ese defecto al archivo adjunto."
+    image_paths: []
+    duration: 5.0
+  - id: "270"
+    title: "Escena 270"
+    narration: "Imagen 33. Pedir una corrección sin perder funciones"
+    text: "Imagen 33. Pedir una corrección sin perder funciones"
+    image_paths: []
+    duration: 5.0
+  - id: "271"
+    title: "Escena 271"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "272"
+    title: "Escena 272"
+    narration: "El Detective protege con una carpeta las funciones que ya estaban correctas. Agente Cero redacta la solicitud de ajuste. Profesora Ana conserva la lista de pruebas para revisar nuevamente la versión corregida."
+    text: "El Detective protege con una carpeta las funciones que ya estaban correctas. Agente Cero redacta la solicitud de ajuste. Profesora Ana conserva la lista de pruebas para revisar nuevamente la versión corregida."
+    image_paths: []
+    duration: 5.0
+  - id: "273"
+    title: "Escena 273"
+    narration: "«Corrige sin perder lo que funciona»."
+    text: "«Corrige sin perder lo que funciona»."
+    image_paths: []
+    duration: 5.0
+  - id: "274"
+    title: "Escena 274"
+    narration: "Fragmento: «Corrige el problema descrito, conserva las funciones existentes, entrega de nuevo el archivo completo y explica qué cambió». Después se repiten las comprobaciones afectadas."
+    text: "Fragmento: «Corrige el problema descrito, conserva las funciones existentes, entrega de nuevo el archivo completo y explica qué cambió». Después se repiten las comprobaciones afectadas."
+    image_paths: []
+    duration: 5.0
+  - id: "275"
+    title: "Escena 275"
+    narration: "Escena 12. Llevar el material al aula y cerrar el aprendizaje"
+    text: "Escena 12. Llevar el material al aula y cerrar el aprendizaje"
+    image_paths: []
+    duration: 5.0
+  - id: "276"
+    title: "Escena 276"
+    narration: "Finalidad:  Mostrar que el resultado se evalúa por su utilidad educativa, no por la cantidad de código producido."
+    text: "Finalidad:  Mostrar que el resultado se evalúa por su utilidad educativa, no por la cantidad de código producido."
+    image_paths: []
+    duration: 5.0
+  - id: "277"
+    title: "Escena 277"
+    narration: "Imagen 34. Preparar una impresión de prueba"
+    text: "Imagen 34. Preparar una impresión de prueba"
+    image_paths: []
+    duration: 5.0
+  - id: "278"
+    title: "Escena 278"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "279"
+    title: "Escena 279"
+    narration: "Profesora Ana y el Detective revisan una primera hoja impresa. Agente Cero mide la referencia de 5 cm. Se recorta una ficha por su contorno y se conserva intacta la división central."
+    text: "Profesora Ana y el Detective revisan una primera hoja impresa. Agente Cero mide la referencia de 5 cm. Se recorta una ficha por su contorno y se conserva intacta la división central."
+    image_paths: []
+    duration: 5.0
+  - id: "280"
+    title: "Escena 280"
+    narration: "«Primero una prueba; después las copias»."
+    text: "«Primero una prueba; después las copias»."
+    image_paths: []
+    duration: 5.0
+  - id: "281"
+    title: "Escena 281"
+    narration: "La escena propone comprobar tamaño, legibilidad, sombreado y recorte antes de preparar todos los juegos del grupo. Las respuestas permanecen separadas del material del alumnado."
+    text: "La escena propone comprobar tamaño, legibilidad, sombreado y recorte antes de preparar todos los juegos del grupo. Las respuestas permanecen separadas del material del alumnado."
+    image_paths: []
+    duration: 5.0
+  - id: "282"
+    title: "Escena 282"
+    narration: "Imagen 35. Observar el aprendizaje durante el juego"
+    text: "Imagen 35. Observar el aprendizaje durante el juego"
+    image_paths: []
+    duration: 5.0
+  - id: "283"
+    title: "Escena 283"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "284"
+    title: "Escena 284"
+    narration: "Profesora Ana acompaña a dos estudiantes. Uno propone una unión y el otro explica por qué es válida. El Detective escucha sin dar inmediatamente la respuesta. Agente Cero conserva la guía docente al costado."
+    text: "Profesora Ana acompaña a dos estudiantes. Uno propone una unión y el otro explica por qué es válida. El Detective escucha sin dar inmediatamente la respuesta. Agente Cero conserva la guía docente al costado."
+    image_paths: []
+    duration: 5.0
+  - id: "285"
+    title: "Escena 285"
+    narration: "«¿Por qué representan la misma fracción?»."
+    text: "«¿Por qué representan la misma fracción?»."
+    image_paths: []
+    duration: 5.0
+  - id: "286"
+    title: "Escena 286"
+    narration: "El cierre de la actividad pide representar una misma fracción de dos maneras y justificarla, como plantea la guía del programa. No se inventa una calificación automática."
+    text: "El cierre de la actividad pide representar una misma fracción de dos maneras y justificarla, como plantea la guía del programa. No se inventa una calificación automática."
+    image_paths: []
+    duration: 5.0
+  - id: "287"
+    title: "Escena 287"
+    narration: "Imagen 36. Transferir el procedimiento a otro material"
+    text: "Imagen 36. Transferir el procedimiento a otro material"
+    image_paths: []
+    duration: 5.0
+  - id: "288"
+    title: "Escena 288"
+    narration: "Composición y acción"
+    text: "Composición y acción"
+    image_paths: []
+    duration: 5.0
+  - id: "289"
+    title: "Escena 289"
+    narration: "Los tres profesores aparecen frente al pizarrón. En el centro está el recorrido «Objetivo → Requisitos → Código → Pruebas → Aula». A un lado queda el dominó; al otro, una carpeta vacía para un próximo recurso."
+    text: "Los tres profesores aparecen frente al pizarrón. En el centro está el recorrido «Objetivo → Requisitos → Código → Pruebas → Aula». A un lado queda el dominó; al otro, una carpeta vacía para un próximo recurso."
+    image_paths: []
+    duration: 5.0
+  - id: "290"
+    title: "Escena 290"
+    narration: "«Diseña. Pide. Comprueba. Enseña»."
+    text: "«Diseña. Pide. Comprueba. Enseña»."
+    image_paths: []
+    duration: 5.0
+  - id: "291"
+    title: "Escena 291"
+    narration: "El mensaje final destaca que lo transferible no es memorizar el prompt del dominó, sino aprender a convertir decisiones docentes en instrucciones claras y resultados revisables."
+    text: "El mensaje final destaca que lo transferible no es memorizar el prompt del dominó, sino aprender a convertir decisiones docentes en instrucciones claras y resultados revisables."
+    image_paths: []
+    duration: 5.0
+  - id: "292"
+    title: "Escena 292"
+    narration: "Cuidado de la producción y fidelidad de las ilustraciones"
+    text: "Cuidado de la producción y fidelidad de las ilustraciones"
+    image_paths: []
+    duration: 5.0
+  - id: "293"
+    title: "Escena 293"
+    narration: "Las escenas pueden ser ilustradas, pero conviene incorporar las fichas, las hojas y las pantallas reales del programa durante la edición del video. Así se evita que una recreación gráfica altere el número de divisiones, las partes sombreadas, una fracción o el nombre de un botón."
+    text: "Las escenas pueden ser ilustradas, pero conviene incorporar las fichas, las hojas y las pantallas reales del programa durante la edición del video. Así se evita que una recreación gráfica altere el número de divisiones, las partes sombreadas, una fracción o el nombre de un botón."
+    image_paths: []
+    duration: 5.0
+  - id: "294"
+    title: "Escena 294"
+    narration: "Los ejemplos de equivalencia deben conservar particiones correctas. Cuando se compare directamente el área sombreada, las unidades utilizadas en esa demostración tendrán el mismo tamaño. Los personajes pueden señalar y explicar, pero no cubrir las divisiones."
+    text: "Los ejemplos de equivalencia deben conservar particiones correctas. Cuando se compare directamente el área sombreada, las unidades utilizadas en esa demostración tendrán el mismo tamaño. Los personajes pueden señalar y explicar, pero no cubrir las divisiones."
+    image_paths: []
+    duration: 5.0
+  - id: "295"
+    title: "Escena 295"
+    narration: "Nota editorial de esta recopilación"
+    text: "Nota editorial de esta recopilación"
+    image_paths: []
+    duration: 5.0
+  - id: "296"
+    title: "Escena 296"
+    narration: "Se conservaron las ilustraciones generadas en la conversación, incluida su información gráfica. No se han corregido ni sustituido silenciosamente. La siguiente relación señala discrepancias visibles que afectan a la correspondencia entre algunas ilustraciones y el guion o el HTML de referencia; no constituye una certificación exhaustiva de las 36 imágenes."
+    text: "Se conservaron las ilustraciones generadas en la conversación, incluida su información gráfica. No se han corregido ni sustituido silenciosamente. La siguiente relación señala discrepancias visibles que afectan a la correspondencia entre algunas ilustraciones y el guion o el HTML de referencia; no constituye una certificación exhaustiva de las 36 imágenes."
+    image_paths: []
+    duration: 5.0
+  - id: "297"
+    title: "Escena 297"
+    narration: "Referencia"
+    text: "Referencia"
+    image_paths: []
+    duration: 5.0
+  - id: "298"
+    title: "Escena 298"
+    narration: "Aspecto que requiere cotejo antes del video final"
+    text: "Aspecto que requiere cotejo antes del video final"
+    image_paths: []
+    duration: 5.0
+  - id: "299"
+    title: "Escena 299"
+    narration: "Imágenes 11 y 12"
+    text: "Imágenes 11 y 12"
+    image_paths: []
+    duration: 5.0
+  - id: "300"
+    title: "Escena 300"
+    narration: "La ilustración de variantes incorpora figuras distintas de rectángulos y círculos; la de reproducibilidad muestra «12» fichas. El HTML describe figuras variadas como combinación de rectángulos y círculos y conjuntos de 15, 28 o 45 fichas."
+    text: "La ilustración de variantes incorpora figuras distintas de rectángulos y círculos; la de reproducibilidad muestra «12» fichas. El HTML describe figuras variadas como combinación de rectángulos y círculos y conjuntos de 15, 28 o 45 fichas."
+    image_paths: []
+    duration: 5.0
+  - id: "301"
+    title: "Escena 301"
+    narration: "Imagen 15"
+    text: "Imagen 15"
+    image_paths: []
+    duration: 5.0
+  - id: "302"
+    title: "Escena 302"
+    narration: "La representación del control «Invertir» puede interpretarse como cambiar 1/2 por 2/1. La operación descrita en el programa intercambia las mitades de la ficha; no invierte numerador y denominador."
+    text: "La representación del control «Invertir» puede interpretarse como cambiar 1/2 por 2/1. La operación descrita en el programa intercambia las mitades de la ficha; no invierte numerador y denominador."
+    image_paths: []
+    duration: 5.0
+  - id: "303"
+    title: "Escena 303"
+    narration: "Imagen 18"
+    text: "Imagen 18"
+    image_paths: []
+    duration: 5.0
+  - id: "304"
+    title: "Escena 304"
+    narration: "La ilustración sitúa una guía PDF en el ZIP y representa transparencia en PNG. El archivo de referencia exporta hojas, fichas y guía en SVG y PNG con fondo blanco; el PDF se obtiene desde el diálogo de impresión."
+    text: "La ilustración sitúa una guía PDF en el ZIP y representa transparencia en PNG. El archivo de referencia exporta hojas, fichas y guía en SVG y PNG con fondo blanco; el PDF se obtiene desde el diálogo de impresión."
+    image_paths: []
+    duration: 5.0
+  - id: "305"
+    title: "Escena 305"
+    narration: "Imagen 20"
+    text: "Imagen 20"
+    image_paths: []
+    duration: 5.0
+  - id: "306"
+    title: "Escena 306"
+    narration: "Aparecen configuraciones como «Algebraica», «Polinomios» y «Cuadrícula», que no corresponden a las opciones del dominó de fracciones. Deben cotejarse con los controles descritos en el guion."
+    text: "Aparecen configuraciones como «Algebraica», «Polinomios» y «Cuadrícula», que no corresponden a las opciones del dominó de fracciones. Deben cotejarse con los controles descritos en el guion."
+    image_paths: []
+    duration: 5.0
+  - id: "307"
+    title: "Escena 307"
+    narration: "Imágenes de cadenas y fracciones"
+    text: "Imágenes de cadenas y fracciones"
+    image_paths: []
+    duration: 5.0
+  - id: "308"
+    title: "Escena 308"
+    narration: "Algunas ilustraciones contienen fichas con un solo valor, fichas de puntos o sombreado que no coincide con la fracción escrita. Las cadenas y sus enlaces deben sustituirse o revisarse con las fichas efectivamente generadas por el HTML."
+    text: "Algunas ilustraciones contienen fichas con un solo valor, fichas de puntos o sombreado que no coincide con la fracción escrita. Las cadenas y sus enlaces deben sustituirse o revisarse con las fichas efectivamente generadas por el HTML."
+    image_paths: []
+    duration: 5.0
+  - id: "309"
+    title: "Escena 309"
+    narration: "Imagen 36"
+    text: "Imagen 36"
+    image_paths: []
+    duration: 5.0
+  - id: "310"
+    title: "Escena 310"
+    narration: "La ilustración aproxima «Código» y «prompt» en una misma tarjeta. El guion distingue el texto de instrucciones de la IA y el archivo de código resultante; conviene mantener esa diferencia en la narración."
+    text: "La ilustración aproxima «Código» y «prompt» en una misma tarjeta. El guion distingue el texto de instrucciones de la IA y el archivo de código resultante; conviene mantener esa diferencia en la narración."
+    image_paths: []
+    duration: 5.0
+  - id: "311"
+    title: "Escena 311"
+    narration: "Materiales de base"
+    text: "Materiales de base"
+    image_paths: []
+    duration: 5.0
+  - id: "312"
+    title: "Escena 312"
+    narration: "Guion de 12 escenas y 36 propuestas visuales desarrollado en esta conversación; ilustraciones generadas para cada escena; archivo aportado por el usuario: Domino_Fracciones_Programa(1).html. Se respeta la organización y el nivel de detalle del guion, sin añadir fuentes externas."
+    text: "Guion de 12 escenas y 36 propuestas visuales desarrollado en esta conversación; ilustraciones generadas para cada escena; archivo aportado por el usuario: Domino_Fracciones_Programa(1).html. Se respeta la organización y el nivel de detalle del guion, sin añadir fuentes externas."
+    image_paths: []
+    duration: 5.0
+  - id: "313"
+    title: "Escena 313"
+    narration: "Anexo. Prompt completo de referencia"
+    text: "Anexo. Prompt completo de referencia"
+    image_paths: []
+    duration: 5.0
+  - id: "314"
+    title: "Escena 314"
+    narration: "Este texto se construye progresivamente durante las imágenes 4 a 23 del guion y puede mostrarse completo mediante una pantalla desplazable. Los campos entre corchetes deben adaptarse al grupo real. Las familias, los multiplicadores y el límite de partes se toman del programa de referencia; no son una clasificación curricular adicional."
+    text: "Este texto se construye progresivamente durante las imágenes 4 a 23 del guion y puede mostrarse completo mediante una pantalla desplazable. Los campos entre corchetes deben adaptarse al grupo real. Las familias, los multiplicadores y el límite de partes se toman del programa de referencia; no son una clasificación curricular adicional."
+    image_paths: []
+    duration: 5.0
+  - id: "315"
+    title: "Escena 315"
+    narration: "Actúa como especialista en didáctica de las matemáticas y desarrollo de recursos educativos interactivos."
+    text: "Actúa como especialista en didáctica de las matemáticas y desarrollo de recursos educativos interactivos."
+    image_paths: []
+    duration: 5.0
+  - id: "316"
+    title: "Escena 316"
+    narration: "Contexto y objetivo"
+    text: "Contexto y objetivo"
+    image_paths: []
+    duration: 5.0
+  - id: "317"
+    title: "Escena 317"
+    narration: "Necesito un dominó de fracciones equivalentes para un grupo de [grado o nivel educativo]."
+    text: "Necesito un dominó de fracciones equivalentes para un grupo de [grado o nivel educativo]."
+    image_paths: []
+    duration: 5.0
+  - id: "318"
+    title: "Escena 318"
+    narration: "El alumnado conoce [conocimientos previos] y presenta dificultades para [dificultad que se desea atender]."
+    text: "El alumnado conoce [conocimientos previos] y presenta dificultades para [dificultad que se desea atender]."
+    image_paths: []
+    duration: 5.0
+  - id: "319"
+    title: "Escena 319"
+    narration: "El objetivo es que identifique fracciones equivalentes, relacione representaciones numéricas y gráficas, y explique por qué dos representaciones corresponden a la misma fracción de una unidad."
+    text: "El objetivo es que identifique fracciones equivalentes, relacione representaciones numéricas y gráficas, y explique por qué dos representaciones corresponden a la misma fracción de una unidad."
+    image_paths: []
+    duration: 5.0
+  - id: "320"
+    title: "Escena 320"
+    narration: "No utilices nombres ni datos personales del alumnado."
+    text: "No utilices nombres ni datos personales del alumnado."
+    image_paths: []
+    duration: 5.0
+  - id: "321"
+    title: "Escena 321"
+    narration: "Producto solicitado"
+    text: "Producto solicitado"
+    image_paths: []
+    duration: 5.0
+  - id: "322"
+    title: "Escena 322"
+    narration: "Genera un programa completo en un único archivo HTML, con CSS, JavaScript y gráficos SVG integrados."
+    text: "Genera un programa completo en un único archivo HTML, con CSS, JavaScript y gráficos SVG integrados."
+    image_paths: []
+    duration: 5.0
+  - id: "323"
+    title: "Escena 323"
+    narration: "Debe abrirse en el navegador y funcionar sin conexión una vez obtenido el archivo, sin instalar programas adicionales y sin cargar bibliotecas, fuentes, imágenes ni otros recursos externos."
+    text: "Debe abrirse en el navegador y funcionar sin conexión una vez obtenido el archivo, sin instalar programas adicionales y sin cargar bibliotecas, fuentes, imágenes ni otros recursos externos."
+    image_paths: []
+    duration: 5.0
+  - id: "324"
+    title: "Escena 324"
+    narration: "La interfaz y las instrucciones deben estar en español."
+    text: "La interfaz y las instrucciones deben estar en español."
+    image_paths: []
+    duration: 5.0
+  - id: "325"
+    title: "Escena 325"
+    narration: "Organiza el programa en tres secciones: «Crear e imprimir», «Practicar» y «Guía docente»."
+    text: "Organiza el programa en tres secciones: «Crear e imprimir», «Practicar» y «Guía docente»."
+    image_paths: []
+    duration: 5.0
+  - id: "326"
+    title: "Escena 326"
+    narration: "Utiliza un diseño legible, con fondos claros y acentos morados. Las ilustraciones matemáticas deben ser claras y no quedar ocultas por elementos decorativos."
+    text: "Utiliza un diseño legible, con fondos claros y acentos morados. Las ilustraciones matemáticas deben ser claras y no quedar ocultas por elementos decorativos."
+    image_paths: []
+    duration: 5.0
+  - id: "327"
+    title: "Escena 327"
+    narration: "Contenido matemático"
+    text: "Contenido matemático"
+    image_paths: []
+    duration: 5.0
+  - id: "328"
+    title: "Escena 328"
+    narration: "Trabaja con fracciones positivas propias: numerador y denominador enteros positivos, con numerador menor que denominador."
+    text: "Trabaja con fracciones positivas propias: numerador y denominador enteros positivos, con numerador menor que denominador."
+    image_paths: []
+    duration: 5.0
+  - id: "329"
+    title: "Escena 329"
+    narration: "Cada dibujo debe representar una unidad dividida en partes de igual área. El número de partes sombreadas debe coincidir con el numerador y el total de partes con el denominador."
+    text: "Cada dibujo debe representar una unidad dividida en partes de igual área. El número de partes sombreadas debe coincidir con el numerador y el total de partes con el denominador."
+    image_paths: []
+    duration: 5.0
+  - id: "330"
+    title: "Escena 330"
+    narration: "Comprueba las equivalencias mediante productos cruzados de enteros, sin depender de aproximaciones decimales."
+    text: "Comprueba las equivalencias mediante productos cruzados de enteros, sin depender de aproximaciones decimales."
+    image_paths: []
+    duration: 5.0
+  - id: "331"
+    title: "Escena 331"
+    narration: "En las representaciones gráficas, limita el denominador a 16 para mantener visibles las divisiones."
+    text: "En las representaciones gráficas, limita el denominador a 16 para mantener visibles las divisiones."
+    image_paths: []
+    duration: 5.0
+  - id: "332"
+    title: "Escena 332"
+    narration: "Todas las familias deben usar el mismo color de sombreado. Para blanco y negro utiliza una trama; no permitas que el color revele qué fracciones son equivalentes."
+    text: "Todas las familias deben usar el mismo color de sombreado. Para blanco y negro utiliza una trama; no permitas que el color revele qué fracciones son equivalentes."
+    image_paths: []
+    duration: 5.0
+  - id: "333"
+    title: "Escena 333"
+    narration: "Niveles y variantes"
+    text: "Niveles y variantes"
+    image_paths: []
+    duration: 5.0
+  - id: "334"
+    title: "Escena 334"
+    narration: "Incluye estos niveles:"
+    text: "Incluye estos niveles:"
+    image_paths: []
+    duration: 5.0
+  - id: "335"
+    title: "Escena 335"
+    narration: "Inicial: 5 familias y 15 fichas. Familias: 1/4, 1/3, 1/2, 2/3 y 3/4."
+    text: "Inicial: 5 familias y 15 fichas. Familias: 1/4, 1/3, 1/2, 2/3 y 3/4."
+    image_paths: []
+    duration: 5.0
+  - id: "336"
+    title: "Escena 336"
+    narration: "Intermedio: 7 familias y 28 fichas. Familias: 1/6, 1/4, 1/3, 1/2, 2/3, 3/4 y 5/6."
+    text: "Intermedio: 7 familias y 28 fichas. Familias: 1/6, 1/4, 1/3, 1/2, 2/3, 3/4 y 5/6."
+    image_paths: []
+    duration: 5.0
+  - id: "337"
+    title: "Escena 337"
+    narration: "Avanzado: 9 familias y 45 fichas. Familias: 1/8, 1/6, 1/4, 1/3, 1/2, 2/3, 3/4, 5/6 y 7/8."
+    text: "Avanzado: 9 familias y 45 fichas. Familias: 1/8, 1/6, 1/4, 1/3, 1/2, 2/3, 3/4, 5/6 y 7/8."
+    image_paths: []
+    duration: 5.0
+  - id: "338"
+    title: "Escena 338"
+    narration: "Para las fracciones escritas, genera equivalentes multiplicando numerador y denominador por 2 o 3 en el nivel inicial, y por 2, 3 o 4 en los niveles intermedio y avanzado."
+    text: "Para las fracciones escritas, genera equivalentes multiplicando numerador y denominador por 2 o 3 en el nivel inicial, y por 2, 3 o 4 en los niveles intermedio y avanzado."
+    image_paths: []
+    duration: 5.0
+  - id: "339"
+    title: "Escena 339"
+    narration: "Para las imágenes, utiliza multiplicadores entre 1 y 4, respetando el límite de 16 partes."
+    text: "Para las imágenes, utiliza multiplicadores entre 1 y 4, respetando el límite de 16 partes."
+    image_paths: []
+    duration: 5.0
+  - id: "340"
+    title: "Escena 340"
+    narration: "No presentes estos niveles como una clasificación por edad validada."
+    text: "No presentes estos niveles como una clasificación por edad validada."
+    image_paths: []
+    duration: 5.0
+  - id: "341"
+    title: "Escena 341"
+    narration: "Permite elegir: solo fracciones, solo imágenes o fracción más imagen; rectángulos, círculos o figuras variadas; papel A4 o Carta; color uniforme o blanco y negro."
+    text: "Permite elegir: solo fracciones, solo imágenes o fracción más imagen; rectángulos, círculos o figuras variadas; papel A4 o Carta; color uniforme o blanco y negro."
+    image_paths: []
+    duration: 5.0
+  - id: "342"
+    title: "Escena 342"
+    narration: "Incluye una semilla textual de entre 1 y 40 caracteres. La misma semilla y las mismas opciones deben reproducir las mismas fichas, su orden y la solución en esta versión del programa."
+    text: "Incluye una semilla textual de entre 1 y 40 caracteres. La misma semilla y las mismas opciones deben reproducir las mismas fichas, su orden y la solución en esta versión del programa."
+    image_paths: []
+    duration: 5.0
+  - id: "343"
+    title: "Escena 343"
+    narration: "Añade los botones «Generar juego» y «Crear otra versión»."
+    text: "Añade los botones «Generar juego» y «Crear otra versión»."
+    image_paths: []
+    duration: 5.0
+  - id: "344"
+    title: "Escena 344"
+    narration: "Mecánica del dominó"
+    text: "Mecánica del dominó"
+    image_paths: []
+    duration: 5.0
+  - id: "345"
+    title: "Escena 345"
+    narration: "Cada ficha debe tener dos mitades."
+    text: "Cada ficha debe tener dos mitades."
+    image_paths: []
+    duration: 5.0
+  - id: "346"
+    title: "Escena 346"
+    narration: "Genera todas las parejas no ordenadas de familias, incluidas las dobles, sin repetir parejas."
+    text: "Genera todas las parejas no ordenadas de familias, incluidas las dobles, sin repetir parejas."
+    image_paths: []
+    duration: 5.0
+  - id: "347"
+    title: "Escena 347"
+    narration: "Las dos mitades de una misma ficha no tienen que ser equivalentes. La equivalencia se exige entre las mitades de fichas diferentes que se tocan al construir la cadena."
+    text: "Las dos mitades de una misma ficha no tienen que ser equivalentes. La equivalencia se exige entre las mitades de fichas diferentes que se tocan al construir la cadena."
+    image_paths: []
+    duration: 5.0
+  - id: "348"
+    title: "Escena 348"
+    narration: "Incluye reglas para partidas físicas de dos a cuatro participantes."
+    text: "Incluye reglas para partidas físicas de dos a cuatro participantes."
+    image_paths: []
+    duration: 5.0
+  - id: "349"
+    title: "Escena 349"
+    narration: "Reparte 3 fichas por persona en el nivel inicial, 5 en el intermedio y 7 en el avanzado. Las restantes forman el pozo."
+    text: "Reparte 3 fichas por persona en el nivel inicial, 5 en el intermedio y 7 en el avanzado. Las restantes forman el pozo."
+    image_paths: []
+    duration: 5.0
+  - id: "350"
+    title: "Escena 350"
+    narration: "Permite comenzar con cualquier ficha y añadir fichas a los extremos libres, justificando cada unión."
+    text: "Permite comenzar con cualquier ficha y añadir fichas a los extremos libres, justificando cada unión."
+    image_paths: []
+    duration: 5.0
+  - id: "351"
+    title: "Escena 351"
+    narration: "Cuando no haya jugada posible, se toma una ficha del pozo y se coloca si sirve; en caso contrario, se pasa. Con el pozo vacío se pasa directamente."
+    text: "Cuando no haya jugada posible, se toma una ficha del pozo y se coloca si sirve; en caso contrario, se pasa. Con el pozo vacío se pasa directamente."
+    image_paths: []
+    duration: 5.0
+  - id: "352"
+    title: "Escena 352"
+    narration: "Gana quien termina sus fichas. Si nadie puede continuar y el pozo está vacío, gana quien conserva menos; los empates pueden compartirse."
+    text: "Gana quien termina sus fichas. Si nadie puede continuar y el pozo está vacío, gana quien conserva menos; los empates pueden compartirse."
+    image_paths: []
+    duration: 5.0
+  - id: "353"
+    title: "Escena 353"
+    narration: "Práctica digital"
+    text: "Práctica digital"
+    image_paths: []
+    duration: 5.0
+  - id: "354"
+    title: "Escena 354"
+    narration: "Utiliza el mismo conjunto generado para imprimir."
+    text: "Utiliza el mismo conjunto generado para imprimir."
+    image_paths: []
+    duration: 5.0
+  - id: "355"
+    title: "Escena 355"
+    narration: "Permite seleccionar una ficha, invertir sus mitades, colocar la primera y unir fichas a la izquierda o a la derecha."
+    text: "Permite seleccionar una ficha, invertir sus mitades, colocar la primera y unir fichas a la izquierda o a la derecha."
+    image_paths: []
+    duration: 5.0
+  - id: "356"
+    title: "Escena 356"
+    narration: "Comprueba cada unión y ofrece mensajes claros: explica por qué es correcta o por qué todavía no es válida."
+    text: "Comprueba cada unión y ofrece mensajes claros: explica por qué es correcta o por qué todavía no es válida."
+    image_paths: []
+    duration: 5.0
+  - id: "357"
+    title: "Escena 357"
+    narration: "Incluye «Pedir una pista», «Deshacer» y «Reiniciar»."
+    text: "Incluye «Pedir una pista», «Deshacer» y «Reiniciar»."
+    image_paths: []
+    duration: 5.0
+  - id: "358"
+    title: "Escena 358"
+    narration: "La práctica será individual o cooperativa, no una partida contra un rival automático."
+    text: "La práctica será individual o cooperativa, no una partida contra un rival automático."
+    image_paths: []
+    duration: 5.0
+  - id: "359"
+    title: "Escena 359"
+    narration: "Aclara que una pista valida una unión inmediata, pero no garantiza que toda la continuación termine sin bloqueo."
+    text: "Aclara que una pista valida una unión inmediata, pero no garantiza que toda la continuación termine sin bloqueo."
+    image_paths: []
+    duration: 5.0
+  - id: "360"
+    title: "Escena 360"
+    narration: "Materiales imprimibles"
+    text: "Materiales imprimibles"
+    image_paths: []
+    duration: 5.0
+  - id: "361"
+    title: "Escena 361"
+    narration: "Cada ficha tendrá dimensiones nominales de 90 × 40 milímetros."
+    text: "Cada ficha tendrá dimensiones nominales de 90 × 40 milímetros."
+    image_paths: []
+    duration: 5.0
+  - id: "362"
+    title: "Escena 362"
+    narration: "Usa un contorno discontinuo para recortar y una línea central que no debe cortarse."
+    text: "Usa un contorno discontinuo para recortar y una línea central que no debe cortarse."
+    image_paths: []
+    duration: 5.0
+  - id: "363"
+    title: "Escena 363"
+    narration: "Organiza hasta 10 fichas por hoja, en dos columnas y cinco filas."
+    text: "Organiza hasta 10 fichas por hoja, en dos columnas y cinco filas."
+    image_paths: []
+    duration: 5.0
+  - id: "364"
+    title: "Escena 364"
+    narration: "Incluye una regla de comprobación de 5 centímetros."
+    text: "Incluye una regla de comprobación de 5 centímetros."
+    image_paths: []
+    duration: 5.0
+  - id: "365"
+    title: "Escena 365"
+    narration: "Indica que debe imprimirse a escala 100 %, con el papel correspondiente y sin encabezados ni pies del navegador."
+    text: "Indica que debe imprimirse a escala 100 %, con el papel correspondiente y sin encabezados ni pies del navegador."
+    image_paths: []
+    duration: 5.0
+  - id: "366"
+    title: "Escena 366"
+    narration: "Exportación y recuperación"
+    text: "Exportación y recuperación"
+    image_paths: []
+    duration: 5.0
+  - id: "367"
+    title: "Escena 367"
+    narration: "Permite imprimir las fichas, la guía docente o ambas."
+    text: "Permite imprimir las fichas, la guía docente o ambas."
+    image_paths: []
+    duration: 5.0
+  - id: "368"
+    title: "Escena 368"
+    narration: "Para obtener PDF, utiliza el diálogo de impresión del navegador y explica que debe seleccionarse «Guardar como PDF»."
+    text: "Para obtener PDF, utiliza el diálogo de impresión del navegador y explica que debe seleccionarse «Guardar como PDF»."
+    image_paths: []
+    duration: 5.0
+  - id: "369"
+    title: "Escena 369"
+    narration: "Permite guardar las hojas y la guía en SVG y PNG. Los PNG deben generarse a 300 ppp, con dimensiones físicas coherentes y metadatos de resolución."
+    text: "Permite guardar las hojas y la guía en SVG y PNG. Los PNG deben generarse a 300 ppp, con dimensiones físicas coherentes y metadatos de resolución."
+    image_paths: []
+    duration: 5.0
+  - id: "370"
+    title: "Escena 370"
+    narration: "Incluye una descarga ZIP con: hojas completas en SVG y PNG; fichas individuales en SVG y PNG; guía docente en SVG y PNG; un archivo juego.json; un archivo INSTRUCCIONES.txt."
+    text: "Incluye una descarga ZIP con: hojas completas en SVG y PNG; fichas individuales en SVG y PNG; guía docente en SVG y PNG; un archivo juego.json; un archivo INSTRUCCIONES.txt."
+    image_paths: []
+    duration: 5.0
+  - id: "371"
+    title: "Escena 371"
+    narration: "El JSON debe conservar la configuración y la información del juego, incluida la solución."
+    text: "El JSON debe conservar la configuración y la información del juego, incluida la solución."
+    image_paths: []
+    duration: 5.0
+  - id: "372"
+    title: "Escena 372"
+    narration: "Al abrir el JSON, recupera las opciones y reconstruye y verifica el juego. No lo presentes como un guardado del avance de la práctica digital."
+    text: "Al abrir el JSON, recupera las opciones y reconstruye y verifica el juego. No lo presentes como un guardado del avance de la práctica digital."
+    image_paths: []
+    duration: 5.0
+  - id: "373"
+    title: "Escena 373"
+    narration: "Guía docente"
+    text: "Guía docente"
+    image_paths: []
+    duration: 5.0
+  - id: "374"
+    title: "Escena 374"
+    narration: "Genera una guía correspondiente al juego actual."
+    text: "Genera una guía correspondiente al juego actual."
+    image_paths: []
+    duration: 5.0
+  - id: "375"
+    title: "Escena 375"
+    narration: "Incluye objetivo, explicación de numerador y denominador, reglas, recomendaciones de impresión y preguntas para justificar las uniones."
+    text: "Incluye objetivo, explicación de numerador y denominador, reglas, recomendaciones de impresión y preguntas para justificar las uniones."
+    image_paths: []
+    duration: 5.0
+  - id: "376"
+    title: "Escena 376"
+    narration: "Añade una clave de cada ficha con el valor de sus dos mitades y sus fracciones simplificadas."
+    text: "Añade una clave de cada ficha con el valor de sus dos mitades y sus fracciones simplificadas."
+    image_paths: []
+    duration: 5.0
+  - id: "377"
+    title: "Escena 377"
+    narration: "Incluye una cadena completa posible que utilice cada ficha una sola vez, indicando el orden y si debe colocarse normal o invertida."
+    text: "Incluye una cadena completa posible que utilice cada ficha una sola vez, indicando el orden y si debe colocarse normal o invertida."
+    image_paths: []
+    duration: 5.0
+  - id: "378"
+    title: "Escena 378"
+    narration: "Mantén la guía separada cuando se elija imprimir únicamente las fichas."
+    text: "Mantén la guía separada cuando se elija imprimir únicamente las fichas."
+    image_paths: []
+    duration: 5.0
+  - id: "379"
+    title: "Escena 379"
+    narration: "Comprobaciones"
+    text: "Comprobaciones"
+    image_paths: []
+    duration: 5.0
+  - id: "380"
+    title: "Escena 380"
+    narration: "Valida la cantidad de fichas de cada nivel, los identificadores, las familias, la ausencia de parejas duplicadas y las representaciones."
+    text: "Valida la cantidad de fichas de cada nivel, los identificadores, las familias, la ausencia de parejas duplicadas y las representaciones."
+    image_paths: []
+    duration: 5.0
+  - id: "381"
+    title: "Escena 381"
+    narration: "Comprueba que exista una cadena completa válida y que use todas las fichas exactamente una vez."
+    text: "Comprueba que exista una cadena completa válida y que use todas las fichas exactamente una vez."
+    image_paths: []
+    duration: 5.0
+  - id: "382"
+    title: "Escena 382"
+    narration: "Diferencia esa solución de referencia de una partida libre: no afirmes que cualquier elección evita bloqueos."
+    text: "Diferencia esa solución de referencia de una partida libre: no afirmes que cualquier elección evita bloqueos."
+    image_paths: []
+    duration: 5.0
+  - id: "383"
+    title: "Escena 383"
+    narration: "Valida las opciones y los archivos de configuración. Presenta mensajes comprensibles cuando exista un error."
+    text: "Valida las opciones y los archivos de configuración. Presenta mensajes comprensibles cuando exista un error."
+    image_paths: []
+    duration: 5.0
+  - id: "384"
+    title: "Escena 384"
+    narration: "Entrega"
+    text: "Entrega"
+    image_paths: []
+    duration: 5.0
+  - id: "385"
+    title: "Escena 385"
+    narration: "Entrega el archivo HTML completo, sin funciones omitidas, sin pseudocódigo y sin fragmentos pendientes."
+    text: "Entrega el archivo HTML completo, sin funciones omitidas, sin pseudocódigo y sin fragmentos pendientes."
+    image_paths: []
+    duration: 5.0
+  - id: "386"
+    title: "Escena 386"
+    narration: "Incluye comentarios que permitan reconocer las secciones principales."
+    text: "Incluye comentarios que permitan reconocer las secciones principales."
+    image_paths: []
+    duration: 5.0
+  - id: "387"
+    title: "Escena 387"
+    narration: "Después del código, proporciona instrucciones breves para guardarlo, abrirlo, generar un juego, imprimir y obtener los materiales."
+    text: "Después del código, proporciona instrucciones breves para guardarlo, abrirlo, generar un juego, imprimir y obtener los materiales."
+    image_paths: []
+    duration: 5.0
+  - id: "388"
+    title: "Escena 388"
+    narration: "Añade una lista de pruebas que el profesor pueda realizar. Distingue las pruebas realmente ejecutadas de las que queden pendientes de comprobar en el navegador."
+    text: "Añade una lista de pruebas que el profesor pueda realizar. Distingue las pruebas realmente ejecutadas de las que queden pendientes de comprobar en el navegador."
+    image_paths: []
+    duration: 5.0

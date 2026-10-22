@@ -1,12 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import Any, Dict, List, Optional
 
+class Dialogue(BaseModel):
+    character: str
+    voice_model: str
+    text: str
+
 class Scene(BaseModel):
-    id: str
+    id: Optional[str] = None
     title: str
-    narration: str
-    image_paths: List[str]
-    duration: float
+    dialogues: Optional[List[Dialogue]] = []
+    dialogue: Optional[List[Dialogue]] = []
+    narration: Optional[str] = ""
+    image_paths: Optional[List[str]] = []
+    duration: Optional[float] = 5.0
     voice: Optional[str] = "default"
     text_on_screen: Optional[str] = ""
     transitions: Optional[str] = "fade"
@@ -31,14 +38,26 @@ class Scene(BaseModel):
     manim_overlay: Optional[str] = None
     manim_overlay_params: Optional[Dict[str, Any]] = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def sync_dialogue_fields(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            dialogue = data.get("dialogue")
+            dialogues = data.get("dialogues")
+            if dialogue is not None and dialogues is None:
+                data["dialogues"] = dialogue
+            elif dialogues is not None and dialogue is None:
+                data["dialogue"] = dialogues
+        return data
+
 class OutputSettings(BaseModel):
     resolution: tuple = (1920, 1080)
     fps: int = 30
 
 class ScriptDefinition(BaseModel):
-    title: str
+    title: Optional[str] = None
     scenes: List[Scene]
-    output_filename: str
+    output_filename: Optional[str] = None
     # Audio ya mezclado de todas las escenas (lo produce el módulo de TTS de Richi).
     # Opcional por ahora para no romper guiones existentes sin audio real.
     audio_path: Optional[str] = None
