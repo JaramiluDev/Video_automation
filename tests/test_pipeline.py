@@ -1,7 +1,9 @@
 import pytest
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 from video_automation.models import ScriptDefinition, Scene, OutputSettings
 from video_automation.heavy_render import render_video, render_manim_scene
+from video_automation.pipeline import validate_scene_assets
 
 
 def _make_script(**overrides):
@@ -108,3 +110,20 @@ def test_manim_scene_without_content_still_returns_clip():
     clip = render_manim_scene(scene, resolution=(320, 180), fps=15)
     assert clip is not None
     clip.close()
+
+
+def test_validate_scene_assets_rejects_missing_images(tmp_path):
+    script = _make_script(
+        scenes=[
+            Scene(
+                id="ESCENA-01",
+                title="Intro",
+                narration="Hola",
+                image_paths=["missing/does-not-exist.png"],
+                duration=2.0,
+            )
+        ]
+    )
+
+    with pytest.raises(ValueError, match="ESCENA-01"):
+        validate_scene_assets(script, project_root=tmp_path)
